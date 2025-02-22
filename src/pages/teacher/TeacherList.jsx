@@ -34,7 +34,27 @@ const TeacherList = () => {
   useEffect(() => {
     fetchTeacherData();
   }, []);
+  const toggleStatus = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-teacher-status/${id}`,
+        {}, // Empty body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        fetchTeacherData();
+      }
+    } catch (error) {
+      console.error("Error updating student status", error);
+    }
+  };
   const columns = useMemo(
     () => [
       {
