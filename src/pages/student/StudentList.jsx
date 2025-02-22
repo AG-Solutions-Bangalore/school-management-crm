@@ -4,7 +4,11 @@ import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL, {
+  StudentImageUrl,
+  StudentNoImageUrl,
+} from "../../base/BaseUrl";
+
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,8 +39,48 @@ const StudentList = () => {
     fetchStudentData();
   }, []);
 
+  const toggleStatus = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-student-status/${id}`,
+        {}, // Empty body
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        fetchStudentData();
+      }
+    } catch (error) {
+      console.error("Error updating student status", error);
+    }
+  };
+
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "student_image",
+        header: "Photo",
+        size: 100,
+        Cell: ({ row }) => {
+          const imageUrl = row.original.student_photo
+            ? `${StudentImageUrl}/${row.original.student_photo}`
+            : { StudentNoImageUrl };
+
+          return (
+            <img
+              src={imageUrl}
+              alt="Student"
+              className="w-12 h-12 rounded-full object-cover border"
+            />
+          );
+        },
+      },
       {
         accessorKey: "student_admission_no",
         header: "Admission No",
@@ -67,7 +111,6 @@ const StudentList = () => {
         header: "Father Mobile",
         size: 150,
       },
-
       {
         accessorKey: "student_status",
         header: "Status",
@@ -76,7 +119,7 @@ const StudentList = () => {
           const { id, student_status } = row.original;
           return (
             <button
-              onClick={() => toggleStatus(id, student_status)}
+              onClick={() => toggleStatus(id)}
               className={`px-2 py-1 rounded transition-colors ${
                 student_status === "Active"
                   ? "bg-green-500 text-white"
@@ -88,7 +131,6 @@ const StudentList = () => {
           );
         },
       },
-
       {
         id: "id",
         header: "Action",
@@ -124,9 +166,9 @@ const StudentList = () => {
     enableStickyHeader: true,
     enableStickyFooter: true,
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
-
     initialState: { columnVisibility: { address: false } },
   });
+
   return (
     <Layout>
       <div className="max-w-screen">
@@ -147,7 +189,7 @@ const StudentList = () => {
           </div>
         </div>
 
-        <div className=" shadow-md">
+        <div className="shadow-md">
           <MantineReactTable table={table} />
         </div>
       </div>
