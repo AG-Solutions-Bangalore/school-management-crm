@@ -39,7 +39,6 @@ const CreateTeacher = () => {
     teacher_pf_no: "",
     teacher_uan_no: "",
     teacher_emergency_no: "",
-
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -88,7 +87,12 @@ const CreateTeacher = () => {
       console.error("Error fetching teacher data", error);
     }
   };
-
+  const addItem = () => {
+    setUsers([...users, useTemplate]);
+  };
+  const removeItem = (index) => {
+    setUsers(users.filter((_, i) => i !== index));
+  };
   useEffect(() => {
     fetchTeacherData();
     fetchClassData();
@@ -427,7 +431,7 @@ const CreateTeacher = () => {
               />
             </div>
           </div>
-          {users.map((user, index) => (
+          {/* {users.map((user, index) => (
             <div
               key={index}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
@@ -466,8 +470,78 @@ const CreateTeacher = () => {
                   ))}
                 </select>
               </div>
+              <button className="" onClick={addItem} type="button">
+                Add More
+              </button>
             </div>
-          ))}
+          ))} */}
+          <div className="space-y-4">
+            {users.map((user, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg shadow-sm bg-gray-50"
+              >
+                {/* Class Selection */}
+                <div>
+                  <FormLabel required>Class</FormLabel>
+                  <select
+                    name="teachersub_class"
+                    value={user.teachersub_class}
+                    onChange={(e) => handleInputChange(index, e)}
+                    required
+                    className={inputClassSelect}
+                  >
+                    <option value="">Select Class</option>
+                    {classList.map((option, idx) => (
+                      <option key={idx} value={option.classes}>
+                        {option.classes}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Subject Selection */}
+                <div>
+                  <FormLabel required>Subject</FormLabel>
+                  <select
+                    name="teachersub_subject"
+                    value={user.teachersub_subject}
+                    onChange={(e) => handleInputChange(index, e)}
+                    required
+                    className={inputClassSelect}
+                  >
+                    <option value="">Select Subject</option>
+                    {subject.map((option, idx) => (
+                      <option key={idx} value={option.class_subject}>
+                        {option.class_subject}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center space-x-2 mt-5">
+                  <button
+                    onClick={addItem}
+                    type="button"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                  >
+                    Add More
+                  </button>
+                  {users.length > 1 && (
+                    <button
+                      onClick={() => removeItem(index)}
+                      type="button"
+                      className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
           <div className="flex gap-4 justify-start">
             <button
               type="submit"
