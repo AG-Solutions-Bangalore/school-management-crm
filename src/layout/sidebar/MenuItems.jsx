@@ -114,7 +114,7 @@ const Menuitems = () => [
     icon: IconTruck,
     href: "/holiday-list",
   },
- 
+
   {
     id: uniqueId(),
     title: "Subject",
@@ -140,8 +140,26 @@ const Menuitems = () => [
     icon: IconTool,
     href: "/feesStructure-list",
   },
- 
- 
+
+  {
+    id: uniqueId(),
+    title: "Attendance",
+    icon: IconUsers,
+    subItems: [
+      {
+        id: uniqueId(),
+        title: "Attendance List",
+        icon: IconBuilding,
+        href: "/attendance-list",
+      },
+      {
+        id: uniqueId(),
+        title: "View Attendance",
+        icon: IconPin,
+        href: "/master/branch-list",
+      },
+    ],
+  },
 ];
 
 export default Menuitems;

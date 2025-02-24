@@ -20,6 +20,7 @@ import CreateStudent from "./pages/student/CreateStudent";
 import EditStudent from "./pages/student/EditStudent";
 import FeesStructureList from "./pages/feesStructure/FeesStructureList";
 import StudentView from "./pages/student/studentView/StudentView";
+import AttendanceList from "./pages/attendance/attendanceList/AttendanceList";
 
 const App = () => {
   return (
@@ -55,9 +56,8 @@ const App = () => {
 
         {/* Fees Structure  */}
         <Route path="/feesStructure-list" element={<FeesStructureList />} />
-
-
-
+        {/* //Attendance */}
+        <Route path="/attendance-list" element={<AttendanceList />} />
       </Routes>
     </>
   );
