@@ -502,7 +502,7 @@ const EditTeacher = () => {
                 required
                 className={inputClassSelect}
               >
-                <option value="">Select Subject</option>
+                <option value="">Select Status</option>
 
                 {status.map((option, index) => (
                   <option key={index} value={option.value}>

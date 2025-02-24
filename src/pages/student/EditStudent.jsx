@@ -5,37 +5,26 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
-const Gender = [
+const status = [
   {
-    value: "Male",
-    label: "Male",
+    value: "Active",
+    label: "Active",
   },
   {
-    value: "Female",
-    label: "Female",
+    value: "Inactive",
+    label: "Inactive",
   },
 ];
 const EditStudent = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  const [classList, setClassList] = useState([]);
-  //   const [subject, setSubject] = useState([]);
-  //   const [year, setYear] = useState([]);
-  //   const [admission, setAdmission] = useState([]);
 
   const [student, setStudent] = useState({
-    // student_year: "",
-    // student_no: "",
-    // student_name: "",
-    // student_gender: "",
-    // student_admission_no: "",
-    // student_admission_date: "",
     student_stats_no: "",
     student_dob: "",
     student_adhar_no: "",
     student_primary_no: "",
-    // student_email: "",
     student_father_name: "",
     student_father_mobile: "",
     student_father_pan_no: "",
@@ -48,7 +37,7 @@ const EditStudent = () => {
     student_caste: "",
     student_cc_no: "",
     student_address: "",
-    student_class: "",
+    student_status: "",
     student_photo: null,
     student_adhar_copy: null,
   });
@@ -68,19 +57,10 @@ const EditStudent = () => {
       );
       if (response.data && response.data.student) {
         setStudent({
-          //   student_year: response.data.student.student_year || "",
-          //   student_no: response.data.student.student_no || "",
-          //   student_name: response.data.student.student_name || "",
-          //   student_gender: response.data.student.student_gender || "",
-          //   student_admission_no:
-          //     response.data.student.student_admission_no || "",
-          //   student_admission_date:
-          //     response.data.student.student_admission_date || "",
           student_stats_no: response.data.student.student_stats_no || "",
           student_dob: response.data.student.student_dob || "",
           student_adhar_no: response.data.student.student_adhar_no || "",
           student_primary_no: response.data.student.student_primary_no || "",
-          //   student_email: response.data.student.student_email || "",
           student_father_name: response.data.student.student_father_name || "",
           student_father_mobile:
             response.data.student.student_father_mobile || "",
@@ -99,88 +79,18 @@ const EditStudent = () => {
           student_caste: response.data.student.student_caste || "",
           student_cc_no: response.data.student.student_cc_no || "",
           student_address: response.data.student.student_address || "",
-          student_class: response.data.student.student_class || "",
-          student_photo: response.data.student.student_photo || null, // Ensuring it's null if not provided
-          student_adhar_copy: response.data.student.student_adhar_copy || null, // Ensuring it's null if not provided
+          student_status: response.data.student.student_status || "",
+          student_photo: response.data.student.student_photo || null,
+          student_adhar_copy: response.data.student.student_adhar_copy || null,
         });
       }
     } catch (error) {
       console.error("Error fetching teacher data", error);
     }
   };
-  //   const fetchYearData = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       const response = await axios.get(
-  //         `${BASE_URL}/api/panel-fetch-year-list`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       setYear(response.data.year);
-  //     } catch (error) {
-  //       console.error("Error fetching teacher data", error);
-  //     }
-  //   };
-  //   const fetchAdmissionData = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       const response = await axios.get(
-  //         `${BASE_URL}/api/panel-fetch-student-admission-no/${student.student_year}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       setAdmission(response.data.admissionNo);
-  //     } catch (error) {
-  //       console.error("Error fetching teacher data", error);
-  //     }
-  //   };
-
-  const fetchClassData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClassList(response.data.classes);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
-  };
-  //   const fetchSubjectData = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       const response = await axios.get(
-  //         `${BASE_URL}/api/panel-fetch-subject-list`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-  //       setSubject(response.data.subject);
-  //     } catch (error) {
-  //       console.error("Error fetching teacher data", error);
-  //     }
-  //   };
 
   useEffect(() => {
-    fetchClassData();
-    // fetchSubjectData();
-    // fetchYearData();
     fetchTeacherDataByid();
-
-    // if (student.student_year) {
-    //   fetchAdmissionData();
-    // }
   }, [id]);
   const onInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -285,7 +195,7 @@ const EditStudent = () => {
     formData.append("student_caste", student.student_caste);
     formData.append("student_cc_no", student.student_cc_no);
     formData.append("student_address", student.student_address);
-    formData.append("student_class", student.student_class);
+    formData.append("student_status", student.student_status);
 
     if (student.student_photo) {
       formData.append("student_photo", student.student_photo);
@@ -296,8 +206,8 @@ const EditStudent = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student/${id}`,
+      const response = await axios.post(
+        `${BASE_URL}/api/panel-update-student/${id}?_method=PUT`,
         formData,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -349,100 +259,6 @@ const EditStudent = () => {
           className="w-full rounded-lg mx-auto p-4 space-y-6"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* <div>
-              <FormLabel required>Year</FormLabel>
-              <select
-                name="student_year"
-                value={student.student_year || ""}
-                onChange={onInputChange}
-                required
-                readOnly
-                className={inputClassSelect}
-              >
-                <option value="">Select Year</option>
-                {year.map((option, index) => (
-                  <option key={index} value={option.year_list}>
-                    {option.year_list}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <FormLabel required>Student No</FormLabel>
-              <select
-                name="student_no"
-                value={student.student_no || ""}
-                onChange={onInputChange}
-                required
-                readOnly
-                className={inputClassSelect}
-              >
-                <option value="">Select Student No</option>
-                {admission.map((option, index) => {
-                  return (
-                    <option key={index} value={option}>
-                      {option}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div>
-              <FormLabel required>Student Name</FormLabel>
-              <input
-                type="text"
-                name="student_name"
-                value={student.student_name}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-                readOnly
-              />
-            </div>
-            <div>
-              <FormLabel required>Gender</FormLabel>
-              <select
-                name="student_gender"
-                value={student.student_gender || ""}
-                onChange={onInputChange}
-                required
-                className={inputClassSelect}
-                readOnly
-              >
-                <option value="">Select Gender</option>
-                {Gender.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <FormLabel required>Student Admission</FormLabel>
-              <input
-                type="text"
-                name="student_admission_no"
-                value={student.student_admission_no}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                readOnly
-                required
-              />
-            </div>
-            <div>
-              <FormLabel required>Admission</FormLabel>
-              <input
-                type="date"
-                name="student_admission_date
-"
-                value={student.student_admission_date}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-                readOnly
-              />
-            </div> */}
             <div>
               <FormLabel required>Stats No</FormLabel>
               <input
@@ -495,17 +311,6 @@ const EditStudent = () => {
               )}
             </div>
 
-            {/* <div>
-              <FormLabel required>Email</FormLabel>
-              <input
-                type="email"
-                name="student_email"
-                value={student.student_email}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-              />
-            </div> */}
             <div>
               <FormLabel required>Father Name</FormLabel>
               <input
@@ -642,18 +447,19 @@ const EditStudent = () => {
             </div>
 
             <div>
-              <FormLabel required>Class</FormLabel>
+              <FormLabel required>Status</FormLabel>
               <select
-                name="student_class"
-                value={student.student_class}
+                name="student_status"
+                value={student.student_status || ""}
                 onChange={(e) => onInputChange(e)}
                 required
                 className={inputClassSelect}
               >
-                <option value="">Select Class</option>
-                {classList.map((option, index) => (
-                  <option key={index} value={option.classes}>
-                    {option.classes}
+                <option value="">Select Status</option>
+
+                {status.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
@@ -667,7 +473,8 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
-              {student.student_photo && (
+
+              {typeof student.student_photo === "string" && (
                 <span className="text-sm text-red-500">
                   {student.student_photo}
                 </span>
@@ -682,7 +489,8 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
-              {student.student_adhar_copy && (
+
+              {typeof student.student_adhar_copy === "string" && (
                 <span className="text-sm text-red-500">
                   {student.student_adhar_copy}
                 </span>
