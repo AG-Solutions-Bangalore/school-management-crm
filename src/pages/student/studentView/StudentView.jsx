@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconPlus,
+  IconUser,
+  IconCalendar,
+  IconSchool,
+} from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
@@ -50,15 +56,19 @@ const StudentView = () => {
 
   const studentClassColumns = useMemo(
     () => [
-      { accessorKey: "studentClass_year", header: "Year", size: 150 },
-      { accessorKey: "studentClass_class", header: "Class", size: 150 },
+      // { accessorKey: "studentClass_year", header: "Year", size: 150 },
+      // { accessorKey: "studentClass_class", header: "Class", size: 150 },
       { accessorKey: "studentClass_van", header: "Van", size: 100 },
+      // {
+      //   accessorKey: "studentClass_fees_structure",
+      //   header: "Fee Structure",
+      //   size: 150,
+      // },
       {
-        accessorKey: "studentClass_fees_structure",
-        header: "Fee Structure",
+        accessorKey: "studentClass_van_amount",
+        header: "Van Amount",
         size: 150,
       },
-      { accessorKey: "studentClass_amount", header: "Amount", size: 150 },
       {
         accessorKey: "id",
         header: "Actions",
@@ -79,14 +89,14 @@ const StudentView = () => {
 
   const studentFeesColumns = useMemo(
     () => [
-      { accessorKey: "studentFees_year", header: "Year", size: 150 },
-      { accessorKey: "studentFees_class", header: "Class", size: 150 },
-      { accessorKey: "studentFees_amount", header: "Fees", size: 150 },
-
       {
-        accessorKey: "studentFees_fees_structure",
-        header: "Fees Structure",
+        accessorKey: "studentFees_paid_date",
+        header: "Date",
         size: 150,
+        Cell: ({ row }) => {
+          const date = row.original.studentFees_paid_date;
+          return date ? moment(date).format("DD-MMM-YYYY") : "-";
+        },
       },
       { accessorKey: "studentFees_paid", header: "Paid", size: 150 },
       { accessorKey: "studentFees_pay_mode", header: "Pay Mode", size: 150 },
@@ -126,42 +136,165 @@ const StudentView = () => {
     enableColumnActions: false,
     enableHiding: false,
   });
+  const studentClass = studentData?.studentClass?.length
+    ? studentData.studentClass[studentData.studentClass.length - 1]
+        .studentClass_class
+    : null;
+
+  const updatedYear = studentData?.studentClass?.length
+    ? studentData.studentClass[studentData.studentClass.length - 1]
+        .studentClass_year
+    : null;
+  const totalAmount = studentData?.studentClass?.length
+    ? studentData.studentClass[studentData.studentClass.length - 1]
+        .studentClass_amount
+    : null;
+
+  const getRemainingAmount = () => {
+    if (!studentData?.studentFees?.length) return totalAmount;
+
+    const totalPaid = studentData.studentFees.reduce(
+      (sum, fee) => sum + (fee.studentFees_paid || 0),
+      0
+    );
+    return totalAmount - totalPaid;
+  };
+
+  const studentClassLength = studentData?.studentClass?.length || 0;
+  console.log("Total student classes:", studentClassLength);
 
   return (
     <Layout>
-      <div className="max-w-screen p-4">
-        <div className="bg-white p-4 mb-4 rounded-lg shadow-md flex flex-row items-center gap-2">
-          <h1 className="border-b-2 font-[400] border-dashed border-orange-800 w-fit text-center md:text-left">
-            Student Details
-          </h1>-
-          <strong>{studentData?.student?.student_admission_no}</strong>
-        </div>
+      <div className="max-w-screen p-2">
+        <Card className="mb-2 overflow-hidden">
+          <CardBody className="p-0">
+            <div className="flex flex-col md:flex-row">
+              {/* Left Section with Primary Info */}
+              <div className="bg-blue-50 p-4 md:w-1/3">
+                <h1 className="text-lg font-medium text-blue-900 mb-3 border-b-2 border-blue-500 pb-1 inline-block">
+                  Student Details
+                </h1>
+                <div className="flex items-center gap-2 mb-2">
+                  <IconUser className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Adm No: {studentData?.student?.student_admission_no}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <IconSchool className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm font-medium text-gray-700">
+                    Class: {studentData?.student?.student_class}
+                  </span>
+                </div>
+              </div>
+
+              {/* Right Section with Secondary Info */}
+              <div className="p-4 flex-1 bg-white">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {/* Gender Badge */}
+                  <div className="bg-gray-50 rounded-lg p-2 text-center">
+                    <span className="text-xs text-gray-700 block">Gender</span>
+                    <span
+                      className={`text-sm font-medium ${
+                        studentData?.student?.student_gender === "Male"
+                          ? "text-blue-700"
+                          : "text-pink-700"
+                      }`}
+                    >
+                      {studentData?.student?.student_gender === "Male"
+                        ? "M"
+                        : "F"}
+                    </span>
+                  </div>
+
+                  {/* Academic Year */}
+                  <div className="bg-gray-50 rounded-lg p-2 text-center">
+                    <span className="text-xs text-gray-700 block">
+                      Academic Year
+                    </span>
+                    <span className="text-sm font-medium text-gray-800">
+                      {studentData?.student?.student_year}
+                    </span>
+                  </div>
+
+                  {/* Status Badge */}
+                  <div className="bg-gray-50 rounded-lg p-2 text-center">
+                    <span className="text-xs text-gray-700 block">Status</span>
+                    <span
+                      className={`text-sm font-medium ${
+                        studentData?.student?.student_status === "Active"
+                          ? "text-green-700"
+                          : "text-red-700"
+                      }`}
+                    >
+                      {studentData?.student?.student_status}
+                    </span>
+                  </div>
+
+                  {/* Admission Date - Spans full width on mobile, 3 columns on desktop */}
+                  <div className="bg-gray-50 rounded-lg p-2 text-center col-span-2 md:col-span-3">
+                    <span className="text-xs text-gray-700 block">
+                      Admission Date
+                    </span>
+                    <div className="flex items-center justify-center gap-2">
+                      <IconCalendar className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-gray-800">
+                        {moment(
+                          studentData?.student?.student_admission_date
+                        ).format("DD MMMM, YYYY")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+
         <StudentDetailsView studentData={studentData} />
-        <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">Student Class List</h2>
-            <button
-              onClick={() => setIsClassDialogOpen(true)}
-              className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-            >
-              <IconPlus className="w-5 h-5" /> Add Class
-            </button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div className="bg-white p-3 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center  ">
+              <div className=" flex flex-col items-start text-sm ">
+                <h2 className=" font-medium">Student Fees List</h2>
+                <h2 className=" font-medium">Class: {studentClass}</h2>
+              </div>
+              <div className=" flex flex-col text-sm items-center  ">
+                <span className="font-medium">Amount: {totalAmount}</span>
+                <span className="text-red-600 font-medium">
+                  Remaining: {getRemainingAmount()}
+                </span>
+              </div>
+              <div className=" flex flex-col  text-sm items-start  ">
+                <span className="font-medium">Year: {updatedYear}</span>
+                <button
+                  onClick={() => setIsFeesDialogOpen(true)}
+                  className="flex items-center gap-1 text-sm  bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                >
+                  <IconPlus className="w-4 h-4" /> Add Fee
+                </button>
+              </div>
+            </div>
+            <MantineReactTable table={studentFeesTable} />
           </div>
-          <MantineReactTable table={studentClassTable} />
+
+          <div className="bg-white p-3 rounded-lg shadow-sm">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-base font-medium">Van Info</h2>
+              {studentClassLength === 0 && (
+                <button
+                  onClick={() => setIsClassDialogOpen(true)}
+                  className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+                >
+                  <IconPlus className="w-4 h-4" /> Add Class
+                </button>
+              )}
+            </div>
+            <MantineReactTable table={studentClassTable} />
+          </div>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">Student Fees List</h2>
-            <button
-              onClick={() => setIsFeesDialogOpen(true)}
-              className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-            >
-              <IconPlus className="w-4 h-4" /> Add Fee
-            </button>
-          </div>
-          <MantineReactTable table={studentFeesTable} />
-        </div>
         <AddClassDialog
           open={isClassDialogOpen}
           handleOpen={() => {
@@ -170,7 +303,6 @@ const StudentView = () => {
           }}
           studentData={studentData}
         />
-
         <AddFeesDialog
           open={isFeesDialogOpen}
           handleOpen={() => {
@@ -188,7 +320,6 @@ const StudentView = () => {
           }}
           classId={selectedClassId}
         />
-
         <EditFeesDialog
           open={isEditFeesDialogOpen}
           handleOpen={() => {
