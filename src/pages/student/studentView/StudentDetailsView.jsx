@@ -35,7 +35,7 @@ const StudentDetailsView = ({ studentData }) => {
   const personalInfo = [
     { key: "name", label: "Student Name", value: studentData.student.student_name },
     { key: "admissionNo", label: "Admission No", value: studentData.student.student_admission_no },
-    { key: "class", label: "Class", value: studentData.student.student_class },
+    { key: "class", label: "Joining Class", value: studentData.student.student_class },
     { key: "gender", label: "Gender", value: studentData.student.student_gender }
   ];
 
