@@ -11,6 +11,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -38,6 +39,10 @@ const SignIn = () => {
           res.data.UserInfo.user.user_position
         );
         localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
+        localStorage.setItem(
+          "school_detils",
+          res.data.school_detils.school_default_year
+        );
 
         if (token) {
           localStorage.setItem("token", token);
