@@ -8,6 +8,7 @@ import BASE_URL, {
   StudentImageUrl,
   StudentNoImageUrl,
 } from "../../base/BaseUrl";
+import moment from "moment/moment";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -86,10 +87,15 @@ const StudentList = () => {
         header: "Admission No",
         size: 150,
       },
+
       {
         accessorKey: "student_admission_date",
         header: "Admission Date",
         size: 150,
+        Cell: ({ row }) => {
+          const date = row.original.student_admission_date;
+          return date ? moment(date).format("DD-MMM-YYYY") : "";
+        },
       },
       {
         accessorKey: "student_name",
@@ -101,10 +107,15 @@ const StudentList = () => {
         header: "Gender",
         size: 150,
       },
+
       {
         accessorKey: "student_dob",
         header: "DOB",
         size: 150,
+        Cell: ({ row }) => {
+          const date = row.original.student_dob;
+          return date ? moment(date).format("DD-MMM-YYYY") : "";
+        },
       },
       {
         accessorKey: "student_father_mobile",
