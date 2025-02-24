@@ -156,7 +156,26 @@ const Menuitems = () => [
         id: uniqueId(),
         title: "View Attendance",
         icon: IconPin,
-        href: "/attendance-view",
+        href: "/attendance-list/viewAttendance",
+      },
+    ],
+  },
+  {
+    id: uniqueId(),
+    title: "Website",
+    icon: IconUsers,
+    subItems: [
+      {
+        id: uniqueId(),
+        title: "Enquiry",
+        icon: IconBuilding,
+        href: "/website-list/enquiry",
+      },
+      {
+        id: uniqueId(),
+        title: "Contact",
+        icon: IconPin,
+        href: "/website-list/contact",
       },
     ],
   },

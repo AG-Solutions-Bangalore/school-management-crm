@@ -450,17 +450,6 @@ const EditStudent = () => {
                 required
               />
             </div>
-            <div>
-              <FormLabel required>Address</FormLabel>
-              <textarea
-                type="text"
-                name="student_address"
-                value={student.student_address}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-              />
-            </div>
 
             <div>
               <FormLabel required>Status</FormLabel>
@@ -508,6 +497,18 @@ const EditStudent = () => {
                   {student.student_adhar_copy}
                 </span>
               )}
+            </div>
+
+            <div className="col-span-2">
+              <FormLabel required>Address</FormLabel>
+              <textarea
+                type="text"
+                name="student_address"
+                value={student.student_address}
+                onChange={(e) => onInputChange(e)}
+                className={inputClass}
+                required
+              />
             </div>
           </div>
 

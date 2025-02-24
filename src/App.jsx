@@ -24,6 +24,8 @@ import AttendanceList from "./pages/attendance/attendanceList/AttendanceList";
 import CreateAttendance from "./pages/attendance/attendanceList/CreateAttendance";
 import EditAttendance from "./pages/attendance/attendanceList/EditAttendance";
 import AttendanceView from "./pages/attendance/attendanceView/AttendanceView";
+import EnquiryList from "./pages/webiste/Enquiry/EnquiryList";
+import ContactList from "./pages/webiste/Contact/ContactList";
 
 const App = () => {
   return (
@@ -41,25 +43,22 @@ const App = () => {
         <Route path="/holiday-list" element={<HolidayList />} />
         <Route path="/holiday-list/createHoliday" element={<CreateHoliday />} />
         <Route path="/holiday-list/editHoliday/:id" element={<EditHoliday />} />
-
         {/* Subject  */}
         <Route path="/subject-list" element={<SubjectList />} />
         <Route path="/subject-list/createSubject" element={<CreateSubject />} />
-
         {/* Teacher  */}
         <Route path="/teacher-list" element={<TeacherList />} />
         <Route path="/teacher-list/createTeacher" element={<CreateTeacher />} />
         <Route path="/teacher-list/editTeacher/:id" element={<EditTeacher />} />
-
         {/* Student  */}
         <Route path="/student-list" element={<StudentList />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
         <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
-
         {/* Fees Structure  */}
         <Route path="/feesStructure-list" element={<FeesStructureList />} />
         {/* //Attendance */}
+        {/* //attendancelist */}
         <Route path="/attendance-list" element={<AttendanceList />} />
         <Route
           path="/attendance-list/createAttendance"
@@ -70,7 +69,15 @@ const App = () => {
           element={<EditAttendance />}
         />
         {/* //attendanceview */}
-        <Route path="/attendance-view" element={<AttendanceView />} />
+        <Route
+          path="/attendance-list/viewAttendance"
+          element={<AttendanceView />}
+        />
+        {/* //Website */}
+        {/* //enqiry list */}
+        <Route path="/website-list/enquiry" element={<EnquiryList />} />
+        {/* //contactlist */}
+        <Route path="/website-list/contact" element={<ContactList />} />
       </Routes>
     </>
   );

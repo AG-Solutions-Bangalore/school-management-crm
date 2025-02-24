@@ -154,6 +154,11 @@ const AttendanceList = () => {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "studentAttendance_admission_no",
+        header: "Admission No",
+        size: 150,
+      },
+      {
         accessorKey: "student_name",
         header: "Name",
         size: 150,
@@ -163,14 +168,10 @@ const AttendanceList = () => {
         header: "Gender",
         size: 150,
       },
-      {
-        accessorKey: "studentAttendance_admission_no",
-        header: "Admission No",
-        size: 150,
-      },
+
       {
         accessorKey: "studentAttendance_date",
-        header: "Admission Date",
+        header: "Date",
         size: 150,
         Cell: ({ row }) => {
           const date = row.original.studentAttendance_date;
@@ -179,7 +180,7 @@ const AttendanceList = () => {
       },
       {
         accessorKey: "studentAttendance_class",
-        header: "Admission Class",
+        header: "Class",
         size: 150,
       },
       {
