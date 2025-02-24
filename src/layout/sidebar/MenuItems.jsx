@@ -133,6 +133,13 @@ const Menuitems = () => [
     icon: IconTool,
     href: "/student-list",
   },
+
+  {
+    id: uniqueId(),
+    title: "Fees Structure",
+    icon: IconTool,
+    href: "/feesStructure-list",
+  },
  
  
 ];
