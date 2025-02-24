@@ -1,88 +1,128 @@
 import React from 'react';
-import { Card, Typography } from "@material-tailwind/react";
+import { Card } from "@material-tailwind/react";
+import { IconUser, IconUsers, IconMail, IconId, IconHome, IconCategory } from "@tabler/icons-react";
 
 const StudentDetailsView = ({ studentData }) => {
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+  if (!studentData) return null;
 
-  const renderSection = (title, fields) => (
-    <div className="mb-6">
-      <div className="border-l-4 border-blue-500 pl-3 mb-2">
-        <Typography variant="h6" className="text-blue-gray-800 font-medium">
-          {title}
-        </Typography>
+  const InfoBlock = ({ icon: Icon, label, value }) => (
+    <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-blue-200 transition-colors duration-300">
+      <div className="flex items-center gap-2 mb-1">
+        <Icon className="w-4 h-4 text-blue-600" />
+        <span className="text-xs text-gray-700">{label}</span>
       </div>
-      <div className="bg-white rounded-lg p-2 shadow-sm">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-4">
-          {fields.map(field => (
-            <div key={field.key} className="bg-green-50 p-2 rounded-md">
-              <Typography variant="small" className="text-blue-900 text-xs mb-1">
-                {field.label}
-              </Typography>
-              <Typography className="text-gray-900 text-sm  font-semibold">
-                {field.value || "-"}
-              </Typography>
-            </div>
-          ))}
+      <span className="text-sm font-medium text-gray-900 block">{value || "-"}</span>
+    </div>
+  );
+
+  const FamilyMemberCard = ({ title, data, bgColor }) => (
+    <div className={`rounded-lg overflow-hidden ${bgColor}`}>
+      <div className="px-4 py-2 bg-opacity-10 backdrop-blur-sm">
+        <h3 className="text-sm font-medium text-gray-800">{title}</h3>
+      </div>
+      <div className="p-3 space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <span className="text-xs text-gray-700 block">Name</span>
+            <span className="text-sm font-medium text-gray-900">{data.name}</span>
+          </div>
+          <div>
+            <span className="text-xs text-gray-700 block">Mobile</span>
+            <span className="text-sm font-medium text-gray-900">{data.mobile}</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+          <div>
+            <span className="text-xs text-gray-700 block">PAN</span>
+            <span className="text-sm font-medium text-gray-900">{data.pan}</span>
+          </div>
+          <div>
+            <span className="text-xs text-gray-700 block">Aadhar</span>
+            <span className="text-sm font-medium text-gray-900">{data.aadhar}</span>
+          </div>
         </div>
       </div>
     </div>
   );
 
-  if (!studentData) return null;
-
-  const personalInfo = [
-    { key: "name", label: "Student Name", value: studentData.student.student_name },
-    { key: "admissionNo", label: "Admission No", value: studentData.student.student_admission_no },
-    { key: "class", label: "Joining Class", value: studentData.student.student_class },
-    { key: "gender", label: "Gender", value: studentData.student.student_gender }
-  ];
-
-  const academicInfo = [
-    { key: "year", label: "Academic Year", value: studentData.student.student_year },
-    { key: "admissionDate", label: "Admission Date", value: formatDate(studentData.student.student_admission_date) },
-    { key: "status", label: "Status", value: studentData.student.student_status },
-    { key: "statsNo", label: "SATS No", value: studentData.student.student_stats_no }
-  ];
-
-  const fatherInfo = [
-    { key: "fatherName", label: "Name", value: studentData.student.student_father_name },
-    { key: "fatherMobile", label: "Mobile", value: studentData.student.student_father_mobile },
-    { key: "fatherPan", label: "PAN No", value: studentData.student.student_father_pan_no },
-    { key: "fatherAadhar", label: "Aadhar", value: studentData.student.student_father_adhar_no }
-  ];
-
-  const motherInfo = [
-    { key: "motherName", label: "Name", value: studentData.student.student_mother_name },
-    { key: "motherMobile", label: "Mobile", value: studentData.student.student_mother_mobile },
-    { key: "motherPan", label: "PAN No", value: studentData.student.student_mother_pan_no },
-    { key: "motherAadhar", label: "Aadhar", value: studentData.student.student_mother_adhar_no }
-  ];
-
-  const otherInfo = [
-    { key: "email", label: "Email", value: studentData.student.student_email },
-    { key: "address", label: "Address", value: studentData.student.student_address },
-    { key: "category", label: "Caste Category", value: studentData.student.student_category },
-    { key: "caste", label: "Caste", value: studentData.student.student_caste }
-  ];
-
   return (
-    <div className="p-4 bg-white rounded-xl mb-4">
-      <div className="max-w-full mx-auto space-y-2">
-        {renderSection("Personal Information", personalInfo)}
-        {renderSection("Academic Information", academicInfo)}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            {renderSection("Father's Information", fatherInfo)}
+    <Card className="p-4 mb-2">
+      <div className="space-y-6">
+        {/* Personal & Additional Info Combined */}
+        <div>
+          <div className="flex items-center mb-3">
+            <div className="flex-1 border-b border-gray-200"></div>
+            <h2 className="px-4 text-base font-medium text-blue-900">Student Information</h2>
+            <div className="flex-1 border-b border-gray-200"></div>
           </div>
-          <div>
-            {renderSection("Mother's Information", motherInfo)}
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <InfoBlock 
+              icon={IconUser} 
+              label="Student Name" 
+              value={studentData.student.student_name} 
+            />
+            <InfoBlock 
+              icon={IconId} 
+              label="SATS Number" 
+              value={studentData.student.student_stats_no} 
+            />
+            <InfoBlock 
+              icon={IconMail} 
+              label="Email ID" 
+              value={studentData.student.student_email} 
+            />
+            <InfoBlock 
+              icon={IconCategory} 
+              label="Category" 
+              value={studentData.student.student_category} 
+            />
+            <InfoBlock 
+              icon={IconHome} 
+              label="Address" 
+              value={studentData.student.student_address} 
+            />
+            <InfoBlock 
+              icon={IconCategory} 
+              label="Caste" 
+              value={studentData.student.student_caste} 
+            />
           </div>
         </div>
-        {renderSection("Additional Information", otherInfo)}
+
+        {/* Family Information */}
+        <div>
+          <div className="flex items-center mb-3">
+            <div className="flex-1 border-b border-gray-200"></div>
+            <h2 className="px-4 text-base font-medium text-blue-900">Family Information</h2>
+            <div className="flex-1 border-b border-gray-200"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FamilyMemberCard 
+              title="Father's Details"
+              bgColor="bg-blue-50"
+              data={{
+                name: studentData.student.student_father_name,
+                mobile: studentData.student.student_father_mobile,
+                pan: studentData.student.student_father_pan_no,
+                aadhar: studentData.student.student_father_adhar_no
+              }}
+            />
+            <FamilyMemberCard 
+              title="Mother's Details"
+              bgColor="bg-purple-50"
+              data={{
+                name: studentData.student.student_mother_name,
+                mobile: studentData.student.student_mother_mobile,
+                pan: studentData.student.student_mother_pan_no,
+                aadhar: studentData.student.student_mother_adhar_no
+              }}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

@@ -10,6 +10,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../context/ContextPanel";
+import { getTodayDate } from "../../../utils/currentDate";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -92,8 +93,7 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
           studentClass_admission_no: "",
           studentClass_class: "",
           studentClass_van: "No",
-        })
-        
+        });
       } else {
         toast.error(response.data.msg);
       }
@@ -167,14 +167,16 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-          <Button
+          
+          <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
+            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
             {loading ? "Adding..." : "Add Class"}
-          </Button>
+          </button>
         </DialogActions>
       </form>
     </Dialog>
@@ -195,13 +197,14 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
     studentFees_paid: "",
     studentFees_pay_mode: "",
     studentFees_transactiondetails: "",
+    studentFees_paid_date: getTodayDate(),
   });
   const lastClass = studentData?.studentClass?.length
     ? studentData.studentClass[studentData.studentClass.length - 1]
         .studentClass_class
     : null;
 
-    const lastYear = studentData?.studentClass?.length
+  const lastYear = studentData?.studentClass?.length
     ? studentData.studentClass[studentData.studentClass.length - 1]
         .studentClass_year
     : null;
@@ -278,7 +281,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
 
       if (response.data.code === 200) {
         toast.success(response.data.msg);
-        
+
         handleOpen();
         setFormData({
           studentFees_year: "",
@@ -287,7 +290,8 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
           studentFees_paid: "",
           studentFees_pay_mode: "",
           studentFees_transactiondetails: "",
-        })
+          studentFees_paid_date: "",
+        });
       } else {
         toast.error(response.data.msg);
       }
@@ -308,8 +312,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
             <span>{formData.studentFees_admission_no}</span>
           </p>
           <div className="flex flex-row items-center gap-2">
-          <div>
-             
+            <div>
               <select
                 name="studentFees_year"
                 value={formData.studentFees_year}
@@ -326,16 +329,27 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
               </select>
             </div>
             <p className="bg-blue-200 text-black px-3 py-1 rounded-md text-sm font-semibold">
-  {formData.studentFees_class}
-</p>
-
-            </div>
+              {formData.studentFees_class}
+            </p>
+          </div>
         </DialogTitle>
         <DialogContent dividers>
-          <div className="text-center">Fee Receipt</div>
-          <div className="space-y-4 p-2">
-          
-
+          <div className="flex flex-row items-center gap-2  justify-between mb-2">
+            <div className="text-center text-xl">Fee Receipt</div>
+            <div>
+              <div>
+                <input
+                  type="date"
+                  name="studentFees_paid_date"
+                  className={inputClass}
+                  value={formData.studentFees_paid_date}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4 ">
             {/* <div>
               <FormLabel required>Admission No</FormLabel>
               <input
@@ -413,14 +427,16 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
+       
+          <button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={loading}
+            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-            {loading ? "Adding..." : "Add Fees"}
-          </Button>
+        {loading ? "Adding..." : "Add Fees"}
+          </button>
         </DialogActions>
       </form>
     </Dialog>
