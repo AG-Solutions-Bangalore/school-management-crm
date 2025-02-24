@@ -159,6 +159,13 @@ const StudentList = () => {
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
+              <div
+                onClick={() => navigate(`/student-list/viewStudent/${id}`)}
+                className="flex items-center space-x-2"
+                title="Edit"
+              >
+                <IconEye className="h-5 w-5 text-blue-500 cursor-pointer" />
+              </div>
             </div>
           );
         },

@@ -512,7 +512,7 @@ const EditTeacher = () => {
               </select>
             </div>
           </div>
-          {/* {users.map((user, index) => (
+          {users.map((user, index) => (
             <div
               key={index}
               className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
@@ -570,73 +570,7 @@ const EditTeacher = () => {
                 </select>
               </div>
             </div>
-          ))} */}
-          <div className="space-y-4">
-            {users.map((user, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 border rounded-lg shadow-sm bg-gray-50"
-              >
-                {/* Class Selection */}
-                <div>
-                  <FormLabel required>Class</FormLabel>
-                  <select
-                    name="teachersub_class"
-                    value={user.teachersub_class || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    required
-                    className={inputClassSelect}
-                  >
-                    <option value="">Select Class</option>
-                    {classList.map((option, idx) => (
-                      <option key={idx} value={option.classes}>
-                        {option.classes}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Subject Selection */}
-                <div>
-                  <FormLabel required>Subject</FormLabel>
-                  <select
-                    name="teachersub_subject"
-                    value={user.teachersub_subject || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    required
-                    className={inputClassSelect}
-                  >
-                    <option value="">Select Subject</option>
-                    {subject.map((option, idx) => (
-                      <option key={idx} value={option.class_subject}>
-                        {option.class_subject}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Status Selection */}
-                <div>
-                  <FormLabel required>Status</FormLabel>
-                  <select
-                    name="teachersub_status"
-                    value={user.teachersub_status || ""}
-                    onChange={(e) => handleInputChange(index, e)}
-                    required
-                    className={inputClassSelect}
-                  >
-                    <option value="">Select Status</option>
-                    {status.map((option, idx) => (
-                      <option key={idx} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            ))}
-          </div>
-
+          ))}
           <div className="flex gap-4 justify-start">
             <button
               type="submit"
