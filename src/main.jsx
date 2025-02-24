@@ -7,16 +7,14 @@ import { ThemeProvider } from "@mui/material/styles";
 import { baselightTheme } from "./utils/theme/DefaultColors.jsx";
 import AppProvider from "./context/ContextPanel.jsx";
 
-
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-    <AppProvider>
+      <AppProvider>
         <ThemeProvider theme={baselightTheme}>
           <App />
         </ThemeProvider>
-        </AppProvider>
-     
+      </AppProvider>
     </BrowserRouter>
   </StrictMode>
 );
