@@ -1,6 +1,6 @@
 import { Input, Button, Typography } from "@material-tailwind/react";
 import { toast } from "sonner";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FormLabel } from "@mui/material";
@@ -40,18 +40,25 @@ const ForgetPassword = () => {
   );
   return (
     <>
-  
       <div className="flex flex-col lg:flex-row h-screen">
         {/* Left Side - Image */}
         <div className="hidden  lg:block lg:w-[50%] xl:block xl:w-[70%] h-full">
-          <img src={logo1} alt="img 1" className="h-full w-full object-cover" />
+          <img
+            src="https://img.freepik.com/free-vector/large-school-building-scene_1308-32058.jpg"
+            alt="img 1"
+            className="h-full w-full object-cover"
+          />
         </div>
 
         {/* Right Side - Form */}
         <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 h-full lg:w-1/2">
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
-              <img src={logo} alt="Company Logo" className="w-35 h-35" />
+              <img
+                src={`${LoginImageUrl}/ppvn.png`}
+                alt="Logo"
+                className="w-35 h-35"
+              />
             </div>
             <Typography
               variant="h6"

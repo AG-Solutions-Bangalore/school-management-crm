@@ -1,6 +1,7 @@
 import { styled } from "@mui/material";
 import { Link } from "react-router-dom";
 import logo from "../../../assets/Companylogo/dfc.png";
+import { LoginImageUrl } from "../../../base/BaseUrl";
 
 const LinkStyled = styled(Link)(() => ({
   height: "63px",
@@ -25,11 +26,21 @@ const Logo = ({ isCollapsed }) => {
     <>
       {!isCollapsed ? (
         <LinkStyled to="/home">
-          <img src={logo} alt="logo" className="h-16" priority />
+          <img
+            src={`${LoginImageUrl}/ppvn.png`}
+            alt="logo"
+            className="h-16"
+            priority
+          />
         </LinkStyled>
       ) : (
         <LargeLinkStyled to="/home">
-          <img src={logo} alt="logo" className="h-[2rem]" priority />
+          <img
+            src={`${LoginImageUrl}/ppvn.png`}
+            alt="logo"
+            className="h-[2rem]"
+            priority
+          />
         </LargeLinkStyled>
       )}
     </>
