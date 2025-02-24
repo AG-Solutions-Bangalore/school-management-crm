@@ -22,7 +22,7 @@ const inputClass =
 "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
 
 // Add Class Dialog Form
-export const AddClassDialog = ({ open, handleOpen }) => {
+export const AddClassDialog = ({ open, handleOpen,studentData }) => {
   const [loading, setLoading] = useState(false);
   const [classes, setClasses] = useState([]);
   const [formData, setFormData] = useState({
@@ -30,7 +30,14 @@ export const AddClassDialog = ({ open, handleOpen }) => {
     studentClass_class: "",
     studentClass_van: "No"
   });
-
+useEffect(() => {
+    if (studentData?.student?.student_admission_no) {
+      setFormData(prev => ({
+        ...prev,
+        studentClass_admission_no: studentData.student.student_admission_no
+      }));
+    }
+  }, [studentData]);
   const fetchClasses = async () => {
     try {
       setLoading(true);
@@ -102,10 +109,11 @@ export const AddClassDialog = ({ open, handleOpen }) => {
               <input
                 type="text"
                 name="studentClass_admission_no"
-                className={inputClass}
+                className={`${inputClass} cursor-not-allowed`}
                 value={formData.studentClass_admission_no}
                 onChange={handleInputChange}
                 required
+                readOnly
               />
             </div>
 
@@ -157,7 +165,7 @@ export const AddClassDialog = ({ open, handleOpen }) => {
 };
 
 // Add Fees Dialog Form
-export const AddFeesDialog = ({ open, handleOpen }) => {
+export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
   const [loading, setLoading] = useState(false);
   const [years, setYears] = useState([]);
   const [classes, setClasses] = useState([]);
@@ -170,7 +178,14 @@ export const AddFeesDialog = ({ open, handleOpen }) => {
     studentFees_pay_mode: "",
     studentFees_transactiondetails: ""
   });
-
+ useEffect(() => {
+    if (studentData?.student?.student_admission_no) {
+      setFormData(prev => ({
+        ...prev,
+        studentFees_admission_no: studentData.student.student_admission_no
+      }));
+    }
+  }, [studentData]);
   const fetchData = async () => {
     try {
       setLoading(true);
