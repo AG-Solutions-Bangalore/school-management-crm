@@ -82,21 +82,41 @@ const StudentList = () => {
           );
         },
       },
-      {
-        accessorKey: "student_admission_no",
-        header: "Admission No",
-        size: 150,
-      },
+      // {
+      //   accessorKey: "student_admission_no",
+      //   header: "Admission No",
+      //   size: 150,
+      // },
 
       {
-        accessorKey: "student_admission_date",
-        header: "Admission Date",
+        accessorKey: "combined",
+        header: "Admission No/Date",
         size: 150,
-        Cell: ({ row }) => {
-          const date = row.original.student_admission_date;
-          return date ? moment(date).format("DD-MMM-YYYY") : "";
-        },
+        accessorFn: (row) =>
+          `${row.student_admission_no} - ${row.student_admission_date}`,
+        Cell: ({ row }) => (
+          <div className="flex flex-col text-xs">
+            <span className="text-black font-semibold">
+              {row.original.student_admission_no}
+            </span>
+            <span className="text-black text-xs">
+              {moment(row.original.student_admission_date).format(
+                "DD-MMM-YYYY"
+              )}
+            </span>
+          </div>
+        ),
       },
+
+      // {
+      //   accessorKey: "student_admission_date",
+      //   header: "Admission Date",
+      //   size: 150,
+      //   Cell: ({ row }) => {
+      //     const date = row.original.student_admission_date;
+      //     return date ? moment(date).format("DD-MMM-YYYY") : "";
+      //   },
+      // },
       {
         accessorKey: "student_name",
         header: "Name",

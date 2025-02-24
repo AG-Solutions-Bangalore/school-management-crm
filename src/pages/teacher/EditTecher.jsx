@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
+import { BadgeMinus, CircleMinus, SquarePlus } from "lucide-react";
 const status = [
   {
     value: "Active",
@@ -54,6 +55,12 @@ const EditTeacher = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const addItem = () => {
+    setUsers([...users, useTemplate]);
+  };
+  const removeItem = (index) => {
+    setUsers(users.filter((_, i) => i !== index));
+  };
   const fetchTeacherDataByid = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -282,7 +289,7 @@ const EditTeacher = () => {
           id="addTeacher"
           className="w-full rounded-lg mx-auto p-4 space-y-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
             <div>
               <FormLabel required>Teacher Title</FormLabel>
               <input
@@ -502,7 +509,7 @@ const EditTeacher = () => {
                 required
                 className={inputClassSelect}
               >
-                <option value="">Select Subject</option>
+                <option value="">Select Status</option>
 
                 {status.map((option, index) => (
                   <option key={index} value={option.value}>
@@ -512,66 +519,188 @@ const EditTeacher = () => {
               </select>
             </div>
           </div>
-          {users.map((user, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-            >
-              <div>
-                <FormLabel required>Class</FormLabel>
-                <select
-                  name="teachersub_class"
-                  value={user.teachersub_class || ""}
-                  onChange={(e) => handleInputChange(index, e)}
-                  required
-                  className={inputClassSelect}
-                >
-                  <option value="">Select Class</option>
-                  {classList.map((option, index) => (
-                    <option key={index} value={option.classes}>
-                      {option.classes}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <FormLabel required>Subject</FormLabel>
-                <select
-                  name="teachersub_subject"
-                  value={user.teachersub_subject || ""}
-                  onChange={(e) => handleInputChange(index, e)}
-                  required
-                  className={inputClassSelect}
-                >
-                  <option value="">Select Subject</option>
-                  {subject.map((option, index) => (
-                    <option key={index} value={option.class_subject}>
-                      {option.class_subject}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <FormLabel required>Status</FormLabel>
-                <select
-                  name="teachersub_status"
-                  value={user.teachersub_status || ""}
-                  onChange={(e) => handleInputChange(index, e)}
-                  required
-                  className={inputClassSelect}
-                >
-                  <option value="">Select Subject</option>
 
-                  {status.map((option, index) => (
-                    <option key={index} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+          {/* <div className="space-y-4">
+            <button
+              onClick={addItem}
+              type="button"
+              className="px-1 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+            >
+              <SquarePlus />
+            </button>
+            {users.map((user, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 p-4 border rounded-lg shadow-sm bg-gray-50"
+              >
+                <div>
+                  <FormLabel required>Class</FormLabel>
+                  <select
+                    name="teachersub_class"
+                    value={user.teachersub_class || ""}
+                    onChange={(e) => handleInputChange(index, e)}
+                    required
+                    className={inputClassSelect}
+                  >
+                    <option value="">Select Class</option>
+                    {classList.map((option, idx) => (
+                      <option key={idx} value={option.classes}>
+                        {option.classes}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <FormLabel required>Subject</FormLabel>
+                  <select
+                    name="teachersub_subject"
+                    value={user.teachersub_subject || ""}
+                    onChange={(e) => handleInputChange(index, e)}
+                    required
+                    className={inputClassSelect}
+                  >
+                    <option value="">Select Subject</option>
+                    {subject.map((option, idx) => (
+                      <option key={idx} value={option.class_subject}>
+                        {option.class_subject}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <FormLabel required>Status</FormLabel>
+                  <select
+                    name="teachersub_status"
+                    value={user.teachersub_status || ""}
+                    onChange={(e) => handleInputChange(index, e)}
+                    required
+                    className={inputClassSelect}
+                  >
+                    <option value="">Select Status</option>
+                    {status.map((option, idx) => (
+                      <option key={idx} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center space-x-2 mt-5 justify-center">
+                  {!user.id && (
+                    <button
+                      onClick={() => removeItem(index)}
+                      type="button"
+                      className="px-1 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                    >
+                      <CircleMinus />
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-          <div className="flex gap-4 justify-start">
+            ))}
+          </div> */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Class
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Subject
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    Status
+                  </th>
+
+                  <th className="border border-gray-300 px-4 py-2 text-center">
+                    <div className="flex flex-row items-center justify-center space-x-4">
+                      <span>Actions</span>
+                      <button
+                        onClick={addItem}
+                        type="button"
+                        className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                      >
+                        <SquarePlus />
+                      </button>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user, index) => (
+                  <tr key={index} className="bg-gray-50">
+                    <td className="border border-gray-300 px-4 py-2">
+                      <select
+                        name="teachersub_class"
+                        value={user.teachersub_class || ""}
+                        onChange={(e) => handleInputChange(index, e)}
+                        required
+                        className={inputClassSelect}
+                      >
+                        <option value="">Select Class</option>
+                        {classList.map((option, idx) => (
+                          <option key={idx} value={option.classes}>
+                            {option.classes}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    <td className="border border-gray-300 px-4 py-2">
+                      <select
+                        name="teachersub_subject"
+                        value={user.teachersub_subject || ""}
+                        onChange={(e) => handleInputChange(index, e)}
+                        required
+                        className={inputClassSelect}
+                      >
+                        <option value="">Select Subject</option>
+                        {subject.map((option, idx) => (
+                          <option key={idx} value={option.class_subject}>
+                            {option.class_subject}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    <td className="border border-gray-300 px-4 py-2">
+                      <select
+                        name="teachersub_status"
+                        value={user.teachersub_status || ""}
+                        onChange={(e) => handleInputChange(index, e)}
+                        required
+                        className={inputClassSelect}
+                      >
+                        <option value="">Select Status</option>
+                        {status.map((option, idx) => (
+                          <option key={idx} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+
+                    <td className="border border-gray-300 px-4 py-2 text-center">
+                      {!user.id && (
+                        <button
+                          onClick={() => removeItem(index)}
+                          type="button"
+                          className="px-1 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                        >
+                          <CircleMinus />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="flex gap-4 justify-center">
             <button
               type="submit"
               className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
