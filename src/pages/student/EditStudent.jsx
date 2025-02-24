@@ -478,7 +478,7 @@ const EditStudent = () => {
               />
             </div>
             <div>
-              <FormLabel >Student Primary</FormLabel>
+              <FormLabel>Student Primary</FormLabel>
               <input
                 type="checkbox"
                 name="student_primary_no"
@@ -486,6 +486,13 @@ const EditStudent = () => {
                 onChange={(e) => onInputChange(e)}
                 required
               />
+              {student.student_primary_no && (
+                <span className="text-sm text-red-500">
+                  {student.student_primary_no === "Yes"
+                    ? "Mother Number is a Primary"
+                    : "Father Number is a Primary"}{" "}
+                </span>
+              )}
             </div>
 
             {/* <div>
@@ -652,7 +659,7 @@ const EditStudent = () => {
               </select>
             </div>
             <div>
-              <FormLabel >Student Photo</FormLabel>
+              <FormLabel>Student Photo</FormLabel>
               <input
                 type="file"
                 name="student_photo"
@@ -660,9 +667,14 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
+              {student.student_photo && (
+                <span className="text-sm text-red-500">
+                  {student.student_photo}
+                </span>
+              )}
             </div>
             <div>
-              <FormLabel >Student Adhar</FormLabel>
+              <FormLabel>Student Adhar</FormLabel>
               <input
                 type="file"
                 name="student_adhar_copy"
@@ -670,6 +682,11 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
+              {student.student_adhar_copy && (
+                <span className="text-sm text-red-500">
+                  {student.student_adhar_copy}
+                </span>
+              )}
             </div>
           </div>
 
