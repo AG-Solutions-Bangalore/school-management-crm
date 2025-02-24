@@ -597,17 +597,6 @@ const CreateStudent = () => {
                 required
               />
             </div>
-            <div>
-              <FormLabel required>Address</FormLabel>
-              <textarea
-                type="text"
-                name="student_address"
-                value={student.student_address}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-              />
-            </div>
 
             <div>
               <FormLabel required>Class</FormLabel>
@@ -648,9 +637,20 @@ const CreateStudent = () => {
                 required
               />
             </div>
+            <div className="col-span-3">
+              <FormLabel required>Address</FormLabel>
+              <textarea
+                type="text"
+                name="student_address"
+                value={student.student_address}
+                onChange={(e) => onInputChange(e)}
+                className={inputClass}
+                required
+              />
+            </div>
           </div>
 
-          <div className="flex gap-4 justify-start">
+          <div className="flex gap-4 justify-center">
             <button
               type="submit"
               className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"

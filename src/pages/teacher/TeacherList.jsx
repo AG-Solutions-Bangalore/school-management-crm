@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import moment from "moment/moment";
+import { toast } from "sonner";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,8 +50,11 @@ const TeacherList = () => {
         }
       );
 
-      if (response.status === 200) {
+      if (response.data.code === 200) {
+        toast.success(response.data.msg);
         fetchTeacherData();
+      } else {
+        toast.error(response.data.msg);
       }
     } catch (error) {
       console.error("Error updating student status", error);

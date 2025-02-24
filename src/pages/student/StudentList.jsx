@@ -9,6 +9,7 @@ import BASE_URL, {
   StudentNoImageUrl,
 } from "../../base/BaseUrl";
 import moment from "moment/moment";
+import { toast } from "sonner";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -46,16 +47,18 @@ const StudentList = () => {
 
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-student-status/${id}`,
-        {}, // Empty body
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-
-      if (response.status === 200) {
+      if (response.data.code === 200) {
+        toast.success(response.data.msg);
         fetchStudentData();
+      } else {
+        toast.error(response.data.msg);
       }
     } catch (error) {
       console.error("Error updating student status", error);

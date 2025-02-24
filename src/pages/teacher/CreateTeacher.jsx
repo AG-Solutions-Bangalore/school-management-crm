@@ -433,69 +433,6 @@ const CreateTeacher = () => {
             </div>
           </div>
 
-          {/* <div className="space-y-4">
-            {users.map((user, index) => (
-              <div
-                key={index}
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg shadow-sm bg-gray-50"
-              >
-                <div>
-                  <FormLabel required>Class</FormLabel>
-                  <select
-                    name="teachersub_class"
-                    value={user.teachersub_class}
-                    onChange={(e) => handleInputChange(index, e)}
-                    required
-                    className={inputClassSelect}
-                  >
-                    <option value="">Select Class</option>
-                    {classList.map((option, idx) => (
-                      <option key={idx} value={option.classes}>
-                        {option.classes}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <FormLabel required>Subject</FormLabel>
-                  <select
-                    name="teachersub_subject"
-                    value={user.teachersub_subject}
-                    onChange={(e) => handleInputChange(index, e)}
-                    required
-                    className={inputClassSelect}
-                  >
-                    <option value="">Select Subject</option>
-                    {subject.map((option, idx) => (
-                      <option key={idx} value={option.class_subject}>
-                        {option.class_subject}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex items-center space-x-2 mt-5 justify-center">
-                  <button
-                    onClick={addItem}
-                    type="button"
-                    className="px-1 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                  >
-                    <SquarePlus />
-                  </button>
-                  {users.length > 1 && (
-                    <button
-                      onClick={() => removeItem(index)}
-                      type="button"
-                      className="px-1 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                    >
-                      <CircleMinus />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div> */}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
@@ -559,15 +496,22 @@ const CreateTeacher = () => {
                     </td>
 
                     <td className="border border-gray-300 px-4 py-2 text-center">
-                      {!user.id && (
-                        <button
-                          onClick={() => removeItem(index)}
-                          type="button"
-                          className="px-1 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                        >
-                          <CircleMinus />
-                        </button>
-                      )}
+                      <>
+                        {!user.id && (
+                          <button
+                            onClick={() => removeItem(index)}
+                            type="button"
+                            className={`px-1 py-1 rounded-md transition ${
+                              users.length > 1
+                                ? "bg-red-500 text-white hover:bg-red-600"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            }`}
+                            disabled={users.length <= 1}
+                          >
+                            <CircleMinus />
+                          </button>
+                        )}
+                      </>
                     </td>
                   </tr>
                 ))}

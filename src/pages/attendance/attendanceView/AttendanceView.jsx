@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../../layout/Layout";
 import axios from "axios";
 import { toast } from "sonner";
@@ -6,11 +6,13 @@ import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
+import { useReactToPrint } from "react-to-print";
 
 const AttendanceView = () => {
   const navigate = useNavigate();
   const Fromdate = moment().startOf("month").format("YYYY-MM-DD");
   const Todate = moment().format("YYYY-MM-DD");
+  const componentRef = useRef();
 
   const [attendance, setAttendance] = useState({
     from_date: Fromdate,
@@ -96,7 +98,33 @@ const AttendanceView = () => {
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
   const inputClass =
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
-
+  const handlPrintPdf = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "Addendance",
+    pageStyle: `
+                    @page {
+                    size: A4 landscape;
+                    margin: 5mm;
+                    
+                  }
+                  @media print {
+                    body {
+                      border: 0px solid #000;
+                          font-size: 10px; 
+                      margin: 0mm;
+                      padding: 0mm;
+                      min-height: 100vh;
+                    }
+                       table {
+                       font-size: 11px;
+                     }
+                    .print-hide {
+                      display: none;
+                    }
+                   
+                  }
+                  `,
+  });
   return (
     <Layout>
       <div className="bg-[#FFFFFF] p-2 rounded-lg">
@@ -170,55 +198,97 @@ const AttendanceView = () => {
         </form>
         {attendanceData && (
           <div className="mt-6">
-            <h3 className="text-lg font-bold">Attendance List</h3>
-            {Object.entries(
-              attendanceData.weekdays.reduce((acc, item) => {
-                const month = moment(item.date).format("MMMM YYYY");
-                acc[month] = acc[month] || [];
-                acc[month].push(item);
-                return acc;
-              }, {})
-            ).map(([month, dates]) => (
-              <div key={month} className="mt-4">
-                <h4 className="text-md font-semibold">{month}</h4>
-                <table className="w-full border-collapse border border-gray-300 mt-2">
-                  <thead>
-                    <tr>
-                      <th className="border border-gray-300 p-2">Student</th>
-                      {dates.map((date) => (
-                        <th
-                          key={date.date}
-                          className="border border-gray-300 p-2"
-                        >
-                          {moment(date.date).format("DD")}
+            <div className=" flex justify-between">
+              <h3 className="text-lg font-bold">Attendance List</h3>
+              <button
+                onClick={handlPrintPdf}
+                className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                type="button"
+              >
+                Print
+              </button>
+            </div>
+            <div ref={componentRef}>
+              <h3 className="text-lg font-bold print:block hidden text-center">
+                Attendance List
+              </h3>
+              {Object.entries(
+                attendanceData.weekdays.reduce((acc, item) => {
+                  const month = moment(item.date).format("MMMM YYYY");
+                  acc[month] = acc[month] || [];
+                  acc[month].push(item);
+                  return acc;
+                }, {})
+              ).map(([month, dates]) => (
+                <div key={month} className="mt-4">
+                  <h4 className="text-md font-semibold">{month}</h4>
+                  <table className="w-full border-collapse border border-gray-300 mt-2">
+                    <thead>
+                      <tr>
+                        <th className="border border-gray-300 px-2 text-xs p-1">
+                          Student
                         </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attendanceData.student.map((student) => (
-                      <tr key={student.student_name}>
-                        <td className="border border-gray-300 p-2">
-                          {student.student_name}
-                        </td>
                         {dates.map((date) => (
-                          <td
+                          <th
                             key={date.date}
-                            className="border border-gray-300 p-2"
+                            className="border border-gray-300 text-xs p-1 "
                           >
-                            {date.holiday_for
-                              ? date.holiday_for
-                              : student.attendance_dates.includes(date.date)
-                              ? "Present"
-                              : "Absent"}
-                          </td>
+                            {moment(date.date).format("DD")}
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
+                    </thead>
+
+                    <tbody>
+                      {attendanceData.student.map((student, studentIndex) => (
+                        <tr key={student.student_name}>
+                          <td className="border border-gray-300  text-center text-xs p-1 ">
+                            {student.student_name}
+                          </td>
+
+                          {dates.map((date, dateIndex) => {
+                            if (studentIndex === 0 && date.holiday_for) {
+                              return (
+                                <td
+                                  key={date.date}
+                                  className="border border-gray-300 p-1   text-center align-middle font-bold bg-yellow-400 text-xs"
+                                  rowSpan={attendanceData.student.length}
+                                  style={{
+                                    writingMode: "vertical-rl",
+                                    textOrientation: "upright",
+                                  }}
+                                >
+                                  {date.holiday_for}
+                                </td>
+                              );
+                            }
+
+                            if (date.holiday_for) {
+                              return null;
+                            }
+
+                            return (
+                              <td
+                                key={date.date}
+                                className="border border-gray-300 p-1 text-center  font-bold text-xs"
+                              >
+                                {student.attendance_dates.includes(
+                                  date.date
+                                ) ? (
+                                  <span className="text-red-500">A</span>
+                                ) : (
+                                  <span className="text-green-500">P</span>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
