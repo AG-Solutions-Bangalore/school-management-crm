@@ -21,6 +21,9 @@ import EditStudent from "./pages/student/EditStudent";
 import FeesStructureList from "./pages/feesStructure/FeesStructureList";
 import StudentView from "./pages/student/studentView/StudentView";
 import AttendanceList from "./pages/attendance/attendanceList/AttendanceList";
+import CreateAttendance from "./pages/attendance/attendanceList/CreateAttendance";
+import EditAttendance from "./pages/attendance/attendanceList/EditAttendance";
+import AttendanceView from "./pages/attendance/attendanceView/AttendanceView";
 
 const App = () => {
   return (
@@ -58,6 +61,16 @@ const App = () => {
         <Route path="/feesStructure-list" element={<FeesStructureList />} />
         {/* //Attendance */}
         <Route path="/attendance-list" element={<AttendanceList />} />
+        <Route
+          path="/attendance-list/createAttendance"
+          element={<CreateAttendance />}
+        />
+        <Route
+          path="/attendance-list/editAttendance/:id"
+          element={<EditAttendance />}
+        />
+        {/* //attendanceview */}
+        <Route path="/attendance-view" element={<AttendanceView />} />
       </Routes>
     </>
   );

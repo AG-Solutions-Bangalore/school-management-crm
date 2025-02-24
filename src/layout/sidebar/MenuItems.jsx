@@ -156,7 +156,7 @@ const Menuitems = () => [
         id: uniqueId(),
         title: "View Attendance",
         icon: IconPin,
-        href: "/master/branch-list",
+        href: "/attendance-view",
       },
     ],
   },
