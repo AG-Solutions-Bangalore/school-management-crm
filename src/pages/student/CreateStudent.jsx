@@ -430,7 +430,11 @@ const CreateStudent = () => {
                 onChange={(e) => onInputChange(e)}
                 required
               />
-              <label>{student.student_primary_no =="Yes" ?"Mother is a primary Number":"Father is a Primary Number"}</label>
+              <label className="text-sm text-red-500">
+                {student.student_primary_no == "Yes"
+                  ? "Mother is a primary Number"
+                  : "Father is a Primary Number"}
+              </label>
             </div>
 
             <div>

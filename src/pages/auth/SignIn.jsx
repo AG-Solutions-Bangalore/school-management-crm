@@ -2,7 +2,7 @@ import { Typography } from "@material-tailwind/react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
 import { toast } from "sonner";
 import { FormLabel } from "@mui/material";
 import logo from "../../assets/Companylogo/dfc.png";
@@ -11,6 +11,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -33,10 +34,14 @@ const SignIn = () => {
 
         localStorage.setItem("id", res.data.UserInfo.user.id);
         localStorage.setItem("name", res.data.UserInfo.user.name);
-        localStorage.setItem("user_position", res.data.UserInfo.user.user_position);
         localStorage.setItem(
-          "user_type",
-          res.data.UserInfo.user.user_type
+          "user_position",
+          res.data.UserInfo.user.user_position
+        );
+        localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
+        localStorage.setItem(
+          "school_detils",
+          res.data.school_detils.school_default_year
         );
 
         if (token) {
@@ -65,19 +70,25 @@ const SignIn = () => {
   );
   return (
     <>
-    
-
       <div className="flex flex-col lg:flex-row h-screen">
         {/* Left Side - Image */}
 
         <div className="hidden  lg:block lg:w-[50%] xl:block xl:w-[70%] h-full">
-          <img src={logo1} alt="img 1" className="h-full w-full object-cover" />
+          <img
+            src="https://img.freepik.com/free-vector/large-school-building-scene_1308-32058.jpg"
+            alt="img 1"
+            className="h-full w-full object-cover"
+          />
         </div>
         {/* Right Side - Form */}
         <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 h-full lg:w-1/2">
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
-              <img src={logo} alt="Company Logo" className="w-35 h-35" />
+              <img
+                src={`${LoginImageUrl}/ppvn.png`}
+                alt="Company Logo"
+                className="w-35 h-35"
+              />
             </div>
 
             <Typography
