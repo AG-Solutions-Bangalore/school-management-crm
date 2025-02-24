@@ -1,170 +1,170 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../layout/Layout";
-import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import moment from "moment/moment";
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import {  Loader2, School, Calculator, Book } from 'lucide-react';
+import BASE_URL from '../../base/BaseUrl';
+import Layout from '../../layout/Layout';
+import { ContextPanel } from '../../context/ContextPanel';
 
 const FeesStructureList = () => {
-  const [feesStructureData, setFeeStructureData] = useState(null);
+  const [feesStructureData, setFeesStructureData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('basic');
+  const {selectedYear} = useContext(ContextPanel)
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    fetchFeesStructureData();
+  }, []);
 
   const fetchFeesStructureData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-fee-structure-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setFeeStructureData(response.data?.feeStructure);
+      const response = await axios.get(`${BASE_URL}/api/panel-fetch-fee-structure-list`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setFeesStructureData(response.data?.feeStructure || []);
     } catch (error) {
-      console.error("Error fetching feeStructure List data", error);
+      console.error("Error fetching fee structure data:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchFeesStructureData();
-  }, []);
-  
-
-  const columns = useMemo(
-    () => [
-    
-
-      {
-        accessorKey: "className",
-        header: "Class Name",
-        size: 150,
-      },
-      {
-        accessorKey: "tuitionFee",
-        header: "Tution Fee",
-        size: 150,
-      },
-      {
-        accessorKey: "applnfee",
-        header: "Appli. Fee",
-        size: 150,
-      },
-      {
-        accessorKey: "admnfee",
-        header: "Admin Fee",
-        size: 150,
-      },
-      {
-        accessorKey: "library",
-        header: "Library",
-        size: 150,
-      },
-      {
-        accessorKey: "readingRoom",
-        header: "Reading Room",
-        size: 150,
-      },
-      {
-        accessorKey: "printingStationary",
-        header: "Printing Stationary",
-        size: 150,
-      },
-      {
-        accessorKey: "testExamination",
-        header: "Test Exam.",
-        size: 150,
-      },
-      {
-        accessorKey: "SWFTWF",
-        header: "SWFTWF",
-        size: 150,
-      },
-      {
-        accessorKey: "RR",
-        header: "RR",
-        size: 150,
-      },
-      {
-        accessorKey: "cilturalActivities",
-        header: "C.A.",
-        size: 150,
-      },
-      {
-        accessorKey: "medical",
-        header: "Medical",
-        size: 150,
-      },
-      {
-        accessorKey: "lab",
-        header: "Lab",
-        size: 150,
-      },
-      {
-        accessorKey: "cdf",
-        header: "CDF",
-        size: 150,
-      },
-      {
-        accessorKey: "buildingFund",
-        header: "Building Fund",
-        size: 150,
-      },
-      {
-        accessorKey: "swf",
-        header: "Swf",
-        size: 150,
-      },
-      {
-        accessorKey: "grandTotal",
-        header: "Grand Total",
-        size: 150,
-      },
-
-  
-    ],
-    []
-  );
-
-  const table = useMantineReactTable({
-    columns,
-    data: feesStructureData || [],
-    enableFullScreenToggle: false,
-    enableDensityToggle: false,
-    enableColumnActions: false,
-    enableHiding: false,
-    enableStickyHeader: true,
-    enableStickyFooter: true,
-    mantineTableContainerProps: { sx: { maxHeight: "400px" } },
-
-    initialState: { columnVisibility: { address: false } },
-  });
   return (
     <Layout>
-        <div className=" ">
-            <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-              {/* Header Section */}
-              <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
-                <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-                  Fees Structure List
-                </h1>
-               
-              </div>
-            </div>
+      <div className="min-h-screen bg-gray-50 ">
+      <div className="mx-auto w-full">
     
-            <div className=" shadow-md max-w-7xl mx-auto">
-              <MantineReactTable table={table} />
+        <div className="mb-4 rounded-xl bg-white p-2 shadow-lg">
+          <div className="flex items-center gap-3">
+            <School className="h-6 w-6 text-blue-600" />
+            <div>
+              <h1 className="text-xl font-bold text-gray-800">
+                School Fees Structure
+              </h1>
+              <p className="text-sm text-gray-500">
+                Academic Year {selectedYear}
+              </p>
             </div>
-          
           </div>
+        </div>
+
+      
+        <div className="mb-6 flex space-x-4 ">
+          <button
+            onClick={() => setActiveTab('basic')}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === 'basic'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <Calculator className="h-4 w-4" />
+            Basic Fees
+          </button>
+          <button
+            onClick={() => setActiveTab('additional')}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              activeTab === 'additional'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white text-gray-600 hover:bg-gray-50'
+            }`}
+          >
+            <Book className="h-4 w-4" />
+            Additional Fees
+          </button>
+        </div>
+
+        {/* Table Sections */}
+        <div className="space-y-6">
+          {loading ? (
+            <div className="flex h-64 items-center justify-center rounded-xl bg-white">
+              <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            </div>
+          ) : (
+            <>
+              {/* Basic Fees Table */}
+              <div className={activeTab === 'basic' ? 'block' : 'hidden'}>
+                <div className="rounded-xl bg-white shadow-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-max table-auto text-sm">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Class</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Tuition Fee</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Application Fee</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Admin Fee</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Library</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Reading Room</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Printing</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Test Exam</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {feesStructureData.map((row, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border-b p-4 font-medium text-gray-900">{row.className}</td>
+                            <td className="border-b p-4">{row.tuitionFee}</td>
+                            <td className="border-b p-4">{row.applnfee}</td>
+                            <td className="border-b p-4">{row.admnfee}</td>
+                            <td className="border-b p-4">{row.library}</td>
+                            <td className="border-b p-4">{row.readingRoom}</td>
+                            <td className="border-b p-4">{row.printingStationary}</td>
+                            <td className="border-b p-4">{row.testExamination}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Fees Table */}
+              <div className={activeTab === 'additional' ? 'block' : 'hidden'}>
+                <div className="rounded-xl bg-white shadow-lg overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-max table-auto text-sm">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Class</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">SWFTWF</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">RR</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">C.A.</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Medical</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Lab</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">CDF</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Building Fund</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">SWF</th>
+                          <th className="border-b p-4 text-left font-semibold text-gray-900">Grand Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {feesStructureData.map((row, index) => (
+                          <tr key={index} className="hover:bg-gray-50">
+                            <td className="border-b p-4 font-medium text-gray-900">{row.className}</td>
+                            <td className="border-b p-4">{row.SWFTWF}</td>
+                            <td className="border-b p-4">{row.RR}</td>
+                            <td className="border-b p-4">{row.cilturalActivities}</td>
+                            <td className="border-b p-4">{row.medical}</td>
+                            <td className="border-b p-4">{row.lab}</td>
+                            <td className="border-b p-4">{row.cdf}</td>
+                            <td className="border-b p-4">{row.buildingFund}</td>
+                            <td className="border-b p-4">{row.swf}</td>
+                            <td className="border-b p-4 font-semibold text-blue-600">{row.grandTotal}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
     </Layout>
   );
 };

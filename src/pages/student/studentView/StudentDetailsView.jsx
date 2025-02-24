@@ -43,7 +43,7 @@ const StudentDetailsView = ({ studentData }) => {
     { key: "year", label: "Academic Year", value: studentData.student.student_year },
     { key: "admissionDate", label: "Admission Date", value: formatDate(studentData.student.student_admission_date) },
     { key: "status", label: "Status", value: studentData.student.student_status },
-    { key: "statsNo", label: "Stats No", value: studentData.student.student_stats_no }
+    { key: "statsNo", label: "SATS No", value: studentData.student.student_stats_no }
   ];
 
   const fatherInfo = [
@@ -63,7 +63,7 @@ const StudentDetailsView = ({ studentData }) => {
   const otherInfo = [
     { key: "email", label: "Email", value: studentData.student.student_email },
     { key: "address", label: "Address", value: studentData.student.student_address },
-    { key: "category", label: "Category", value: studentData.student.student_category },
+    { key: "category", label: "Caste Category", value: studentData.student.student_category },
     { key: "caste", label: "Caste", value: studentData.student.student_caste }
   ];
 
