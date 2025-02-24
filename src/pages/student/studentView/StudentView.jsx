@@ -29,7 +29,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-view/2023-24/${id}`,
+        `${BASE_URL}/api/panel-fetch-student-view/2024-25/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -90,6 +90,12 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
         size: 150,
       },
       { accessorKey: "studentFees_class", header: "Class", size: 150 },
+      { accessorKey: "studentFees_amount", header: "Fees", size: 150 },
+
+      { accessorKey: "studentFees_fees_structure", header: "Fees Structure", size: 150 },
+      { accessorKey: "studentFees_paid", header: "Paid", size: 150 },
+      { accessorKey: "studentFees_pay_mode", header: "Pay Mode", size: 150 },
+
       {
               accessorKey: "id",
               header: "Actions",
@@ -166,6 +172,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             setIsClassDialogOpen(false);
             fetchStudentData();
           }}
+          studentData={studentData} 
         />
 
         <AddFeesDialog
@@ -174,6 +181,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             setIsFeesDialogOpen(false);
             fetchStudentData();
           }}
+          studentData={studentData} 
         />
         <EditClassDialog
   open={isEditClassDialogOpen}
