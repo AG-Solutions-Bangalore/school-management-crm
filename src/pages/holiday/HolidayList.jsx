@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Layout from "../../layout/Layout";
 import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
@@ -14,19 +14,21 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { IconTrash } from "@tabler/icons-react";
+import { ContextPanel } from "../../context/ContextPanel";
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
+  const {selectedYear}= useContext(ContextPanel)
 
   const fetchHolidayData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-holiday-list/2024-25`,
+        `${BASE_URL}/api/panel-fetch-holiday-list/${selectedYear}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

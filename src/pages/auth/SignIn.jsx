@@ -1,17 +1,15 @@
 import { Typography } from "@material-tailwind/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
 import { toast } from "sonner";
-import { FormLabel } from "@mui/material";
-import logo from "../../assets/Companylogo/dfc.png";
-import logo1 from "../../assets/Companylogo/logo1.jpg";
+import { ContextPanel } from "../../context/ContextPanel";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const {fetchYears}= useContext(ContextPanel)
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -31,21 +29,22 @@ const SignIn = () => {
 
       if (res.status === 200) {
         const token = res.data.UserInfo?.token;
-
-        localStorage.setItem("id", res.data.UserInfo.user.id);
-        localStorage.setItem("name", res.data.UserInfo.user.name);
-        localStorage.setItem(
-          "user_position",
-          res.data.UserInfo.user.user_position
-        );
-        localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
-        localStorage.setItem(
-          "school_detils",
-          res.data.school_detils.school_default_year
-        );
-
-        if (token) {
+        const default_year = res.data.school_detils.school_default_year;
+        if (token && default_year) {
           localStorage.setItem("token", token);
+          localStorage.setItem(
+            "default_year",
+            res.data.school_detils.school_default_year
+          );
+          localStorage.setItem("id", res.data.UserInfo.user.id);
+          localStorage.setItem("name", res.data.UserInfo.user.name);
+
+          localStorage.setItem(
+            "user_position",
+            res.data.UserInfo.user.user_position
+          );
+          localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
+          await fetchYears()
           navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");
