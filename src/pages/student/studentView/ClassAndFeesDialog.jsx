@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "sonner";
 import BASE_URL from "../../../base/BaseUrl";
+import { ContextPanel } from "../../../context/ContextPanel";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -17,24 +18,24 @@ const FormLabel = ({ children, required }) => (
 );
 
 const inputClassSelect =
-"w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 const inputClass =
-"w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
 
 // Add Class Dialog Form
-export const AddClassDialog = ({ open, handleOpen,studentData }) => {
+export const AddClassDialog = ({ open, handleOpen, studentData }) => {
   const [loading, setLoading] = useState(false);
   const [classes, setClasses] = useState([]);
   const [formData, setFormData] = useState({
     studentClass_admission_no: "",
     studentClass_class: "",
-    studentClass_van: "No"
+    studentClass_van: "No",
   });
-useEffect(() => {
+  useEffect(() => {
     if (studentData?.student?.student_admission_no) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        studentClass_admission_no: studentData.student.student_admission_no
+        studentClass_admission_no: studentData.student.student_admission_no,
       }));
     }
   }, [studentData]);
@@ -65,7 +66,7 @@ useEffect(() => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -87,6 +88,12 @@ useEffect(() => {
       if (response.data.code === 200) {
         toast.success(response.data.msg);
         handleOpen();
+        setFormData({
+          studentClass_admission_no: "",
+          studentClass_class: "",
+          studentClass_van: "No",
+        })
+        
       } else {
         toast.error(response.data.msg);
       }
@@ -101,10 +108,15 @@ useEffect(() => {
   return (
     <Dialog open={open} onClose={handleOpen} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Add Class</DialogTitle>
+        <DialogTitle>
+          Add Class -{" "}
+          <strong className=" text-blue-700">
+            {formData.studentClass_admission_no}
+          </strong>{" "}
+        </DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
-            <div>
+            {/* <div>
               <FormLabel required>Admission No</FormLabel>
               <input
                 type="text"
@@ -115,7 +127,7 @@ useEffect(() => {
                 required
                 readOnly
               />
-            </div>
+            </div> */}
 
             <div>
               <FormLabel required>Class</FormLabel>
@@ -155,7 +167,12 @@ useEffect(() => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
             {loading ? "Adding..." : "Add Class"}
           </Button>
         </DialogActions>
@@ -165,24 +182,37 @@ useEffect(() => {
 };
 
 // Add Fees Dialog Form
-export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
+export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
   const [loading, setLoading] = useState(false);
   const [years, setYears] = useState([]);
   const [classes, setClasses] = useState([]);
   const [paymentTypes, setPaymentTypes] = useState([]);
+  const { selectedYear } = useContext(ContextPanel);
   const [formData, setFormData] = useState({
     studentFees_year: "",
     studentFees_admission_no: "",
     studentFees_class: "",
     studentFees_paid: "",
     studentFees_pay_mode: "",
-    studentFees_transactiondetails: ""
+    studentFees_transactiondetails: "",
   });
- useEffect(() => {
+  const lastClass = studentData?.studentClass?.length
+    ? studentData.studentClass[studentData.studentClass.length - 1]
+        .studentClass_class
+    : null;
+
+    const lastYear = studentData?.studentClass?.length
+    ? studentData.studentClass[studentData.studentClass.length - 1]
+        .studentClass_year
+    : null;
+
+  useEffect(() => {
     if (studentData?.student?.student_admission_no) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        studentFees_admission_no: studentData.student.student_admission_no
+        studentFees_admission_no: studentData.student.student_admission_no,
+        studentFees_year: lastYear,
+        studentFees_class: lastClass,
       }));
     }
   }, [studentData]);
@@ -190,17 +220,18 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const [yearResponse, classesResponse, paymentTypeResponse] = await Promise.all([
-        axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-      ]);
+      const [yearResponse, classesResponse, paymentTypeResponse] =
+        await Promise.all([
+          axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
       setYears(yearResponse.data?.year || []);
       setClasses(classesResponse.data?.classes || []);
@@ -222,7 +253,7 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -233,7 +264,7 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
       const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
-        studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0, 
+        studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-student-class-fees`,
@@ -247,7 +278,16 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
 
       if (response.data.code === 200) {
         toast.success(response.data.msg);
+        
         handleOpen();
+        setFormData({
+          studentFees_year: "",
+          studentFees_admission_no: "",
+          studentFees_class: "",
+          studentFees_paid: "",
+          studentFees_pay_mode: "",
+          studentFees_transactiondetails: "",
+        })
       } else {
         toast.error(response.data.msg);
       }
@@ -262,11 +302,14 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
   return (
     <Dialog open={open} onClose={handleOpen} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Add Fees</DialogTitle>
-        <DialogContent dividers>
-          <div className="space-y-4 p-2">
-            <div>
-              <FormLabel required>Year</FormLabel>
+        <DialogTitle className="flex flex-row items-center justify-between">
+          <p className=" text-start  flex flex-row items-center gap-2">
+            <span>Adm. No.</span>
+            <span>{formData.studentFees_admission_no}</span>
+          </p>
+          <div className="flex flex-row items-center gap-2">
+          <div>
+             
               <select
                 name="studentFees_year"
                 value={formData.studentFees_year}
@@ -282,8 +325,18 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
                 ))}
               </select>
             </div>
+            <p className="bg-blue-200 text-black px-3 py-1 rounded-md text-sm font-semibold">
+  {formData.studentFees_class}
+</p>
 
-            <div>
+            </div>
+        </DialogTitle>
+        <DialogContent dividers>
+          <div className="text-center">Fee Receipt</div>
+          <div className="space-y-4 p-2">
+          
+
+            {/* <div>
               <FormLabel required>Admission No</FormLabel>
               <input
                 type="text"
@@ -293,9 +346,9 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
                 onChange={handleInputChange}
                 required
               />
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <FormLabel required>Class</FormLabel>
               <select
                 name="studentFees_class"
@@ -311,38 +364,38 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
                   </option>
                 ))}
               </select>
-            </div>
+            </div> */}
+            <div className=" grid  grid-cols-1 lg:grid-cols-2 gap-2">
+              <div>
+                <FormLabel required>Paid Amount</FormLabel>
+                <input
+                  type="number"
+                  name="studentFees_paid"
+                  className={inputClass}
+                  value={formData.studentFees_paid}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
 
-            <div>
-              <FormLabel required>Paid Amount</FormLabel>
-              <input
-                type="number"
-                name="studentFees_paid"
-                className={inputClass}
-                value={formData.studentFees_paid}
-                onChange={handleInputChange}
-                required
-              />
+              <div>
+                <FormLabel required>Payment Mode</FormLabel>
+                <select
+                  name="studentFees_pay_mode"
+                  value={formData.studentFees_pay_mode}
+                  onChange={handleInputChange}
+                  required
+                  className={inputClassSelect}
+                >
+                  <option value="">Select Payment Mode</option>
+                  {paymentTypes.map((type) => (
+                    <option key={type.paymentType} value={type.paymentType}>
+                      {type.paymentType}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-
-            <div>
-              <FormLabel required>Payment Mode</FormLabel>
-              <select
-                name="studentFees_pay_mode"
-                value={formData.studentFees_pay_mode}
-                onChange={handleInputChange}
-                required
-                className={inputClassSelect}
-              >
-                <option value="">Select Payment Mode</option>
-                {paymentTypes.map((type) => (
-                  <option key={type.paymentType} value={type.paymentType}>
-                    {type.paymentType}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             <div>
               <FormLabel required>Transaction Details</FormLabel>
               <input
@@ -360,7 +413,12 @@ export const AddFeesDialog = ({ open, handleOpen,studentData }) => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-          <Button type="submit"variant="contained" color="primary" disabled={loading}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
             {loading ? "Adding..." : "Add Fees"}
           </Button>
         </DialogActions>

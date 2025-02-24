@@ -94,22 +94,22 @@ const SubjectList = () => {
             );
           },
         },
-        {
-          id: "id",
-          header: "Action",
-          size: 20,
-          enableHiding: false,
-          Cell: ({ row }) => {
-            const id = row.original.id;
-            return (
-              <div className="flex gap-2">
-                <div className="flex items-center space-x-2" title="Edit">
-                  <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-                </div>
-              </div>
-            );
-          },
-        },
+        // {
+        //   id: "id",
+        //   header: "Action",
+        //   size: 20,
+        //   enableHiding: false,
+        //   Cell: ({ row }) => {
+        //     const id = row.original.id;
+        //     return (
+        //       <div className="flex gap-2">
+        //         <div className="flex items-center space-x-2" title="Edit">
+        //           <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
+        //         </div>
+        //       </div>
+        //     );
+        //   },
+        // },
       ],
       []
     );

@@ -17,35 +17,33 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
-
+  
     const formData = new FormData();
     formData.append("username", email);
     formData.append("password", password);
-
+  
     try {
       const res = await axios.post(`${BASE_URL}/api/panel-login`, formData);
-
+  
       if (res.status === 200) {
         const token = res.data.UserInfo?.token;
         const default_year = res.data.school_detils.school_default_year;
+  
         if (token && default_year) {
           localStorage.setItem("token", token);
-          localStorage.setItem(
-            "default_year",
-            res.data.school_detils.school_default_year
-          );
+          localStorage.setItem("default_year", default_year);
           localStorage.setItem("id", res.data.UserInfo.user.id);
           localStorage.setItem("name", res.data.UserInfo.user.name);
-
-          localStorage.setItem(
-            "user_position",
-            res.data.UserInfo.user.user_position
-          );
+          localStorage.setItem("user_position", res.data.UserInfo.user.user_position);
           localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
-          await fetchYears()
-          navigate("/home");
+  
+          try {
+            await fetchYears(); // Ensure this completes before navigating
+            navigate("/home");
+          } catch (fetchError) {
+            toast.error("Failed to fetch years. Please try again.");
+          }
         } else {
           toast.error("Login Failed, Token not received.");
         }
@@ -55,9 +53,10 @@ const SignIn = () => {
     } catch (error) {
       toast.error("An error occurred during login.");
     }
-
+  
     setLoading(false);
   };
+  
 
   const inputClass =
     "w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-green-500";
