@@ -18,6 +18,8 @@ import EditTeacher from "./pages/teacher/EditTecher";
 import StudentList from "./pages/student/StudentList";
 import CreateStudent from "./pages/student/CreateStudent";
 import EditStudent from "./pages/student/EditStudent";
+import FeesStructureList from "./pages/feesStructure/FeesStructureList";
+import StudentView from "./pages/student/studentView/StudentView";
 
 const App = () => {
   return (
@@ -45,10 +47,17 @@ const App = () => {
         <Route path="/teacher-list/createTeacher" element={<CreateTeacher />} />
         <Route path="/teacher-list/editTeacher/:id" element={<EditTeacher />} />
 
-        {/* Teacher  */}
+        {/* Student  */}
         <Route path="/student-list" element={<StudentList />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
+        <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
+
+        {/* Fees Structure  */}
+        <Route path="/feesStructure-list" element={<FeesStructureList />} />
+
+
+
       </Routes>
     </>
   );
