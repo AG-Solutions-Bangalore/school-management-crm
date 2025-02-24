@@ -19,9 +19,9 @@ const StudentView = () => {
   const [isFeesDialogOpen, setIsFeesDialogOpen] = useState(false);
 
   const [isEditClassDialogOpen, setIsEditClassDialogOpen] = useState(false);
-const [isEditFeesDialogOpen, setIsEditFeesDialogOpen] = useState(false);
-const [selectedClassId, setSelectedClassId] = useState(null);
-const [selectedFeesId, setSelectedFeesId] = useState(null);
+  const [isEditFeesDialogOpen, setIsEditFeesDialogOpen] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState(null);
+  const [selectedFeesId, setSelectedFeesId] = useState(null);
   const navigate = useNavigate();
 
   const fetchStudentData = async () => {
@@ -50,7 +50,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
 
   const studentClassColumns = useMemo(
     () => [
-     
+      { accessorKey: "studentClass_year", header: "Year", size: 150 },
       { accessorKey: "studentClass_class", header: "Class", size: 150 },
       { accessorKey: "studentClass_van", header: "Van", size: 100 },
       {
@@ -59,48 +59,52 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
         size: 150,
       },
       { accessorKey: "studentClass_amount", header: "Amount", size: 150 },
-       {
-              accessorKey: "id",
-              header: "Actions",
-              size: 100,
-              Cell: ({ row }) => (
-                <IconEdit
-                  className="w-5 h-5 cursor-pointer text-blue-600"
-                  onClick={() => {
-                    setSelectedClassId(row.original.id);
-                    setIsEditClassDialogOpen(true);
-                  }}
-                />
-              ),
-            },
+      {
+        accessorKey: "id",
+        header: "Actions",
+        size: 100,
+        Cell: ({ row }) => (
+          <IconEdit
+            className="w-5 h-5 cursor-pointer text-blue-600"
+            onClick={() => {
+              setSelectedClassId(row.original.id);
+              setIsEditClassDialogOpen(true);
+            }}
+          />
+        ),
+      },
     ],
     []
   );
 
   const studentFeesColumns = useMemo(
     () => [
-    
+      { accessorKey: "studentFees_year", header: "Year", size: 150 },
       { accessorKey: "studentFees_class", header: "Class", size: 150 },
       { accessorKey: "studentFees_amount", header: "Fees", size: 150 },
 
-      { accessorKey: "studentFees_fees_structure", header: "Fees Structure", size: 150 },
+      {
+        accessorKey: "studentFees_fees_structure",
+        header: "Fees Structure",
+        size: 150,
+      },
       { accessorKey: "studentFees_paid", header: "Paid", size: 150 },
       { accessorKey: "studentFees_pay_mode", header: "Pay Mode", size: 150 },
 
       {
-              accessorKey: "id",
-              header: "Actions",
-              size: 100,
-              Cell: ({ row }) => (
-                <IconEdit
-                  className="w-5 h-5 cursor-pointer text-blue-600"
-                  onClick={() => {
-                    setSelectedFeesId(row.original.id);
-                    setIsEditFeesDialogOpen(true);
-                  }}
-                />
-              ),
-            },
+        accessorKey: "id",
+        header: "Actions",
+        size: 100,
+        Cell: ({ row }) => (
+          <IconEdit
+            className="w-5 h-5 cursor-pointer text-blue-600"
+            onClick={() => {
+              setSelectedFeesId(row.original.id);
+              setIsEditFeesDialogOpen(true);
+            }}
+          />
+        ),
+      },
     ],
     []
   );
@@ -126,10 +130,11 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
   return (
     <Layout>
       <div className="max-w-screen p-4">
-        <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-          <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
+        <div className="bg-white p-4 mb-4 rounded-lg shadow-md flex flex-row items-center gap-2">
+          <h1 className="border-b-2 font-[400] border-dashed border-orange-800 w-fit text-center md:text-left">
             Student Details
-          </h1>
+          </h1>-
+          <strong>{studentData?.student?.student_admission_no}</strong>
         </div>
         <StudentDetailsView studentData={studentData} />
         <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
@@ -137,7 +142,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             <h2 className="text-lg font-semibold">Student Class List</h2>
             <button
               onClick={() => setIsClassDialogOpen(true)}
-            className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+              className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
             >
               <IconPlus className="w-5 h-5" /> Add Class
             </button>
@@ -150,9 +155,9 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             <h2 className="text-lg font-semibold">Student Fees List</h2>
             <button
               onClick={() => setIsFeesDialogOpen(true)}
-          className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+              className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
             >
-              <IconPlus className="w-4 h-4" />  Add  Fee
+              <IconPlus className="w-4 h-4" /> Add Fee
             </button>
           </div>
           <MantineReactTable table={studentFeesTable} />
@@ -163,7 +168,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             setIsClassDialogOpen(false);
             fetchStudentData();
           }}
-          studentData={studentData} 
+          studentData={studentData}
         />
 
         <AddFeesDialog
@@ -172,27 +177,27 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
             setIsFeesDialogOpen(false);
             fetchStudentData();
           }}
-          studentData={studentData} 
+          studentData={studentData}
         />
         <EditClassDialog
-  open={isEditClassDialogOpen}
-  handleOpen={() => {
-    setIsEditClassDialogOpen(false);
-    setSelectedClassId(null);
-    fetchStudentData();
-  }}
-  classId={selectedClassId}
-/>
+          open={isEditClassDialogOpen}
+          handleOpen={() => {
+            setIsEditClassDialogOpen(false);
+            setSelectedClassId(null);
+            fetchStudentData();
+          }}
+          classId={selectedClassId}
+        />
 
-<EditFeesDialog
-  open={isEditFeesDialogOpen}
-  handleOpen={() => {
-    setIsEditFeesDialogOpen(false);
-    setSelectedFeesId(null);
-    fetchStudentData();
-  }}
-  feesId={selectedFeesId}
-/>
+        <EditFeesDialog
+          open={isEditFeesDialogOpen}
+          handleOpen={() => {
+            setIsEditFeesDialogOpen(false);
+            setSelectedFeesId(null);
+            fetchStudentData();
+          }}
+          feesId={selectedFeesId}
+        />
       </div>
     </Layout>
   );

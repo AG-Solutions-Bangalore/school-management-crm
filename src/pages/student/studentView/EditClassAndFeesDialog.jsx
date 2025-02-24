@@ -4,7 +4,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "sonner";
@@ -24,10 +24,8 @@ const inputClass =
 export const EditClassDialog = ({ open, handleOpen, classId }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-
     studentClass_van_amount: "",
     studentClass_van: "",
-   
   });
 
   useEffect(() => {
@@ -50,10 +48,9 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       );
       if (response.data) {
         setFormData({
-         
-          studentClass_van_amount: response?.data.studentClass.studentClass_van_amount || "",
+          studentClass_van_amount:
+            response?.data.studentClass.studentClass_van_amount || "",
           studentClass_van: response?.data.studentClass.studentClass_van || "",
-        
         });
       }
     } catch (error) {
@@ -66,9 +63,9 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -102,10 +99,10 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={() => !loading && handleOpen()} 
-      maxWidth="sm" 
+    <Dialog
+      open={open}
+      onClose={() => !loading && handleOpen()}
+      maxWidth="sm"
       fullWidth
     >
       <form onSubmit={handleSubmit}>
@@ -127,34 +124,31 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
                 <option value="No">No</option>
               </select>
             </div>
-
-            <div>
-              <FormLabel required>Van Amount</FormLabel>
-              <input
-                type="number"
-                name="studentClass_van_amount"
-                className={inputClass}
-                value={formData.studentClass_van_amount}
-                onChange={handleInputChange}
-                required
-                disabled={loading}
-                min="0"
-              />
-            </div>
+            {formData.studentClass_van == "Yes" && (
+              <div>
+                <FormLabel required>Van Amount</FormLabel>
+                <input
+                  type="number"
+                  name="studentClass_van_amount"
+                  className={inputClass}
+                  value={formData.studentClass_van_amount}
+                  onChange={handleInputChange}
+                  required
+                  disabled={loading}
+                  min="0"
+                />
+              </div>
+            )}
           </div>
         </DialogContent>
         <DialogActions>
-          <Button 
-            onClick={handleOpen} 
-            color="inherit" 
-            disabled={loading}
-          >
+          <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Class"}
@@ -171,10 +165,8 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   const [formData, setFormData] = useState({
     studentFees_paid: "",
     studentFees_pay_mode: "",
-    studentFees_transactiondetails: ""
+    studentFees_transactiondetails: "",
   });
-
-  
 
   const fetchFeesData = async () => {
     try {
@@ -190,9 +182,13 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
       );
       if (response.data) {
         setFormData({
-          studentFees_paid: response?.data.studentClassFees.studentFees_paid || "",
-          studentFees_pay_mode: response?.data.studentClassFees.studentFees_pay_mode || "",
-          studentFees_transactiondetails: response?.data.studentClassFees.studentFees_transactiondetails || ""
+          studentFees_paid:
+            response?.data.studentClassFees.studentFees_paid || "",
+          studentFees_pay_mode:
+            response?.data.studentClassFees.studentFees_pay_mode || "",
+          studentFees_transactiondetails:
+            response?.data.studentClassFees.studentFees_transactiondetails ||
+            "",
         });
       }
     } catch (error) {
@@ -204,10 +200,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   };
   useEffect(() => {
     if (open && feesId) {
-      Promise.all([
-        fetchFeesData(),
-        fetchPaymentTypes()
-      ]).catch(error => {
+      Promise.all([fetchFeesData(), fetchPaymentTypes()]).catch((error) => {
         console.error("Error initializing edit fees dialog", error);
       });
     }
@@ -215,9 +208,12 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   const fetchPaymentTypes = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-paymentType`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setPaymentTypes(response.data?.paymentType || []);
     } catch (error) {
       console.error("Error fetching payment types", error);
@@ -227,9 +223,9 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -242,7 +238,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
-      
+
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-student-class-fees/${feesId}`,
         formattedData,
@@ -268,14 +264,14 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={() => !loading && handleOpen()} 
-      maxWidth="sm" 
+    <Dialog
+      open={open}
+      onClose={() => !loading && handleOpen()}
+      maxWidth="sm"
       fullWidth
     >
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Edit Fees Details</DialogTitle>
+        <DialogTitle>Edit Fees Receipt</DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
             <div>
@@ -326,17 +322,13 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button 
-            onClick={handleOpen} 
-            color="inherit" 
-            disabled={loading}
-          >
+          <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Fees"}

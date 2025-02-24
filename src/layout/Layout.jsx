@@ -72,7 +72,7 @@ const Layout = ({ children }) => {
           {/* End Page */}
           {/* ------------------------------------------- */}
         </Container>
-        <div className="px-4 pt-4 md:px-7 md:pt-7  lg:px-7 lg:pt-7 ">
+        <div className="px-4  pt-4 md:px-5 md:pt-5  lg:px-5 lg:pt-5 ">
           {" "}
           <Footer />
         </div>

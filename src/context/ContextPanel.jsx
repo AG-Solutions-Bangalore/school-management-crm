@@ -10,6 +10,8 @@ const AppProvider = ({ children }) => {
   const [isError, setIsError] = useState(false);
   const token = localStorage.getItem("token");
   const selectedYear = localStorage.getItem("default_year");
+
+
   const fetchYears = async () => {
     setIsLoading(true);
     setIsError(false);
@@ -29,6 +31,11 @@ const AppProvider = ({ children }) => {
     }
   };
 
+  useEffect(()=>{
+    if(token){
+      fetchYears()
+    }
+  },[])
   return (
     <ContextPanel.Provider value={{ userTypeId, fetchYears ,selectedYear}}>
       {children}
