@@ -174,16 +174,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
     studentFees_transactiondetails: ""
   });
 
-  useEffect(() => {
-    if (open && feesId) {
-      Promise.all([
-        fetchFeesData(),
-        fetchPaymentTypes()
-      ]).catch(error => {
-        console.error("Error initializing edit fees dialog", error);
-      });
-    }
-  }, [open, feesId]);
+  
 
   const fetchFeesData = async () => {
     try {
@@ -199,9 +190,9 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
       );
       if (response.data) {
         setFormData({
-          studentFees_paid: response.data.studentClassFees.studentFees_paid || "",
-          studentFees_pay_mode: response.data.studentClassFees.studentFees_pay_mode || "",
-          studentFees_transactiondetails: response.studentClassFees.data.studentFees_transactiondetails || ""
+          studentFees_paid: response?.data.studentClassFees.studentFees_paid || "",
+          studentFees_pay_mode: response?.data.studentClassFees.studentFees_pay_mode || "",
+          studentFees_transactiondetails: response?.data.studentClassFees.studentFees_transactiondetails || ""
         });
       }
     } catch (error) {
@@ -211,7 +202,16 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    if (open && feesId) {
+      Promise.all([
+        fetchFeesData(),
+        fetchPaymentTypes()
+      ]).catch(error => {
+        console.error("Error initializing edit fees dialog", error);
+      });
+    }
+  }, [open, feesId]);
   const fetchPaymentTypes = async () => {
     try {
       const token = localStorage.getItem("token");

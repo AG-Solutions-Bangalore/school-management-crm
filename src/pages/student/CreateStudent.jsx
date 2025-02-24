@@ -135,8 +135,13 @@ const CreateStudent = () => {
   const onInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     let newValue = value.trim();
+
     if (type === "checkbox") {
-      newValue = checked ? "Yes" : "No";
+      if (name === "student_primary_no") {
+        newValue = checked ? value : "";
+      } else {
+        newValue = checked ? "Yes" : "No";
+      }
     }
 
     console.log(value);
@@ -298,7 +303,7 @@ const CreateStudent = () => {
           id="addTeacher"
           className="w-full rounded-lg mx-auto p-4 space-y-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
             <div>
               <FormLabel required>Year</FormLabel>
               <select
@@ -388,7 +393,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Stats No</FormLabel>
+              <FormLabel required>SATS No</FormLabel>
               <input
                 type="text"
                 name="student_stats_no"
@@ -411,7 +416,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Adhar Number</FormLabel>
+              <FormLabel required>Aadhar Number</FormLabel>
               <input
                 type="text"
                 name="student_adhar_no"
@@ -421,20 +426,41 @@ const CreateStudent = () => {
                 required
               />
             </div>
+
             <div>
               <FormLabel required>Student Primary</FormLabel>
-              <input
-                type="checkbox"
-                name="student_primary_no"
-                value={student.student_primary_no}
-                onChange={(e) => onInputChange(e)}
-                required
-              />
-              <label className="text-sm text-red-500">
-                {student.student_primary_no == "Yes"
-                  ? "Mother is a primary Number"
-                  : "Father is a Primary Number"}
-              </label>
+
+              <div className="flex space-x-4">
+                <div>
+                  <input
+                    type="checkbox"
+                    name="student_primary_no"
+                    value="Yes"
+                    checked={student.student_primary_no === "Yes"}
+                    onChange={(e) => onInputChange(e, "Yes")}
+                    required={student.student_primary_no === ""}
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="checkbox"
+                    name="student_primary_no"
+                    value="No"
+                    checked={student.student_primary_no === "No"}
+                    onChange={(e) => onInputChange(e, "No")}
+                    required={student.student_primary_no === ""}
+                  />
+                </div>
+              </div>
+
+              <span className="text-sm text-red-500">
+                {student.student_primary_no === "Yes"
+                  ? "Father is the Primary Number"
+                  : student.student_primary_no === "No"
+                  ? "Mother is the Primary Number"
+                  : ""}
+              </span>
             </div>
 
             <div>
@@ -472,7 +498,7 @@ const CreateStudent = () => {
             </div>
 
             <div>
-              <FormLabel required>Father Pan</FormLabel>
+              <FormLabel required>Father PAN</FormLabel>
               <input
                 type="text"
                 name="student_father_pan_no"
@@ -483,7 +509,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Father Adhar No</FormLabel>
+              <FormLabel required>Father Aadhar No</FormLabel>
               <input
                 type="text"
                 name="student_father_adhar_no"
@@ -517,7 +543,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Mother Pan</FormLabel>
+              <FormLabel required>Mother PAN</FormLabel>
               <input
                 type="text"
                 name="student_mother_pan_no"
@@ -528,7 +554,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Mother Adhar No</FormLabel>
+              <FormLabel required>Mother Aadhar No</FormLabel>
               <input
                 type="text"
                 name="student_mother_adhar_no"

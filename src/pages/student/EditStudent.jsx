@@ -80,8 +80,9 @@ const EditStudent = () => {
           student_cc_no: response.data.student.student_cc_no || "",
           student_address: response.data.student.student_address || "",
           student_status: response.data.student.student_status || "",
-          student_photo: response.data.student.student_photo || null,
           student_adhar_copy: response.data.student.student_adhar_copy || null,
+          student_photo: response.data.student.student_photo || null, // Ensuring it's null if not provided
+          student_adhar_copy: response.data.student.student_adhar_copy || null, // Ensuring it's null if not provided
         });
       }
     } catch (error) {
@@ -96,7 +97,11 @@ const EditStudent = () => {
     const { name, value, type, checked } = e.target;
     let newValue = value.trim();
     if (type === "checkbox") {
-      newValue = checked ? "Yes" : "No";
+      if (name === "student_primary_no") {
+        newValue = checked ? value : "";
+      } else {
+        newValue = checked ? "Yes" : "No";
+      }
     }
 
     console.log(value);
@@ -172,17 +177,10 @@ const EditStudent = () => {
 
     const formData = new FormData();
 
-    // formData.append("student_year", student.student_year);
-    // formData.append("student_no", student.student_no);
-    // formData.append("student_name", student.student_name);
-    // formData.append("student_gender", student.student_gender);
-    // formData.append("student_admission_no", student.student_admission_no);
-    // formData.append("student_admission_date", student.student_admission_date);
     formData.append("student_stats_no", student.student_stats_no);
     formData.append("student_dob", student.student_dob);
     formData.append("student_adhar_no", student.student_adhar_no);
     formData.append("student_primary_no", student.student_primary_no);
-    // formData.append("student_email", student.student_email);
     formData.append("student_father_name", student.student_father_name);
     formData.append("student_father_mobile", student.student_father_mobile);
     formData.append("student_father_pan_no", student.student_father_pan_no);
@@ -258,9 +256,9 @@ const EditStudent = () => {
           id="addTeacher"
           className="w-full rounded-lg mx-auto p-4 space-y-6"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             <div>
-              <FormLabel required>Stats No</FormLabel>
+              <FormLabel required>SATS No</FormLabel>
               <input
                 type="text"
                 name="student_stats_no"
@@ -283,7 +281,7 @@ const EditStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Adhar Number</FormLabel>
+              <FormLabel required>Aadhar Number</FormLabel>
               <input
                 type="text"
                 name="student_adhar_no"
@@ -293,24 +291,42 @@ const EditStudent = () => {
                 required
               />
             </div>
-            <div>
-              <FormLabel>Student Primary</FormLabel>
-              <input
-                type="checkbox"
-                name="student_primary_no"
-                checked={student.student_primary_no === "Yes"}
-                onChange={(e) => onInputChange(e)}
-                required
-              />
-              {student.student_primary_no && (
-                <span className="text-sm text-red-500">
-                  {student.student_primary_no === "Yes"
-                    ? "Mother Number is a Primary"
-                    : "Father Number is a Primary"}{" "}
-                </span>
-              )}
-            </div>
 
+            <div>
+              <FormLabel required>Student Primary</FormLabel>
+
+              <div className="flex space-x-4">
+                <div>
+                  <input
+                    type="checkbox"
+                    name="student_primary_no"
+                    value="Yes"
+                    checked={student.student_primary_no === "Yes"}
+                    onChange={(e) => onInputChange(e, "Yes")}
+                    required={student.student_primary_no === ""}
+                  />
+                </div>
+
+                <div>
+                  <input
+                    type="checkbox"
+                    name="student_primary_no"
+                    value="No"
+                    checked={student.student_primary_no === "No"}
+                    onChange={(e) => onInputChange(e, "No")}
+                    required={student.student_primary_no === ""}
+                  />
+                </div>
+              </div>
+
+              <span className="text-sm text-red-500">
+                {student.student_primary_no === "Yes"
+                  ? "Father is the Primary Number"
+                  : student.student_primary_no === "No"
+                  ? "Mother is the Primary Number"
+                  : ""}
+              </span>
+            </div>
             <div>
               <FormLabel required>Father Name</FormLabel>
               <input
@@ -335,7 +351,7 @@ const EditStudent = () => {
             </div>
 
             <div>
-              <FormLabel required>Father Pan</FormLabel>
+              <FormLabel required>Father PAN</FormLabel>
               <input
                 type="text"
                 name="student_father_pan_no"
@@ -346,7 +362,7 @@ const EditStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Father Adhar No</FormLabel>
+              <FormLabel required>Father Aadhar No</FormLabel>
               <input
                 type="text"
                 name="student_father_adhar_no"
@@ -380,7 +396,7 @@ const EditStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Mother Pan</FormLabel>
+              <FormLabel required>Mother PAN</FormLabel>
               <input
                 type="text"
                 name="student_mother_pan_no"
@@ -391,7 +407,7 @@ const EditStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Mother Adhar No</FormLabel>
+              <FormLabel required>Mother Aadhar No</FormLabel>
               <input
                 type="text"
                 name="student_mother_adhar_no"
@@ -456,9 +472,8 @@ const EditStudent = () => {
                 className={inputClassSelect}
               >
                 <option value="">Select Status</option>
-
-                {status.map((option, index) => (
-                  <option key={index} value={option.value}>
+                {status.map((option, idx) => (
+                  <option key={idx} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -473,7 +488,6 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
-
               {typeof student.student_photo === "string" && (
                 <span className="text-sm text-red-500">
                   {student.student_photo}
@@ -489,7 +503,6 @@ const EditStudent = () => {
                 onChange={onFileChange}
                 className={inputClass}
               />
-
               {typeof student.student_adhar_copy === "string" && (
                 <span className="text-sm text-red-500">
                   {student.student_adhar_copy}
