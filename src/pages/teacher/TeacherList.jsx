@@ -5,6 +5,7 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+import moment from "moment/moment";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -72,10 +73,15 @@ const TeacherList = () => {
         header: "Mobile",
         size: 150,
       },
+
       {
         accessorKey: "teacher_doj",
         header: "DOJ",
         size: 150,
+        Cell: ({ row }) => {
+          const date = row.original.teacher_doj;
+          return date ? moment(date).format("DD-MMM-YYYY") : "";
+        },
       },
 
       {
