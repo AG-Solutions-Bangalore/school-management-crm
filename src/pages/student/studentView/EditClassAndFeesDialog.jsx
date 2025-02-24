@@ -145,14 +145,16 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
           <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
+        
+          <button
+             type="submit"
+             variant="contained"
+             color="primary"
+             disabled={loading}
+            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-            {loading ? "Updating..." : "Update Class"}
-          </Button>
+      {loading ? "Updating..." : "Update Class"}
+          </button>
         </DialogActions>
       </form>
     </Dialog>
@@ -166,6 +168,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
     studentFees_paid: "",
     studentFees_pay_mode: "",
     studentFees_transactiondetails: "",
+    studentFees_paid_date: "",
   });
 
   const fetchFeesData = async () => {
@@ -188,6 +191,9 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
             response?.data.studentClassFees.studentFees_pay_mode || "",
           studentFees_transactiondetails:
             response?.data.studentClassFees.studentFees_transactiondetails ||
+            "",
+            studentFees_paid_date:
+            response?.data.studentClassFees.studentFees_paid_date ||
             "",
         });
       }
@@ -274,7 +280,20 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
         <DialogTitle>Edit Fees Receipt</DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
-            <div>
+          <div>
+              <FormLabel required>Date</FormLabel>
+              <input
+                type="date"
+                name="studentFees_paid_date"
+                className={inputClass}
+                value={formData.studentFees_paid_date}
+                onChange={handleInputChange}
+                required
+                disabled={loading}
+              />
+            </div>
+           <div className=" grid grid-cols-1 lg:grid-cols-2 gap-2">
+           <div>
               <FormLabel required>Paid Amount</FormLabel>
               <input
                 type="number"
@@ -306,6 +325,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
                 ))}
               </select>
             </div>
+           </div>
 
             <div>
               <FormLabel required>Transaction Details</FormLabel>
@@ -319,20 +339,24 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
                 disabled={loading}
               />
             </div>
+           
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={loading}
+       
+          
+          <button
+             type="submit"
+             variant="contained"
+             color="primary"
+             disabled={loading}
+            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-            {loading ? "Updating..." : "Update Fees"}
-          </Button>
+        {loading ? "Updating..." : "Update Fees"}
+          </button>
         </DialogActions>
       </form>
     </Dialog>
