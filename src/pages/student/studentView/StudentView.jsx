@@ -50,12 +50,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
 
   const studentClassColumns = useMemo(
     () => [
-      { accessorKey: "studentClass_year", header: "Year", size: 150 },
-      {
-        accessorKey: "studentClass_admission_no",
-        header: "Admission No",
-        size: 150,
-      },
+     
       { accessorKey: "studentClass_class", header: "Class", size: 150 },
       { accessorKey: "studentClass_van", header: "Van", size: 100 },
       {
@@ -84,11 +79,7 @@ const [selectedFeesId, setSelectedFeesId] = useState(null);
 
   const studentFeesColumns = useMemo(
     () => [
-      {
-        accessorKey: "studentFees_admission_no",
-        header: "Admission No",
-        size: 150,
-      },
+    
       { accessorKey: "studentFees_class", header: "Class", size: 150 },
       { accessorKey: "studentFees_amount", header: "Fees", size: 150 },
 
