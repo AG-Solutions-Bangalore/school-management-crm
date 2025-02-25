@@ -16,7 +16,6 @@ import Logout from "../../components/Logout";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { toast } from "sonner";
-import ProfileDialog from "./ProfileDialog";
 import ChangePasswordDialog from "./ChangePasswordDialog";
 
 const Profile = () => {
@@ -137,7 +136,7 @@ const Profile = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         sx={{ "& .MuiMenu-paper": { width: "200px" } }}
       >
-        <MenuItem
+        {/* <MenuItem
           onClick={() => {
             console.log("Opening Profile Dialog...");
             setOpenDialog(true);
@@ -149,7 +148,7 @@ const Profile = () => {
             <IconUser width={20} />
           </ListItemIcon>
           <ListItemText>My Profile</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem
           // onClick={() => setOpenDialog1(true)}
           onClick={() => {
@@ -176,14 +175,7 @@ const Profile = () => {
       </Menu>
       <Logout open={openModal} handleOpen={handleOpenLogout} />
       {/* Profile Dialog */}
-      <ProfileDialog
-        open={openDialog}
-        handleClose={handleClose}
-        profile={profileData}
-        setProfile={setProfileData}
-        onUpdateProfile={onUpdateProfile}
-        isButtonDisabled={isButtonDisabled}
-      />
+
 
       <ChangePasswordDialog
         setForgotPassword={setForgotPassword}
