@@ -21,7 +21,7 @@ const FormLabel = ({ children, required }) => (
 const inputClassSelect =
   "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 const inputClass =
-  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 
 // Add Class Dialog Form
 export const AddClassDialog = ({ open, handleOpen, studentData }) => {
@@ -167,7 +167,7 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-          
+
           <button
             type="submit"
             variant="contained"
@@ -411,7 +411,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
               </div>
             </div>
             <div>
-              <FormLabel >Transaction Details</FormLabel>
+              <FormLabel>Transaction Details</FormLabel>
               <input
                 type="text"
                 name="studentFees_transactiondetails"
@@ -426,15 +426,15 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
           <Button onClick={handleOpen} color="inherit">
             Cancel
           </Button>
-       
+
           <button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-        {loading ? "Adding..." : "Add Fees"}
+            {loading ? "Adding..." : "Add Fees"}
           </button>
         </DialogActions>
       </form>

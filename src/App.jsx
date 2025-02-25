@@ -28,6 +28,9 @@ import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
 import EditTeacher from "./pages/teacher/teacherList/EditTecher";
 import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
 import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/CreateAttendance";
+import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
+import TeacherView from "./pages/teacher/teacherList/TeacherView";
+import DownloadReport from "./pages/download/DownloadReport";
 
 const App = () => {
   return (
@@ -49,12 +52,18 @@ const App = () => {
         <Route path="/subject-list" element={<SubjectList />} />
         {/* Teacher  */}
         <Route path="/teacher-list" element={<TeacherList />} />
+        <Route path="/teacher-list/viewTeacher/:id" element={<TeacherView />} />
         <Route path="/teacher-list/createTeacher" element={<CreateTeacher />} />
         <Route path="/teacher-list/editTeacher/:id" element={<EditTeacher />} />
         {/* //Teacher Attendance */}
         <Route
           path="/teacher-attendance-list"
           element={<TeacherAttendanceList />}
+        />
+        {/* //Teacher Attendance Viwq */}
+        <Route
+          path="/teacher-viewAttendance"
+          element={<TeacherViewAttendance />}
         />
 
         {/* Student  */}
@@ -68,10 +77,7 @@ const App = () => {
           path="/attendance-list/createAttendance"
           element={<CreateAttendance />}
         />
-        <Route
-          path="/attendance-list/editAttendance/:id"
-          element={<EditAttendance />}
-        />
+
         {/* //attendanceview */}
         <Route
           path="/attendance-list/viewAttendance"
@@ -85,6 +91,9 @@ const App = () => {
         <Route path="/website-list/enquiry" element={<EnquiryList />} />
         {/* //contactlist */}
         <Route path="/website-list/contact" element={<ContactList />} />
+
+        {/* //Download */}
+        <Route path="/download-report" element={<DownloadReport />} />
       </Routes>
     </>
   );

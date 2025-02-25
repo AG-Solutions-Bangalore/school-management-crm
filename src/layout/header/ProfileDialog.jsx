@@ -21,7 +21,7 @@ const ProfileDialog = ({
   };
 
   const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 
   // console.log("ProfileDialog open state:", open);
 

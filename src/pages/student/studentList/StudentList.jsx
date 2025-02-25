@@ -85,11 +85,7 @@ const StudentList = () => {
           );
         },
       },
-      // {
-      //   accessorKey: "student_admission_no",
-      //   header: "Admission No",
-      //   size: 150,
-      // },
+   
 
       {
         accessorKey: "combined",
@@ -111,15 +107,7 @@ const StudentList = () => {
         ),
       },
 
-      // {
-      //   accessorKey: "student_admission_date",
-      //   header: "Admission Date",
-      //   size: 150,
-      //   Cell: ({ row }) => {
-      //     const date = row.original.student_admission_date;
-      //     return date ? moment(date).format("DD-MMM-YYYY") : "";
-      //   },
-      // },
+
       {
         accessorKey: "student_name",
         header: "Name",

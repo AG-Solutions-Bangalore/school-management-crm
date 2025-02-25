@@ -57,12 +57,7 @@ const Menuitems = () => [
     icon: IconTool,
     href: "/subject-list",
   },
-  // {
-  //   id: uniqueId(),
-  //   title: "Teacher",
-  //   icon: IconTool,
-  //   href: "/teacher-list",
-  // },
+
   //techer
   {
     id: uniqueId(),
@@ -85,7 +80,7 @@ const Menuitems = () => [
         id: uniqueId(),
         title: "View Teacher",
         icon: IconPin,
-        href: "",
+        href: "/teacher-viewAttendance",
       },
     ],
   },
@@ -133,6 +128,12 @@ const Menuitems = () => [
         href: "/website-list/contact",
       },
     ],
+  },
+  {
+    id: uniqueId(),
+    title: "Download",
+    icon: IconDownload,
+    href: "/download-report",
   },
 ];
 
