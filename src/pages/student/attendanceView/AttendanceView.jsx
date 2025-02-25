@@ -22,6 +22,7 @@ const AttendanceView = () => {
 
   const [classList, setClassList] = useState([]);
   const [attendanceData, setAttendanceData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
     setAttendance({
@@ -48,7 +49,7 @@ const AttendanceView = () => {
     fetchClassData();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e,showToast = true) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
     if (!form || !form.checkValidity()) {
@@ -56,6 +57,7 @@ const AttendanceView = () => {
       return;
     }
 
+    setLoading(true);
     const data = {
       from_date: attendance?.from_date,
       to_date: attendance?.to_date,
@@ -77,13 +79,73 @@ const AttendanceView = () => {
 
       if (res.data.weekdays && res.data.student) {
         setAttendanceData(res.data);
-        toast.success("Attendance data fetched successfully!");
+        if (showToast) {
+          toast.success("Attendance data fetched successfully!");
+        }
       } else {
         toast.error("Invalid response from server");
       }
     } catch (error) {
       console.error("API Error:", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleAttendance = async (student, date) => {
+    // if the date is a holiday
+    const isHoliday = attendanceData.weekdays.find(
+      (day) => day.date === date.date && day.holiday_for
+    );
+    if (isHoliday) return;
+
+    const isAbsent = student.attendance_dates.includes(date.date);
+    
+    try {
+      setLoading(true);
+      // if the date is Absent
+      if (isAbsent) {
+      
+        const attendanceIndex = student.attendance_dates.indexOf(date.date);
+        const attendanceId = student.id[attendanceIndex];
+        
+        await axios({
+          url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceId}`,
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        
+        toast.success(`${student.student_name} marked present for ${moment(date.date).format("DD MMM YYYY")}`);
+      } else {
+     
+        const data = {
+          studentAttendance_date: date.date,
+          studentAttendance_class: attendance.from_class,
+          studentAttendance_admission_no: student.student_admission_no,
+        };
+        // else if the date is P
+        await axios({
+          url: `${BASE_URL}/api/panel-create-student-attendance`,
+          method: "POST",
+          data,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        
+        toast.success(`${student.student_name} marked absent for ${moment(date.date).format("DD MMM YYYY")}`);
+      }
+      
+      
+      handleSubmit(new Event('submit'), false); 
+    } catch (error) {
+      console.error("Error toggling attendance:", error);
+      toast.error("Failed to update attendance");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -100,7 +162,7 @@ const AttendanceView = () => {
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
   const handlPrintPdf = useReactToPrint({
     content: () => componentRef.current,
-    documentTitle: "Addendance",
+    documentTitle: "Attendance",
     pageStyle: `
                     @page {
                     size: A4 landscape;
@@ -120,6 +182,9 @@ const AttendanceView = () => {
                      }
                     .print-hide {
                       display: none;
+                    }
+                    .attendance-cell {
+                      pointer-events: none !important;
                     }
                    
                   }
@@ -190,24 +255,45 @@ const AttendanceView = () => {
           <div className="flex flex-wrap gap-4 justify-center">
             <button
               type="submit"
-              className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+              disabled={loading}
+              className={`text-center text-sm font-[400] cursor-pointer w-36 text-white ${
+                loading ? "bg-gray-400" : "bg-blue-600 hover:bg-green-700"
+              } p-2 rounded-lg shadow-md`}
             >
-              View
+              {loading ? "Loading..." : "View"}
             </button>
           </div>
         </form>
         {attendanceData && (
           <div className="mt-6">
-            <div className=" flex justify-between">
+            <div className="flex justify-between">
               <h3 className="text-lg font-bold">Attendance List</h3>
-              <button
-                onClick={handlPrintPdf}
-                className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-                type="button"
-              >
-                Print
-              </button>
+              <div className="flex gap-2">
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                  <span>Present</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                  <span>Absent</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full"></span>
+                  <span>Holiday</span>
+                </div>
+                <button
+                  onClick={handlPrintPdf}
+                
+                  className={`text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md print-hide`}
+                  type="button"
+                >
+                  Print
+                </button>
+              </div>
             </div>
+            {/* <div className="text-xs text-gray-600 mt-1 mb-3 print-hide">
+              Click on cells to toggle attendance status
+            </div> */}
             <div ref={componentRef}>
               <h3 className="text-lg font-bold print:block hidden text-center">
                 Attendance List
@@ -231,7 +317,7 @@ const AttendanceView = () => {
                         {dates.map((date) => (
                           <th
                             key={date.date}
-                            className="border border-gray-300 text-xs p-1 "
+                            className="border border-gray-300 text-xs p-1"
                           >
                             {moment(date.date).format("DD")}
                           </th>
@@ -242,8 +328,8 @@ const AttendanceView = () => {
                     <tbody>
                       {attendanceData.student.map((student, studentIndex) => (
                         <tr key={student.student_name}>
-                          <td className="border border-gray-300  text-center text-xs p-1 ">
-                            {student.student_name}
+                          <td className="border border-gray-300 text-center text-xs p-1">
+                            {student.student_name} 
                           </td>
 
                           {dates.map((date, dateIndex) => {
@@ -251,7 +337,7 @@ const AttendanceView = () => {
                               return (
                                 <td
                                   key={date.date}
-                                  className="border border-gray-300 p-1   text-center align-middle font-bold bg-yellow-400 text-xs"
+                                  className="border border-gray-300 p-1 text-center align-middle font-bold bg-yellow-400 text-xs"
                                   rowSpan={attendanceData.student.length}
                                   style={{
                                     writingMode: "vertical-rl",
@@ -267,14 +353,19 @@ const AttendanceView = () => {
                               return null;
                             }
 
+                            const isAbsent = student.attendance_dates.includes(
+                              date.date
+                            );
+
                             return (
                               <td
                                 key={date.date}
-                                className="border border-gray-300 p-1 text-center  font-bold text-xs"
+                                onClick={() => toggleAttendance(student, date)}
+                                className={`border border-gray-300 p-1 text-center font-bold text-xs cursor-pointer hover:bg-gray-100 attendance-cell ${
+                                  loading ? "opacity-50 pointer-events-none" : ""
+                                }`}
                               >
-                                {student.attendance_dates.includes(
-                                  date.date
-                                ) ? (
+                                {isAbsent ? (
                                   <span className="text-red-500">A</span>
                                 ) : (
                                   <span className="text-green-500">P</span>
