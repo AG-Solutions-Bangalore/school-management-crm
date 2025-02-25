@@ -80,7 +80,6 @@ const EditStudent = () => {
           student_cc_no: response.data.student.student_cc_no || "",
           student_address: response.data.student.student_address || "",
           student_status: response.data.student.student_status || "",
-          student_adhar_copy: response.data.student.student_adhar_copy || null,
           student_photo: response.data.student.student_photo || null, // Ensuring it's null if not provided
           student_adhar_copy: response.data.student.student_adhar_copy || null, // Ensuring it's null if not provided
         });

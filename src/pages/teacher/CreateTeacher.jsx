@@ -11,15 +11,6 @@ import { CircleMinus, SquarePlus } from "lucide-react";
 const CreateTeacher = () => {
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
-  const [classList, setClassList] = useState([]);
-  const [subject, setSubject] = useState([]);
-
-  const useTemplate = {
-    teachersub_class: "",
-    teachersub_subject: "",
-  };
-
-  const [users, setUsers] = useState([{ ...useTemplate }]);
 
   const [teacher, setTeacher] = useState({
     teacher_title: "",
@@ -59,45 +50,9 @@ const CreateTeacher = () => {
       console.error("Error fetching teacher data", error);
     }
   };
-  const fetchClassData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClassList(response.data.classes);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
-  };
-  const fetchSubjectData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-subject-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubject(response.data.subject);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
-  };
-  const addItem = () => {
-    setUsers([...users, useTemplate]);
-  };
-  const removeItem = (index) => {
-    setUsers(users.filter((_, i) => i !== index));
-  };
+
   useEffect(() => {
     fetchTeacherData();
-    fetchClassData();
-    fetchSubjectData();
   }, []);
 
   const onInputChange = (e) => {
@@ -167,7 +122,6 @@ const CreateTeacher = () => {
 
     const data = {
       ...teacher,
-      teacher_data: users,
     };
 
     setIsButtonDisabled(true);
@@ -433,7 +387,7 @@ const CreateTeacher = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-100">
@@ -517,7 +471,7 @@ const CreateTeacher = () => {
                 ))}
               </tbody>
             </table>
-          </div>
+          </div> */}
           <div className="flex gap-4 justify-start">
             <button
               type="submit"
