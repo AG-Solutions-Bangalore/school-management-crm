@@ -38,6 +38,8 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+
+
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-student-class-by-id/${classId}`,
         {
@@ -48,9 +50,9 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       );
       if (response.data) {
         setFormData({
-          studentClass_van_amount:
-            response?.data.studentClass.studentClass_van_amount || "",
+         
           studentClass_van: response?.data.studentClass.studentClass_van || "",
+          studentClass_van_amount: response?.data.studentClass.studentClass_van_amount || 0,
         });
       }
     } catch (error) {
@@ -74,9 +76,15 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
+
+      const updatedFormData ={
+        ...formData,
+        studentClass_van_amount: formData.studentClass_van === 'No' ? 0 : formData.studentClass_van_amount
+      }
+
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-student-class/${classId}`,
-        formData,
+        updatedFormData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,7 +114,7 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       fullWidth
     >
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Edit Class Details</DialogTitle>
+        <DialogTitle>Edit Van Details</DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
             <div>
@@ -153,7 +161,7 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
              disabled={loading}
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-      {loading ? "Updating..." : "Update Class"}
+      {loading ? "Updating..." : "Update Van"}
           </button>
         </DialogActions>
       </form>
