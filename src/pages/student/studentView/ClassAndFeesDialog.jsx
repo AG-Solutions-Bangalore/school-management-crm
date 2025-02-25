@@ -187,7 +187,6 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
 export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
   const [loading, setLoading] = useState(false);
   const [years, setYears] = useState([]);
-  const [classes, setClasses] = useState([]);
   const [paymentTypes, setPaymentTypes] = useState([]);
   const { selectedYear } = useContext(ContextPanel);
   const [formData, setFormData] = useState({
@@ -223,12 +222,9 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const [yearResponse, classesResponse, paymentTypeResponse] =
+      const [yearResponse, paymentTypeResponse] =
         await Promise.all([
           axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
           axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
@@ -237,7 +233,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
         ]);
 
       setYears(yearResponse.data?.year || []);
-      setClasses(classesResponse.data?.classes || []);
+      
       setPaymentTypes(paymentTypeResponse.data?.paymentType || []);
     } catch (error) {
       console.error("Error fetching data", error);

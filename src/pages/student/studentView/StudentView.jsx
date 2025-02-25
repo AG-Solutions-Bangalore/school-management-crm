@@ -18,6 +18,7 @@ import StudentDetailsView from "./StudentDetailsView";
 import { AddClassDialog, AddFeesDialog } from "./ClassAndFeesDialog";
 import { EditAttendenceDialog, EditClassDialog, EditFeesDialog } from "./EditClassAndFeesDialog";
 
+
 const StudentView = () => {
   const { id } = useParams();
   const [studentData, setStudentData] = useState(null);
@@ -35,7 +36,7 @@ const StudentView = () => {
    const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false);
     const [isAadharDialogOpen, setIsAadharDialogOpen] = useState(false);
 
-  const navigate = useNavigate();
+ 
 
   const fetchStudentData = async () => {
     try {
@@ -63,14 +64,9 @@ const StudentView = () => {
 
   const studentClassColumns = useMemo(
     () => [
-      // { accessorKey: "studentClass_year", header: "Year", size: 150 },
-      // { accessorKey: "studentClass_class", header: "Class", size: 150 },
+     
       { accessorKey: "studentClass_van", header: "Van", size: 100 },
-      // {
-      //   accessorKey: "studentClass_fees_structure",
-      //   header: "Fee Structure",
-      //   size: 150,
-      // },
+  
       {
         accessorKey: "studentClass_van_amount",
         header: "Van Amount",
@@ -385,6 +381,7 @@ const StudentView = () => {
             <MantineReactTable table={studentAttendenceTable} />
         
           </div>
+  
         <AddClassDialog
           open={isClassDialogOpen}
           handleOpen={() => {

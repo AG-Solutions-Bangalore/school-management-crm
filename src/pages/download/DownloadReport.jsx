@@ -114,12 +114,11 @@ const DownloadReport = () => {
           <div className="grid grid-cols-1  md:grid-cols-2  gap-6">
             {/* present Date  */}
             <div>
-              <FormLabel required>Year</FormLabel>
+              <FormLabel>Year</FormLabel>
               <select
                 name="student_year"
                 value={report.student_year || ""}
                 onChange={onInputChange}
-                required
                 className={inputClassSelect}
               >
                 <option value="">Select Year</option>
@@ -131,12 +130,11 @@ const DownloadReport = () => {
               </select>
             </div>
             <div>
-              <FormLabel required>Status</FormLabel>
+              <FormLabel>Status</FormLabel>
               <select
                 name="status"
                 value={report.status || ""}
                 onChange={onInputChange}
-                required
                 className={inputClassSelect}
               >
                 <option value="">Select Status</option>

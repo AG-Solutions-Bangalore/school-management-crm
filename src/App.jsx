@@ -31,6 +31,10 @@ import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/Creat
 import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
 import TeacherView from "./pages/teacher/teacherList/TeacherView";
 import DownloadReport from "./pages/download/DownloadReport";
+import PendingFees from "./pages/student/pendingFees/PendingFees";
+import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
+import Timetable from "./pages/timetable/Timetable";
+import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
 
 const App = () => {
   return (
@@ -68,6 +72,8 @@ const App = () => {
 
         {/* Student  */}
         <Route path="/student-list" element={<StudentList />} />
+        <Route path="/current-student-list" element={<CurrentStudentList />} />
+        <Route path="/pending-fees" element={<PendingFees />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
         <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
@@ -94,6 +100,9 @@ const App = () => {
 
         {/* //Download */}
         <Route path="/download-report" element={<DownloadReport />} />
+        {/* time table  */}
+        <Route path="/timetable" element={<Timetable />} />
+        <Route path="/teacher-timetable" element={<TeacherTimeline />} />
       </Routes>
     </>
   );

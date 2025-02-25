@@ -3,7 +3,7 @@ import Layout from "../../../layout/Layout";
 import axios from "axios";
 import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 const status = [
   {
@@ -19,7 +19,8 @@ const EditStudent = () => {
   const { id } = useParams();
 
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const sourceRoute = location.state?.from || '/student-list';
   const [student, setStudent] = useState({
     student_stats_no: "",
     student_dob: "",
@@ -213,7 +214,7 @@ const EditStudent = () => {
 
       if (response.data.code === 200) {
         toast.success(response.data.msg);
-        navigate("/student-list");
+        navigate('/student-list');
       } else {
         toast.error(response.data.msg);
       }
@@ -245,7 +246,7 @@ const EditStudent = () => {
               <span>Edit Student</span>
             </div>
             <IconArrowBack
-              onClick={() => navigate("/student-list")}
+              onClick={() => navigate(sourceRoute)}
               className="cursor-pointer hover:text-red-600"
             />
           </h2>
@@ -524,7 +525,7 @@ const EditStudent = () => {
             <button
               type="button"
               className="w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
-              onClick={() => navigate("/student-list")}
+              onClick={() => navigate(sourceRoute)}
             >
               Back
             </button>
