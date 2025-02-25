@@ -74,7 +74,7 @@ const TeacherAttendanceList = () => {
         );
 
         setAttendance({
-          studentAttendance_date:
+          teacherAttendance_date:
             response.data.teacherAttendance.teacherAttendance_date || "",
         });
       } catch (error) {
@@ -120,7 +120,7 @@ const TeacherAttendanceList = () => {
         setOpenDialog(false);
         fetchTeacherData();
         setAttendance({
-          studentAttendance_date: "",
+          teacherAttendance_date: "",
         });
       } else if (res.data.code === 400) {
         toast.error(res.data.msg);
@@ -144,7 +144,7 @@ const TeacherAttendanceList = () => {
         setOpenDeleteDialog(false);
         fetchTeacherData();
         setAttendance({
-          studentAttendance_date: "",
+          teacherAttendance_date: "",
         });
       } else if (res.data.code === 400) {
         toast.error(res.data.msg);
@@ -175,7 +175,7 @@ const TeacherAttendanceList = () => {
           return date ? moment(date).format("DD-MMM-YYYY") : "";
         },
       },
-      
+
       {
         id: "id",
         header: "Action",
@@ -281,12 +281,12 @@ const TeacherAttendanceList = () => {
               </IconButton>
             </div>
 
-            <form onSubmit={handleSubmit} id="addIndiv" className="space-y-6">
-              <FormLabel required>Attendance Date</FormLabel>
+            <form onSubmit={handleSubmit} id="addIndiv" className="space-y-2">
+              <FormLabel required>Date</FormLabel>
               <input
                 type="date"
-                name="studentAttendance_date"
-                value={attendace.studentAttendance_date}
+                name="teacherAttendance_date"
+                value={attendace.teacherAttendance_date}
                 onChange={onInputChange}
                 required
                 className={inputClass}
