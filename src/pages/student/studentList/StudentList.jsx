@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
 import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +7,7 @@ import axios from "axios";
 import BASE_URL, {
   StudentImageUrl,
   StudentNoImageUrl,
-} from "../../base/BaseUrl";
+} from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { toast } from "sonner";
 

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
 import axios from "axios";
 import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL from "../../../base/BaseUrl";
 const Gender = [
   {
     value: "Male",
@@ -282,7 +282,7 @@ const CreateStudent = () => {
   const inputClassSelect =
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
   const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
   return (
     <Layout>
       <div className="bg-white p-2 rounded-lg">
@@ -370,7 +370,7 @@ const CreateStudent = () => {
             </div>
 
             <div>
-              <FormLabel required>Student Admission</FormLabel>
+              <FormLabel required>Student Admission No</FormLabel>
               <input
                 type="text"
                 name="student_admission_no"
@@ -382,7 +382,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Admission</FormLabel>
+              <FormLabel required>Admission Date</FormLabel>
               <input
                 type="date"
                 name="student_admission_date"
@@ -506,6 +506,8 @@ const CreateStudent = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                placeholder="Enter PAN Num (e.g., AAAPA1234A)"
+
               />
             </div>
             <div>
@@ -565,7 +567,7 @@ const CreateStudent = () => {
               />
             </div>
             <div>
-              <FormLabel required>Catergory</FormLabel>
+              <FormLabel required> Caste Catergory</FormLabel>
               <input
                 type="text"
                 name="student_category"
