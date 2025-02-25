@@ -19,7 +19,7 @@ const FormLabel = ({ children, required }) => (
 const inputClassSelect =
   "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 const inputClass =
-  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 
 export const EditClassDialog = ({ open, handleOpen, classId }) => {
   const [loading, setLoading] = useState(false);
@@ -39,7 +39,6 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-student-class-by-id/${classId}`,
         {
@@ -50,9 +49,9 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       );
       if (response.data) {
         setFormData({
-         
           studentClass_van: response?.data.studentClass.studentClass_van || "",
-          studentClass_van_amount: response?.data.studentClass.studentClass_van_amount || 0,
+          studentClass_van_amount:
+            response?.data.studentClass.studentClass_van_amount || 0,
         });
       }
     } catch (error) {
@@ -77,10 +76,13 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const updatedFormData ={
+      const updatedFormData = {
         ...formData,
-        studentClass_van_amount: formData.studentClass_van === 'No' ? 0 : formData.studentClass_van_amount
-      }
+        studentClass_van_amount:
+          formData.studentClass_van === "No"
+            ? 0
+            : formData.studentClass_van_amount,
+      };
 
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-student-class/${classId}`,
@@ -153,15 +155,15 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
           <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-        
+
           <button
-             type="submit"
-             variant="contained"
-             color="primary"
-             disabled={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-      {loading ? "Updating..." : "Update Van"}
+            {loading ? "Updating..." : "Update Van"}
           </button>
         </DialogActions>
       </form>
@@ -200,9 +202,8 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
           studentFees_transactiondetails:
             response?.data.studentClassFees.studentFees_transactiondetails ||
             "",
-            studentFees_paid_date:
-            response?.data.studentClassFees.studentFees_paid_date ||
-            "",
+          studentFees_paid_date:
+            response?.data.studentClassFees.studentFees_paid_date || "",
         });
       }
     } catch (error) {
@@ -288,7 +289,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
         <DialogTitle>Edit Fees Receipt</DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
-          <div>
+            <div>
               <FormLabel required>Date</FormLabel>
               <input
                 type="date"
@@ -300,40 +301,40 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
                 disabled={loading}
               />
             </div>
-           <div className=" grid grid-cols-1 lg:grid-cols-2 gap-2">
-           <div>
-              <FormLabel required>Paid Amount</FormLabel>
-              <input
-                type="number"
-                name="studentFees_paid"
-                className={inputClass}
-                value={formData.studentFees_paid}
-                onChange={handleInputChange}
-                required
-                disabled={loading}
-                min="0"
-              />
-            </div>
+            <div className=" grid grid-cols-1 lg:grid-cols-2 gap-2">
+              <div>
+                <FormLabel required>Paid Amount</FormLabel>
+                <input
+                  type="number"
+                  name="studentFees_paid"
+                  className={inputClass}
+                  value={formData.studentFees_paid}
+                  onChange={handleInputChange}
+                  required
+                  disabled={loading}
+                  min="0"
+                />
+              </div>
 
-            <div>
-              <FormLabel required>Payment Mode</FormLabel>
-              <select
-                name="studentFees_pay_mode"
-                value={formData.studentFees_pay_mode}
-                onChange={handleInputChange}
-                required
-                className={inputClassSelect}
-                disabled={loading}
-              >
-                <option value="">Select Payment Mode</option>
-                {paymentTypes.map((type) => (
-                  <option key={type.paymentType} value={type.paymentType}>
-                    {type.paymentType}
-                  </option>
-                ))}
-              </select>
+              <div>
+                <FormLabel required>Payment Mode</FormLabel>
+                <select
+                  name="studentFees_pay_mode"
+                  value={formData.studentFees_pay_mode}
+                  onChange={handleInputChange}
+                  required
+                  className={inputClassSelect}
+                  disabled={loading}
+                >
+                  <option value="">Select Payment Mode</option>
+                  {paymentTypes.map((type) => (
+                    <option key={type.paymentType} value={type.paymentType}>
+                      {type.paymentType}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-           </div>
 
             <div>
               <FormLabel required>Transaction Details</FormLabel>
@@ -347,23 +348,21 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
                 disabled={loading}
               />
             </div>
-           
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-       
-          
+
           <button
-             type="submit"
-             variant="contained"
-             color="primary"
-             disabled={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-        {loading ? "Updating..." : "Update Fees"}
+            {loading ? "Updating..." : "Update Fees"}
           </button>
         </DialogActions>
       </form>
@@ -371,17 +370,12 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   );
 };
 
-
-
-
-
-
 /*--------Attendence ------------------------------ */
 export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     studentAttendance_class: "",
-  
+
     studentAttendance_date: "",
   });
 
@@ -401,9 +395,8 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
         setFormData({
           studentAttendance_class:
             response?.data.studentClassAttendance.studentAttendance_class || "",
-            studentAttendance_date:
+          studentAttendance_date:
             response?.data.studentClassAttendance.studentAttendance_date || "",
-        
         });
       }
     } catch (error) {
@@ -420,7 +413,6 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
       });
     }
   }, [open, attendenceId]);
- 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -435,7 +427,6 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      
 
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-student-attendance/${attendenceId}`,
@@ -470,14 +461,17 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
     >
       <form onSubmit={handleSubmit}>
         <DialogTitle className="flex flex-row items-center justify-between">
-<span>Edit Attendence Info </span>
-        <p>
-        Class: <span className="bg-blue-200 text-black px-3 py-1 rounded-md text-sm font-semibold">{formData.studentAttendance_class}</span>
-        </p>
+          <span>Edit Attendence Info </span>
+          <p>
+            Class:{" "}
+            <span className="bg-blue-200 text-black px-3 py-1 rounded-md text-sm font-semibold">
+              {formData.studentAttendance_class}
+            </span>
+          </p>
         </DialogTitle>
         <DialogContent dividers>
           <div className="space-y-4 p-2">
-          <div>
+            <div>
               <FormLabel required>Date</FormLabel>
               <input
                 type="date"
@@ -489,23 +483,21 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
                 disabled={loading}
               />
             </div>
-       
           </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOpen} color="inherit" disabled={loading}>
             Cancel
           </Button>
-       
-          
+
           <button
-             type="submit"
-             variant="contained"
-             color="primary"
-             disabled={loading}
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
           >
-        {loading ? "Updating..." : "Update Attendence"}
+            {loading ? "Updating..." : "Update Attendence"}
           </button>
         </DialogActions>
       </form>

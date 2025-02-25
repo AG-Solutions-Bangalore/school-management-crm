@@ -1,5 +1,11 @@
 import React from "react";
-import { Button, Dialog, DialogContent, IconButton, Slide } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  IconButton,
+  Slide,
+} from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 
 const ChangePasswordDialog = ({
@@ -19,7 +25,7 @@ const ChangePasswordDialog = ({
     }));
   };
   const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
 
   // console.log("ProfileDialog open state:", open);
   const FormLabel = ({ children, required }) => (
@@ -35,7 +41,7 @@ const ChangePasswordDialog = ({
       fullWidth
       maxWidth="sm"
       sx={{ backdropFilter: "blur(4px)" }}
-      TransitionComponent={Slide} 
+      TransitionComponent={Slide}
       transitionDuration={500}
     >
       {" "}
