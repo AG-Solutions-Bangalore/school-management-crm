@@ -28,6 +28,10 @@ import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
 import EditTeacher from "./pages/teacher/teacherList/EditTecher";
 import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
 import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/CreateAttendance";
+import PendingFees from "./pages/student/pendingFees/PendingFees";
+import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
+import Timetable from "./pages/timetable/Timetable";
+import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
 
 const App = () => {
   return (
@@ -59,6 +63,8 @@ const App = () => {
 
         {/* Student  */}
         <Route path="/student-list" element={<StudentList />} />
+        <Route path="/current-student-list" element={<CurrentStudentList />} />
+        <Route path="/pending-fees" element={<PendingFees />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
         <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
@@ -85,6 +91,9 @@ const App = () => {
         <Route path="/website-list/enquiry" element={<EnquiryList />} />
         {/* //contactlist */}
         <Route path="/website-list/contact" element={<ContactList />} />
+        {/* time table  */}
+        <Route path="/timetable" element={<Timetable />} />
+        <Route path="/teacher-timetable" element={<TeacherTimeline />} />
       </Routes>
     </>
   );

@@ -103,6 +103,12 @@ const Menuitems = () => [
       },
       {
         id: uniqueId(),
+        title: "Current Student",
+        icon: IconBuilding,
+        href: "/current-student-list",
+      },
+      {
+        id: uniqueId(),
         title: "Attendance List",
         icon: IconBuilding,
         href: "/attendance-list",
@@ -112,6 +118,12 @@ const Menuitems = () => [
         title: "View Attendance",
         icon: IconUsers,
         href: "/attendance-list/viewAttendance",
+      },
+      {
+        id: uniqueId(),
+        title: "Pending Fees",
+        icon: IconUsers,
+        href: "/pending-fees",
       },
     ],
   },
@@ -133,6 +145,18 @@ const Menuitems = () => [
         href: "/website-list/contact",
       },
     ],
+  },
+  {
+    id: uniqueId(),
+    title: "Timetable",
+    icon: IconLayoutDashboard,
+    href: "/timetable",
+  },
+  {
+    id: uniqueId(),
+    title: "Teacher Timetable",
+    icon: IconLayoutDashboard,
+    href: "/teacher-timetable",
   },
 ];
 
