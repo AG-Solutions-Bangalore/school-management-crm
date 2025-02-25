@@ -16,7 +16,7 @@ import BASE_URL from "../../../base/BaseUrl";
 import { Button, Card, CardBody, CardHeader, Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import StudentDetailsView from "./StudentDetailsView";
 import { AddClassDialog, AddFeesDialog } from "./ClassAndFeesDialog";
-import { EditClassDialog, EditFeesDialog } from "./EditClassAndFeesDialog";
+import { EditAttendenceDialog, EditClassDialog, EditFeesDialog } from "./EditClassAndFeesDialog";
 
 const StudentView = () => {
   const { id } = useParams();
@@ -27,8 +27,10 @@ const StudentView = () => {
 
   const [isEditClassDialogOpen, setIsEditClassDialogOpen] = useState(false);
   const [isEditFeesDialogOpen, setIsEditFeesDialogOpen] = useState(false);
+  const [isEditAttendenceDialogOpen, setIsEditAttendenceDialogOpen] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [selectedFeesId, setSelectedFeesId] = useState(null);
+  const [selectedAttendenceId, setSelectedAttendenceId] = useState(null);
   //photo and adhar dialog
    const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false);
     const [isAadharDialogOpen, setIsAadharDialogOpen] = useState(false);
@@ -145,7 +147,10 @@ const StudentView = () => {
         Cell: ({ row }) => (
           <IconEdit
             className="w-5 h-5 cursor-pointer text-blue-600"
-           
+            onClick={() => {
+              setSelectedAttendenceId(row.original.id);
+              setIsEditAttendenceDialogOpen(true);
+            }}
           />
         ),
       },
@@ -413,6 +418,15 @@ const StudentView = () => {
             fetchStudentData();
           }}
           feesId={selectedFeesId}
+        />
+        <EditAttendenceDialog
+          open={isEditAttendenceDialogOpen}
+          handleOpen={() => {
+            setIsEditAttendenceDialogOpen(false);
+            setSelectedAttendenceId(null);
+            fetchStudentData();
+          }}
+          attendenceId={selectedAttendenceId}
         />
 
 

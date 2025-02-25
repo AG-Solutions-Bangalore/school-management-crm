@@ -370,3 +370,145 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
     </Dialog>
   );
 };
+
+
+
+
+
+
+/*--------Attendence ------------------------------ */
+export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    studentAttendance_class: "",
+  
+    studentAttendance_date: "",
+  });
+
+  const fetchAttendenceData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${attendenceId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data) {
+        setFormData({
+          studentAttendance_class:
+            response?.data.studentClassAttendance.studentAttendance_class || "",
+            studentAttendance_date:
+            response?.data.studentClassAttendance.studentAttendance_date || "",
+        
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching fees data", error);
+      toast.error("Failed to fetch fees data");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (open && attendenceId) {
+      Promise.all([fetchAttendenceData()]).catch((error) => {
+        console.error("Error initializing edit fees dialog", error);
+      });
+    }
+  }, [open, attendenceId]);
+ 
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      
+
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-student-attendance/${attendenceId}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.code === 200) {
+        toast.success(response.data.msg || "Attendece updated successfully");
+        handleOpen();
+      } else {
+        toast.error(response.data.msg || "Failed to update Attendece");
+      }
+    } catch (error) {
+      console.error("Error updating Attendence", error);
+      toast.error("Failed to update Attendence");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={() => !loading && handleOpen()}
+      maxWidth="sm"
+      fullWidth
+    >
+      <form onSubmit={handleSubmit}>
+        <DialogTitle className="flex flex-row items-center justify-between">
+<span>Edit Attendence Info </span>
+        <p>
+        Class: <span className="bg-blue-200 text-black px-3 py-1 rounded-md text-sm font-semibold">{formData.studentAttendance_class}</span>
+        </p>
+        </DialogTitle>
+        <DialogContent dividers>
+          <div className="space-y-4 p-2">
+          <div>
+              <FormLabel required>Date</FormLabel>
+              <input
+                type="date"
+                name="studentAttendance_date"
+                className={inputClass}
+                value={formData.studentAttendance_date}
+                onChange={handleInputChange}
+                required
+                disabled={loading}
+              />
+            </div>
+       
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleOpen} color="inherit" disabled={loading}>
+            Cancel
+          </Button>
+       
+          
+          <button
+             type="submit"
+             variant="contained"
+             color="primary"
+             disabled={loading}
+            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+          >
+        {loading ? "Updating..." : "Update Attendence"}
+          </button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+};
