@@ -411,14 +411,13 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
               </div>
             </div>
             <div>
-              <FormLabel required>Transaction Details</FormLabel>
+              <FormLabel >Transaction Details</FormLabel>
               <input
                 type="text"
                 name="studentFees_transactiondetails"
                 className={inputClass}
                 value={formData.studentFees_transactiondetails}
                 onChange={handleInputChange}
-                required
               />
             </div>
           </div>

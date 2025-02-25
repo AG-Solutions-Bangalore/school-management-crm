@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
 import axios from "axios";
 import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL from "../../../base/BaseUrl";
 const status = [
   {
     value: "Active",
@@ -80,7 +80,6 @@ const EditStudent = () => {
           student_cc_no: response.data.student.student_cc_no || "",
           student_address: response.data.student.student_address || "",
           student_status: response.data.student.student_status || "",
-          student_adhar_copy: response.data.student.student_adhar_copy || null,
           student_photo: response.data.student.student_photo || null, // Ensuring it's null if not provided
           student_adhar_copy: response.data.student.student_adhar_copy || null, // Ensuring it's null if not provided
         });
@@ -359,6 +358,7 @@ const EditStudent = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                placeholder="Enter PAN Num (e.g., AAAPA1234A)"
               />
             </div>
             <div>
@@ -404,6 +404,7 @@ const EditStudent = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                placeholder="Enter PAN Num (e.g., AAAPA1234A)"
               />
             </div>
             <div>

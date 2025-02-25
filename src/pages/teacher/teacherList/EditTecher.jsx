@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
 import axios from "axios";
 import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../base/BaseUrl";
-import { FormLabel } from "@mui/material";
-import { CircleMinus, SquarePlus } from "lucide-react";
-
-const CreateTeacher = () => {
+import { useNavigate, useParams } from "react-router-dom";
+import BASE_URL from "../../../base/BaseUrl";
+const status = [
+  {
+    value: "Active",
+    label: "Active",
+  },
+  {
+    value: "Inactive",
+    label: "Inactive",
+  },
+];
+const EditTeacher = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
-  const [classList, setClassList] = useState([]);
-  const [subject, setSubject] = useState([]);
-
-  const useTemplate = {
-    teachersub_class: "",
-    teachersub_subject: "",
-  };
-
-  const [users, setUsers] = useState([{ ...useTemplate }]);
 
   const [teacher, setTeacher] = useState({
     teacher_title: "",
@@ -40,9 +39,51 @@ const CreateTeacher = () => {
     teacher_pf_no: "",
     teacher_uan_no: "",
     teacher_emergency_no: "",
+    teacher_status: "",
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  const fetchTeacherDataByid = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-teacher-by-id/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data && response.data.teacher) {
+        setTeacher({
+          teacher_title: response.data.teacher.teacher_title || "",
+          teacher_name: response.data.teacher.teacher_name || "",
+          teacher_designation: response.data.teacher.teacher_designation || "",
+          teacher_qualification:
+            response.data.teacher.teacher_qualification || "",
+          teacher_dob: response.data.teacher.teacher_dob || "",
+          teacher_doj: response.data.teacher.teacher_doj || "",
+          teacher_adhar_no: response.data.teacher.teacher_adhar_no || "",
+          teacher_pan_no: response.data.teacher.teacher_pan_no || "",
+          teacher_mobile: response.data.teacher.teacher_mobile || "",
+          teacher_email_id: response.data.teacher.teacher_email_id || "",
+          teacher_address: response.data.teacher.teacher_address || "",
+          teacher_bank_name: response.data.teacher.teacher_bank_name || "",
+          teacher_acct_no: response.data.teacher.teacher_acct_no || "",
+          teacher_ifsc: response.data.teacher.teacher_ifsc || "",
+          teacher_branch: response.data.teacher.teacher_branch || "",
+          teacher_pf_no: response.data.teacher.teacher_pf_no || "",
+          teacher_uan_no: response.data.teacher.teacher_uan_no || "",
+          teacher_emergency_no:
+            response.data.teacher.teacher_emergency_no || "",
+          teacher_status: response.data.teacher.teacher_status || "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching teacher data", error);
+    }
+  };
   const fetchTeacherData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -59,46 +100,11 @@ const CreateTeacher = () => {
       console.error("Error fetching teacher data", error);
     }
   };
-  const fetchClassData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClassList(response.data.classes);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
-  };
-  const fetchSubjectData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-subject-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubject(response.data.subject);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
-  };
-  const addItem = () => {
-    setUsers([...users, useTemplate]);
-  };
-  const removeItem = (index) => {
-    setUsers(users.filter((_, i) => i !== index));
-  };
+
   useEffect(() => {
     fetchTeacherData();
-    fetchClassData();
-    fetchSubjectData();
-  }, []);
+    fetchTeacherDataByid();
+  }, [id]);
 
   const onInputChange = (e) => {
     const { name, value } = e.target;
@@ -147,15 +153,6 @@ const CreateTeacher = () => {
       [name]: newValue,
     }));
   };
-  const handleInputChange = (index, event) => {
-    const { name, value } = event.target;
-    console.log(value);
-    setUsers((prevUsers) => {
-      const updatedUsers = [...prevUsers];
-      updatedUsers[index] = { ...updatedUsers[index], [name]: value }; // Update specific entry
-      return updatedUsers;
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -167,13 +164,12 @@ const CreateTeacher = () => {
 
     const data = {
       ...teacher,
-      teacher_data: users,
     };
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-teacher`,
+      const response = await axios.put(
+        `${BASE_URL}/api/panel-update-teacher/${id}`,
         data,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -211,7 +207,7 @@ const CreateTeacher = () => {
           <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
             <div className="flex items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
-              <span>Add Teacher</span>
+              <span>Edit Teacher</span>
             </div>
             <IconArrowBack
               onClick={() => navigate("/teacher-list")}
@@ -234,6 +230,7 @@ const CreateTeacher = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                disabled
               />
             </div>
             <div>
@@ -245,6 +242,7 @@ const CreateTeacher = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                disabled
               />
             </div>
             <div>
@@ -330,6 +328,7 @@ const CreateTeacher = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                disabled
               />
             </div>
             <div>
@@ -341,6 +340,7 @@ const CreateTeacher = () => {
                 onChange={(e) => onInputChange(e)}
                 className={inputClass}
                 required
+                disabled
               />
             </div>
             <div>
@@ -431,100 +431,33 @@ const CreateTeacher = () => {
                 required
               />
             </div>
-          </div>
+            <div>
+              <FormLabel required>Status</FormLabel>
+              <select
+                name="teacher_status"
+                value={teacher.teacher_status || ""}
+                onChange={(e) => onInputChange(e)}
+                required
+                className={inputClassSelect}
+              >
+                <option value="">Select Status</option>
 
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border border-gray-300 px-4 py-2 text-center">
-                    Class
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-center">
-                    Subject
-                  </th>
-
-                  <th className="border border-gray-300 px-4 py-2 text-center">
-                    <div className="flex flex-row items-center justify-center space-x-4">
-                      <span>Actions</span>
-                      <button
-                        onClick={addItem}
-                        type="button"
-                        className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                      >
-                        <SquarePlus />
-                      </button>
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, index) => (
-                  <tr key={index} className="bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2">
-                      <select
-                        name="teachersub_class"
-                        value={user.teachersub_class || ""}
-                        onChange={(e) => handleInputChange(index, e)}
-                        required
-                        className={inputClassSelect}
-                      >
-                        <option value="">Select Class</option>
-                        {classList.map((option, idx) => (
-                          <option key={idx} value={option.classes}>
-                            {option.classes}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-
-                    <td className="border border-gray-300 px-4 py-2">
-                      <select
-                        name="teachersub_subject"
-                        value={user.teachersub_subject || ""}
-                        onChange={(e) => handleInputChange(index, e)}
-                        required
-                        className={inputClassSelect}
-                      >
-                        <option value="">Select Subject</option>
-                        {subject.map((option, idx) => (
-                          <option key={idx} value={option.class_subject}>
-                            {option.class_subject}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-
-                    <td className="border border-gray-300 px-4 py-2 text-center">
-                      <>
-                        {!user.id && (
-                          <button
-                            onClick={() => removeItem(index)}
-                            type="button"
-                            className={`px-1 py-1 rounded-md transition ${
-                              users.length > 1
-                                ? "bg-red-500 text-white hover:bg-red-600"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                            disabled={users.length <= 1}
-                          >
-                            <CircleMinus />
-                          </button>
-                        )}
-                      </>
-                    </td>
-                  </tr>
+                {status.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
                 ))}
-              </tbody>
-            </table>
+              </select>
+            </div>
           </div>
-          <div className="flex gap-4 justify-start">
+
+          <div className="flex gap-4 justify-center">
             <button
               type="submit"
               className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
               disabled={isButtonDisabled}
             >
-              {isButtonDisabled ? "Creating..." : "Create"}
+              {isButtonDisabled ? "Updatting..." : "Update"}
             </button>
             <button
               type="button"
@@ -540,4 +473,4 @@ const CreateTeacher = () => {
   );
 };
 
-export default CreateTeacher;
+export default EditTeacher;
