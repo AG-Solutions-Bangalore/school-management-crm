@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../layout/Layout";
+import Layout from "../../../layout/Layout";
 import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { toast } from "sonner";
 const TeacherList = () => {
@@ -63,9 +63,18 @@ const TeacherList = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "teacher_name",
+        accessorKey: "combined",
         header: "Name",
         size: 150,
+        accessorFn: (row) => `${row.teacher_title} - ${row.teacher_name}`,
+        Cell: ({ row }) => (
+          <div className="flex">
+            <span className="text-black font-semibold mr-2">
+              {row.original.teacher_title}
+            </span>
+            <span className="text-black">{row.original.teacher_name}</span>
+          </div>
+        ),
       },
       {
         accessorKey: "teacher_designation",

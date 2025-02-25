@@ -32,120 +32,75 @@ import {
 import { uniqueId } from "lodash";
 
 const Menuitems = () => [
-  // {
-  //   navlabel: true,
-  //   subheader: "Home",
-  // },
   {
     id: uniqueId(),
     title: "Dashboard",
     icon: IconLayoutDashboard,
     href: "/home",
   },
-  // {
-  //   navlabel: true,
-  //   subheader: "Operation",
-  // },
 
-  // {
-  //   id: uniqueId(),
-  //   title: "Master",
-  //   icon: IconUsers,
-  //   subItems: [
-  //     {
-  //       id: uniqueId(),
-  //       title: "Comapany",
-  //       icon: IconBuilding,
-  //       href: "/master/company-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Branch",
-  //       icon: IconPin,
-  //       href: "/master/branch-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Tyre Position",
-  //       icon: IconCircleDot,
-  //       href: "/master/tyreposition-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Tyre Make",
-  //       icon: IconCircleDot,
-  //       href: "/master/tyremake-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Service Type",
-  //       icon: IconTool,
-  //       href: "/master/servicetype-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Team",
-  //       icon: IconUsers,
-  //       href: "/master/team-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Driver",
-  //       icon: IconUsers,
-  //       href: "/master/driver-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Agencies",
-  //       icon: IconUsers,
-  //       href: "/master/agencies-list",
-  //     },
-  //     {
-  //       id: uniqueId(),
-  //       title: "Vendor",
-  //       icon: IconUsers,
-  //       href: "/master/vendor-list",
-  //     },
-  //   ],
-  // },
   {
     id: uniqueId(),
     title: "Holiday",
     icon: IconTruck,
     href: "/holiday-list",
   },
-
-  {
-    id: uniqueId(),
-    title: "Subject",
-    icon: IconTool,
-    href: "/subject-list",
-  },
-  {
-    id: uniqueId(),
-    title: "Teacher",
-    icon: IconTool,
-    href: "/teacher-list",
-  },
-  {
-    id: uniqueId(),
-    title: "Student",
-    icon: IconTool,
-    href: "/student-list",
-  },
-
   {
     id: uniqueId(),
     title: "Fees Structure",
     icon: IconTool,
     href: "/feesStructure-list",
   },
-
   {
     id: uniqueId(),
-    title: "Attendance",
+    title: "Subject",
+    icon: IconTool,
+    href: "/subject-list",
+  },
+  // {
+  //   id: uniqueId(),
+  //   title: "Teacher",
+  //   icon: IconTool,
+  //   href: "/teacher-list",
+  // },
+  //techer
+  {
+    id: uniqueId(),
+    title: "Teacher",
     icon: IconUsers,
     subItems: [
+      {
+        id: uniqueId(),
+        title: "Teacher List",
+        icon: IconBuilding,
+        href: "/teacher-list",
+      },
+      {
+        id: uniqueId(),
+        title: "Attendance List",
+        icon: IconTool,
+        href: "/teacher-attendance-list",
+      },
+      {
+        id: uniqueId(),
+        title: "View Teacher",
+        icon: IconPin,
+        href: "",
+      },
+    ],
+  },
+  //students
+  {
+    id: uniqueId(),
+    title: "Student",
+    icon: IconUsers,
+    subItems: [
+      {
+        id: uniqueId(),
+        title: "Student List",
+        icon: IconBuilding,
+        href: "/student-list",
+      },
       {
         id: uniqueId(),
         title: "Attendance List",
@@ -155,7 +110,7 @@ const Menuitems = () => [
       {
         id: uniqueId(),
         title: "View Attendance",
-        icon: IconPin,
+        icon: IconUsers,
         href: "/attendance-list/viewAttendance",
       },
     ],

@@ -11,21 +11,23 @@ import HolidayList from "./pages/holiday/HolidayList";
 import CreateHoliday from "./pages/holiday/CreateHoliday";
 import EditHoliday from "./pages/holiday/EditHoliday";
 import SubjectList from "./pages/subject/SubjectList";
-import CreateSubject from "./pages/subject/CreateSubject";
-import TeacherList from "./pages/teacher/TeacherList";
-import CreateTeacher from "./pages/teacher/CreateTeacher";
-import EditTeacher from "./pages/teacher/EditTecher";
-import StudentList from "./pages/student/StudentList";
-import CreateStudent from "./pages/student/CreateStudent";
-import EditStudent from "./pages/student/EditStudent";
+
 import FeesStructureList from "./pages/feesStructure/FeesStructureList";
 import StudentView from "./pages/student/studentView/StudentView";
-import AttendanceList from "./pages/attendance/attendanceList/AttendanceList";
-import CreateAttendance from "./pages/attendance/attendanceList/CreateAttendance";
-import EditAttendance from "./pages/attendance/attendanceList/EditAttendance";
-import AttendanceView from "./pages/attendance/attendanceView/AttendanceView";
 import EnquiryList from "./pages/webiste/Enquiry/EnquiryList";
 import ContactList from "./pages/webiste/Contact/ContactList";
+import AttendanceList from "./pages/student/attendanceList/AttendanceList";
+import CreateAttendance from "./pages/student/attendanceList/CreateAttendance";
+import EditAttendance from "./pages/student/attendanceList/EditAttendance";
+import AttendanceView from "./pages/student/attendanceView/AttendanceView";
+import StudentList from "./pages/student/studentList/StudentList";
+import CreateStudent from "./pages/student/studentList/CreateStudent";
+import EditStudent from "./pages/student/studentList/EditStudent";
+import TeacherList from "./pages/teacher/teacherList/TeacherList";
+import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
+import EditTeacher from "./pages/teacher/teacherList/EditTecher";
+import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
+import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/CreateAttendance";
 
 const App = () => {
   return (
@@ -45,20 +47,22 @@ const App = () => {
         <Route path="/holiday-list/editHoliday/:id" element={<EditHoliday />} />
         {/* Subject  */}
         <Route path="/subject-list" element={<SubjectList />} />
-        <Route path="/subject-list/createSubject" element={<CreateSubject />} />
         {/* Teacher  */}
         <Route path="/teacher-list" element={<TeacherList />} />
         <Route path="/teacher-list/createTeacher" element={<CreateTeacher />} />
         <Route path="/teacher-list/editTeacher/:id" element={<EditTeacher />} />
+        {/* //Teacher Attendance */}
+        <Route
+          path="/teacher-attendance-list"
+          element={<TeacherAttendanceList />}
+        />
+
         {/* Student  */}
         <Route path="/student-list" element={<StudentList />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
         <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
-        {/* Fees Structure  */}
-        <Route path="/feesStructure-list" element={<FeesStructureList />} />
         {/* //Attendance */}
-        {/* //attendancelist */}
         <Route path="/attendance-list" element={<AttendanceList />} />
         <Route
           path="/attendance-list/createAttendance"
@@ -73,6 +77,9 @@ const App = () => {
           path="/attendance-list/viewAttendance"
           element={<AttendanceView />}
         />
+        {/* Fees Structure  */}
+        <Route path="/feesStructure-list" element={<FeesStructureList />} />
+
         {/* //Website */}
         {/* //enqiry list */}
         <Route path="/website-list/enquiry" element={<EnquiryList />} />
