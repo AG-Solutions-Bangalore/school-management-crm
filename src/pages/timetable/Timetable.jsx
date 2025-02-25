@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../../layout/Layout';
 import axios from 'axios';
 import BASE_URL from '../../base/BaseUrl';
+import { ContextPanel } from '../../context/ContextPanel';
 
 const Timetable = () => {
   const [timetableData, setTimetableData] = useState({
@@ -11,7 +12,7 @@ const Timetable = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+  const {selectedYear}= useContext(ContextPanel)
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const cellWidth = '80px';
@@ -24,7 +25,7 @@ const Timetable = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-student-class-timetable/2024-25`,
+          `${BASE_URL}/api/panel-fetch-student-class-timetable/${selectedYear}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
