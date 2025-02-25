@@ -1,17 +1,25 @@
 import React from 'react';
 import { Card } from "@material-tailwind/react";
-import { IconUser, IconUsers, IconMail, IconId, IconHome, IconCategory } from "@tabler/icons-react";
+import { IconUser, IconUsers, IconMail, IconId, IconHome, IconCategory, IconEye } from "@tabler/icons-react";
 
-const StudentDetailsView = ({ studentData }) => {
+const StudentDetailsView = ({ studentData ,setIsAadharDialogOpen}) => {
   if (!studentData) return null;
 
-  const InfoBlock = ({ icon: Icon, label, value }) => (
+  const InfoBlock = ({ icon: Icon, label, value,isAadhar = false }) => (
     <div className="bg-white rounded-lg p-3 border border-gray-100 hover:border-blue-200 transition-colors duration-300">
       <div className="flex items-center gap-2 mb-1">
         <Icon className="w-4 h-4 text-blue-600" />
         <span className="text-xs text-gray-700">{label}</span>
       </div>
-      <span className="text-sm font-medium text-gray-900 block">{value || "-"}</span>
+    <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-900">{value || "-"}</span>
+            {isAadhar && value && (
+              <IconEye
+                className="w-4 h-4 text-blue-600 cursor-pointer"
+                onClick={() => setIsAadharDialogOpen(true)}
+              />
+            )}
+          </div>
     </div>
   );
 
@@ -84,8 +92,9 @@ const StudentDetailsView = ({ studentData }) => {
             />
             <InfoBlock 
               icon={IconCategory} 
-              label="Caste" 
-              value={studentData.student.student_caste} 
+              label="Aadhar" 
+              value={studentData.student.student_adhar_no}
+              isAadhar={true} 
             />
           </div>
         </div>
