@@ -175,7 +175,7 @@ const Menuitems = () => [
       {
         id: uniqueId(),
         title: "Teacher",
-        icon: IconTablePlus,
+        icon: IconDownload,
         href: "/teacher-timetable",
       },
     ],

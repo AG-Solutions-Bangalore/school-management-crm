@@ -54,16 +54,11 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }) => {
 
         <Stack spacing={1} direction="row" alignItems="center">
           <div className="flex  flex-row items-center justify-between ">
-            {/* <div className="flex flex-col text-xs p-3">
-              {" "}
-              <div>name: Adminstrater</div>
-              <div> name: Adminstrater</div>
-            </div> */}
             <div className="flex flex-col text-[10px] md:text-xs">
               <div className="font-semibold text-blue-700">
                 {localStorage.getItem("name")}
               </div>
-              <div className="font-semibold text-blue-700">
+              <div className="font-semibold text-blue-700 text-[10px] flex justify-center">
                 {" "}
                 {localStorage.getItem("user_position")}
               </div>
