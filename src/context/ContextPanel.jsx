@@ -16,6 +16,7 @@ const AppProvider = ({ children }) => {
     setIsLoading(true);
     setIsError(false);
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-year-list`,
         {
