@@ -38,12 +38,10 @@ const SignIn = () => {
           localStorage.setItem("user_position", res.data.UserInfo.user.user_position);
           localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
   
-          try {
-            await fetchYears(); // Ensure this completes before navigating
+          
+            await fetchYears(); 
             navigate("/home");
-          } catch (fetchError) {
-            toast.error("Failed to fetch years. Please try again.");
-          }
+        
         } else {
           toast.error("Login Failed, Token not received.");
         }
