@@ -11,6 +11,8 @@ import BASE_URL, {
   StudentImageUrl,
   StudentNoImageUrl,
 } from "../../../base/BaseUrl";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const CurrentStudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -207,22 +209,32 @@ const CurrentStudentList = () => {
           return (
             <div className="flex gap-2">
               <div
-                onClick={() =>
-                  navigate(`/student-list/editStudent/${id}`, {
-                    state: { from: "/current-student-list" },
-                  })
-                }
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/editStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/current-student-list" } }
+                  );
+                }}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
               <div
-                onClick={() =>
-                  navigate(`/student-list/viewStudent/${id}`, {
-                    state: { from: "/current-student-list" },
-                  })
-                }
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/viewStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/current-student-list" } }
+                  );
+                }}
                 className="flex items-center space-x-2"
                 title="View"
               >
@@ -247,9 +259,7 @@ const CurrentStudentList = () => {
     enableStickyFooter: true,
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
     initialState: { columnVisibility: { address: false } },
-    state: {
-      isLoading: loading,
-    },
+
   });
 
   return (
@@ -282,7 +292,11 @@ const CurrentStudentList = () => {
         </div>
 
         <div className="shadow-md">
-          <MantineReactTable table={table} />
+          {!filteredStudentData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}
         </div>
       </div>
     </Layout>

@@ -15,10 +15,17 @@ import {
 } from "@material-tailwind/react";
 import { IconTrash } from "@tabler/icons-react";
 import { ContextPanel } from "../../context/ContextPanel";
+import { encryptId } from "../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import CreateHoliday from "./CreateHoliday";
+import EditHoliday from "./EditHoliday";
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editId, setEditeId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const { selectedYear } = useContext(ContextPanel);
@@ -98,7 +105,10 @@ const HolidayList = () => {
           return (
             <div className="flex gap-2">
               <div
-                onClick={() => navigate(`/holiday-list/editHoliday/${id}`)}
+                onClick={() => {
+                  setOpenEditDialog(true);
+                  setEditeId(id);
+                }}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
@@ -136,48 +146,64 @@ const HolidayList = () => {
     initialState: { columnVisibility: { address: false } },
   });
   return (
-    <Layout>
-      <div className="max-w-screen">
-        <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
-            <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-              Holiday List
-            </h1>
-            <div className="flex gap-2">
-              <button
-                onClick={() => navigate("/holiday-list/createHoliday")}
-                className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-              >
-                <IconPlus className="w-4 h-4" /> Holiday
-              </button>
+    <>
+      <Layout>
+        <div className="max-w-screen">
+          <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
+              <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
+                Holiday List
+              </h1>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setCreateDialogOpen(true)}
+                  className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                >
+                  <IconPlus className="w-4 h-4" /> Holiday
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className=" shadow-md">
-          <MantineReactTable table={table} />
+          <div className=" shadow-md">
+            {!holidayData ? (
+              <LoaderComponent />
+            ) : (
+              <MantineReactTable table={table} />
+            )}{" "}
+          </div>
         </div>
-      </div>
-      {/* Delete Confirmation Modal */}
-      <Dialog
-        open={deleteDialogOpen}
-        handler={() => setDeleteDialogOpen(false)}
-      >
-        <DialogHeader>Confirm Delete</DialogHeader>
-        <DialogBody>
-          <p>Are you sure you want to delete this holiday?</p>
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>
-            Cancel
-          </Button>
-          <Button color="red" onClick={handleDelete}>
-            Delete
-          </Button>
-        </DialogFooter>
-      </Dialog>
-    </Layout>
+        <Dialog
+          open={deleteDialogOpen}
+          handler={() => setDeleteDialogOpen(false)}
+        >
+          <DialogHeader>Confirm Delete</DialogHeader>
+          <DialogBody>
+            <p>Are you sure you want to delete this holiday?</p>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="red" onClick={handleDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </Layout>
+      <CreateHoliday
+        setCreateDialogOpen={setCreateDialogOpen}
+        createDialogOpen={createDialogOpen}
+        fetchHolidayData={fetchHolidayData}
+      />
+      <EditHoliday
+        openEditDialog={openEditDialog}
+        setOpenEditDialog={setOpenEditDialog}
+        fetchHolidayData={fetchHolidayData}
+        editId={editId}
+      />
+    </>
   );
 };
 

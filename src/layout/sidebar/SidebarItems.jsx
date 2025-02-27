@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import Menuitems from "./MenuItems";
+import React, { useEffect, useState } from "react";
+import getMenuItems from "./MenuItems";
 import { Box, List } from "@mui/material";
 
 import { useLocation } from "react-router-dom";
@@ -7,19 +7,22 @@ import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
 
 const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
-  
   const location = useLocation();
-  const pathDirect = useMemo(() => location.pathname, [location]);
+  const pathDirect = location.pathname;
   const userTypeId = localStorage.getItem("user_type_id");
-  // console.log(userTypeId, "userTypeId");
-  // const MenuData = useMemo(() => Menuitems(userTypeId), [userTypeId]);
-  const MenuData = Menuitems(userTypeId);
-  //chnage mm
+  const MenuData = getMenuItems(userTypeId);
+  const [currentOpenItem, setCurrentOpenItem] = useState(
+    localStorage.getItem("currentOpenItem") || ""
+  );
+
+  useEffect(() => {
+    localStorage.setItem("currentOpenItem", currentOpenItem);
+  }, [currentOpenItem]);
+
   return (
     <Box sx={{ px: "20px" }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
         {MenuData.map((item) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return (
               <NavGroup
@@ -29,8 +32,7 @@ const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
               />
             );
 
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
+           
           } else {
             return (
               <NavItem
@@ -39,6 +41,8 @@ const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
                 pathDirect={pathDirect}
                 onClick={toggleMobileSidebar}
                 isCollapsed={isCollapsed}
+                currentOpenItem={currentOpenItem}
+                setCurrentOpenItem={setCurrentOpenItem}
               />
             );
           }

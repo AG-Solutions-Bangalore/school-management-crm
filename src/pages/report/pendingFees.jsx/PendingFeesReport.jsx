@@ -21,7 +21,6 @@ const PendingFeesReport = () => {
   const navigate = useNavigate();
   const [pendingreport, setPendingReport] = useState({
     student_year: "",
-    status: "",
     student_class: "",
   });
   const onInputChange = (e) => {
@@ -70,17 +69,21 @@ const PendingFeesReport = () => {
   }, []);
 
   const handlePendingFees = (e) => {
+    if (!pendingreport.student_year) {
+      // toast.warning("Year is Required");
+      return;
+    }
+
     e.preventDefault();
     let data = {
       student_year: pendingreport.student_year,
-      status: pendingreport.status,
       student_class: pendingreport.student_class,
     };
 
     e.preventDefault();
 
     axios({
-      url: BASE_URL + "/api/panel-download-student-details-report",
+      url: BASE_URL + "/api/panel-download-student-pending-fees-report",
       method: "POST",
       data,
       headers: {
@@ -105,7 +108,19 @@ const PendingFeesReport = () => {
         toast.error("Pending Details is Not Downloaded");
       });
   };
+  const handleNavigate = () => {
+    if (!pendingreport.student_year) {
+      // toast.warning("Year is Required");
+      return;
+    }
 
+    let data = {
+      student_year: pendingreport.student_year,
+      student_class: pendingreport.student_class,
+    };
+
+    navigate("/report-pending/download-view", { state: data });
+  };
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}
@@ -122,7 +137,7 @@ const PendingFeesReport = () => {
         <div className="sticky top-0 p-2  mb-4 border-b-2 border-red-500 rounded-lg  bg-[#E1F5FA] ">
           <h2 className=" px-5 text-[black] text-lg   flex flex-row  justify-between items-center  rounded-xl p-2 ">
             <div className="flex  items-center gap-2">
-              <IconInfoCircle className="w-4 h-4" />
+              <IconInfoCircle className="w-4 h-4 " />
               <span>Download Pending Report</span>
             </div>
           </h2>
@@ -132,33 +147,18 @@ const PendingFeesReport = () => {
           <div className="grid grid-cols-1  md:grid-cols-3  gap-6">
             {/* present Date  */}
             <div>
-              <FormLabel>Year</FormLabel>
+              <FormLabel required>Year</FormLabel>
               <select
                 name="student_year"
                 value={pendingreport.student_year || ""}
                 onChange={onInputChange}
                 className={inputClassSelect}
+                required
               >
                 <option value="">Select Year</option>
                 {yearData.map((option, index) => (
                   <option key={index} value={option.year_list}>
                     {option.year_list}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <FormLabel>Status</FormLabel>
-              <select
-                name="status"
-                value={pendingreport.status || ""}
-                onChange={onInputChange}
-                className={inputClassSelect}
-              >
-                <option value="">Select Status</option>
-                {status.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.value}
                   </option>
                 ))}
               </select>
@@ -182,7 +182,6 @@ const PendingFeesReport = () => {
             </div>
           </div>
 
-          {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center">
             <button
               onClick={handlePendingFees}
@@ -191,7 +190,7 @@ const PendingFeesReport = () => {
               Download
             </button>
             <button
-              onClick={() => navigate("/report-pending/download-view")}
+              onClick={handleNavigate}
               className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
             >
               View

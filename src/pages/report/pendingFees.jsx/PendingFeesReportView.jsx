@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import BASE_URL from "../../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "sonner";
 import Layout from "../../../layout/Layout";
-import { IconInfoCircle } from "@tabler/icons-react";
+import { IconInfoCircle, IconArrowBack } from "@tabler/icons-react";
 import {
   Table,
   TableBody,
@@ -12,32 +12,24 @@ import {
   TableHead,
   TableRow,
   Paper,
+  CircularProgress,
 } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Center, Loader, Text } from "@mantine/core";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
-const studentData = [
-  {
-    student_admission_no: "1/2024-25",
-    student_name: "Moorthy",
-    studentClass_class: "III",
-    total_amount: 27000,
-    paid_amount: 13161,
-    van_required: "No",
-    van_amount: 0,
-  },
-];
 const PendingFeesReportView = () => {
+  const location = useLocation();
+  const data = location.state || {};
+  const navigate = useNavigate();
+  const [studentfess, setStudentFess] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-
-      const data = {
-        ...teacher,
-      };
-
-      setIsButtonDisabled(true);
+    const fetchStudentFees = async () => {
       try {
         const response = await axios.post(
-          `${BASE_URL}/api/panel-create-teacher`,
+          `${BASE_URL}/api/panel-fetch-student-pending-fees-report`,
           data,
           {
             headers: {
@@ -46,33 +38,23 @@ const PendingFeesReportView = () => {
           }
         );
 
-        if (response.data.code === 200) {
-          toast.success(response.data.msg);
-          navigate("/teacher-list");
-        } else {
-          toast.error(response.data.msg);
+        if (response.status === 200) {
+          setStudentFess(response.data.student);
         }
       } catch (error) {
-        toast.error("Error creating teacher record");
+        toast.error("Error fetching pending fees data");
       } finally {
-        setIsButtonDisabled(false);
+        setLoading(false);
       }
     };
-    handleSubmit();
+    fetchStudentFees();
   }, []);
 
   const handlePendingFees = (e) => {
     e.preventDefault();
-    let data = {
-      student_year: pendingreport.student_year,
-      status: pendingreport.status,
-      student_class: pendingreport.student_class,
-    };
-
-    e.preventDefault();
 
     axios({
-      url: BASE_URL + "/api/panel-download-student-details-report",
+      url: BASE_URL + "/api/panel-download-student-pending-fees-report",
       method: "POST",
       data,
       headers: {
@@ -83,26 +65,25 @@ const PendingFeesReportView = () => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "pending_details.csv");
+        link.setAttribute("download", "pendingfees_details.csv");
         document.body.appendChild(link);
         link.click();
-        toast.success("Pending Details Downloaded Successfully");
-        setPendingReport({
-          student_year: "",
-          status: "",
-          student_class: "",
-        });
+        toast.success("Pending Fees Details Downloaded Successfully");
       })
-      .catch((err) => {
-        toast.error("Pending Details is Not Downloaded");
+      .catch(() => {
+        toast.error("Pending Fees Details is Not Downloaded");
       });
   };
+
   return (
     <Layout>
       <div className="sticky top-0 p-2 mb-4 border-b-2 border-red-500 bg-[#E1F5FA] rounded-lg">
         <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
           <div className="flex items-center gap-2">
-            <IconInfoCircle className="w-4 h-4" />
+            <IconArrowBack
+              className="w-5 h-5 text-red-500 cursor-pointer"
+              onClick={() => navigate("/report-pending/download")}
+            />
             <span>View Pending Fees</span>
           </div>
           <button
@@ -112,45 +93,57 @@ const PendingFeesReportView = () => {
             Download
           </button>
         </h2>
-      </div>{" "}
-      <TableContainer component={Paper} className="shadow-lg rounded-lg p-4">
-        <Table>
-          <TableHead className="bg-gray-100 text-white">
-            <TableRow>
-              <TableCell className="text-white font-bold">
-                Admission No
-              </TableCell>
-              <TableCell className="text-white font-bold">
-                Student Name
-              </TableCell>
-              <TableCell className="text-white font-bold">Class</TableCell>
-              <TableCell className="text-white font-bold">
-                Total Amount
-              </TableCell>
-              <TableCell className="text-white font-bold">
-                Paid Amount
-              </TableCell>
-              <TableCell className="text-white font-bold">
-                Van Required
-              </TableCell>
-              <TableCell className="text-white font-bold">Van Amount</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {studentData.map((student, index) => (
-              <TableRow key={index} className="hover:bg-gray-100">
-                <TableCell>{student.student_admission_no}</TableCell>
-                <TableCell>{student.student_name}</TableCell>
-                <TableCell>{student.studentClass_class}</TableCell>
-                <TableCell>{student.total_amount.toLocaleString()}</TableCell>
-                <TableCell>{student.paid_amount.toLocaleString()}</TableCell>
-                <TableCell>{student.van_required}</TableCell>
-                <TableCell>{student.van_amount}</TableCell>
+      </div>
+
+      {loading ? (
+        <LoaderComponent />
+      ) : studentfess.length > 0 ? (
+        <TableContainer component={Paper} className="shadow-lg rounded-lg p-4">
+          <Table>
+            <TableHead className="bg-gray-100 text-white">
+              <TableRow>
+                <TableCell className="text-white font-bold">
+                  Admission No
+                </TableCell>
+                <TableCell className="text-white font-bold">
+                  Student Name
+                </TableCell>
+                <TableCell className="text-white font-bold">Class</TableCell>
+                <TableCell className="text-white font-bold">
+                  Total Amount
+                </TableCell>
+                <TableCell className="text-white font-bold">
+                  Paid Amount
+                </TableCell>
+                <TableCell className="text-white font-bold">
+                  Van Required
+                </TableCell>
+                <TableCell className="text-white font-bold">
+                  Van Amount
+                </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {studentfess.map((student, index) => (
+                <TableRow key={index} className="hover:bg-gray-100">
+                  <TableCell>{student.student_admission_no}</TableCell>
+                  <TableCell>{student.student_name}</TableCell>
+                  <TableCell>{student.studentClass_class}</TableCell>
+                  <TableCell>{student.total_amount.toLocaleString()}</TableCell>
+                  <TableCell>{student.paid_amount.toLocaleString()}</TableCell>
+                  <TableCell>{student.van_required}</TableCell>
+                  <TableCell>{student.van_amount}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <div className="text-center text-gray-500 py-10">
+          <IconInfoCircle className="w-10 h-10 mx-auto text-gray-400" />
+          <p>No pending fees data available</p>
+        </div>
+      )}
     </Layout>
   );
 };

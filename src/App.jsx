@@ -38,10 +38,12 @@ import StudentReport from "./pages/report/StudentReport";
 import TeacherReport from "./pages/report/TeacherReport";
 import PendingFeesReport from "./pages/report/pendingFees.jsx/PendingFeesReport";
 import PendingFeesReportView from "./pages/report/pendingFees.jsx/PendingFeesReportView";
+import DisableRightClick from "./components/common/DisableRightClick";
 
 const App = () => {
   return (
     <>
+      <DisableRightClick />
       <Toaster richColors position="top-right" />
       <Routes>
         <Route path="/" element={<SignIn />} />

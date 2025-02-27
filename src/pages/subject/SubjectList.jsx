@@ -15,6 +15,7 @@ import {
   Slide,
 } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const SubjectList = () => {
   const [subjectData, setSubjectData] = useState(null);
@@ -225,7 +226,11 @@ const SubjectList = () => {
           </div>
 
           <div className="shadow-md">
-            <MantineReactTable table={table} />
+            {!subjectData ? (
+              <LoaderComponent />
+            ) : (
+              <MantineReactTable table={table} />
+            )}{" "}
           </div>
         </div>
       </Layout>
