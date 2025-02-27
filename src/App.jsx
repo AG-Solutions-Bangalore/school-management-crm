@@ -30,11 +30,14 @@ import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/Teacher
 import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/CreateAttendance";
 import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
 import TeacherView from "./pages/teacher/teacherList/TeacherView";
-import DownloadReport from "./pages/download/DownloadReport";
 import PendingFees from "./pages/student/pendingFees/PendingFees";
 import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
 import Timetable from "./pages/timetable/Timetable";
 import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
+import StudentReport from "./pages/report/StudentReport";
+import TeacherReport from "./pages/report/TeacherReport";
+import PendingFeesReport from "./pages/report/pendingFees.jsx/PendingFeesReport";
+import PendingFeesReportView from "./pages/report/pendingFees.jsx/PendingFeesReportView";
 
 const App = () => {
   return (
@@ -98,8 +101,17 @@ const App = () => {
         {/* //contactlist */}
         <Route path="/website-list/contact" element={<ContactList />} />
 
-        {/* //Download */}
-        <Route path="/download-report" element={<DownloadReport />} />
+        {/* //report */}
+        <Route path="/report-student/download" element={<StudentReport />} />
+        <Route path="/report-teacher/download" element={<TeacherReport />} />
+        <Route
+          path="/report-pending/download"
+          element={<PendingFeesReport />}
+        />
+        <Route
+          path="/report-pending/download-view"
+          element={<PendingFeesReportView />}
+        />
         {/* time table  */}
         <Route path="/timetable" element={<Timetable />} />
         <Route path="/teacher-timetable" element={<TeacherTimeline />} />

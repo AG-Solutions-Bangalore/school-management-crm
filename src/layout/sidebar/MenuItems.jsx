@@ -1,5 +1,6 @@
 import {
   IconCalendarCheck,
+  IconReport,
   IconTablePlus,
   IconUserQuestion,
   IconWorld,
@@ -116,7 +117,7 @@ const Menuitems = () => [
       },
       {
         id: uniqueId(),
-        title: "Pending Fees",
+        title: "Fees",
         icon: IconClipboardData,
         href: "/pending-fees",
       },
@@ -163,20 +164,26 @@ const Menuitems = () => [
 
   {
     id: uniqueId(),
-    title: "Download",
-    icon: IconDownload,
+    title: "Report",
+    icon: IconReport,
     subItems: [
       {
         id: uniqueId(),
         title: "Student",
         icon: IconDownload,
-        href: "/download-report",
+        href: "/report-student/download",
       },
       {
         id: uniqueId(),
         title: "Teacher",
         icon: IconDownload,
-        href: "/teacher-timetable",
+        href: "/report-teacher/download",
+      },
+      {
+        id: uniqueId(),
+        title: "Pending Fees",
+        icon: IconClipboardData,
+        href: "/report-pending/download",
       },
     ],
   },
