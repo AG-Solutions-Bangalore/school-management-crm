@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import Layout from '../../layout/Layout';
 import axios from 'axios';
 import BASE_URL from '../../base/BaseUrl';
 import { ContextPanel } from '../../context/ContextPanel';
+import { useReactToPrint } from 'react-to-print';
 
 const Timetable = () => {
+  const containerRef = useRef();
   const [timetableData, setTimetableData] = useState({
     teacher: [],
     teacherAssign: [],
@@ -12,13 +14,40 @@ const Timetable = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {selectedYear}= useContext(ContextPanel)
-  
+  const [activeTeacher, setActiveTeacher] = useState(null);
+  const { selectedYear } = useContext(ContextPanel);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
   const cellWidth = '80px';
   const cellHeight = '40px';
-  const teacherColumnWidth = '150px';
+  const dayColumnWidth = '100px';
+
+  const handlePrintPdf = useReactToPrint({
+    content: () => containerRef.current,
+    documentTitle: "teacher_timetable",
+    pageStyle: `
+                @page {
+                size: A4 landscape;
+                margin: 5mm;
+                
+              }
+              @media print {
+                body {
+                  border: 0px solid #000;
+                      font-size: 10px; 
+                  margin: 0mm;
+                  padding: 0mm;
+                }
+                   table {
+                   font-size: 11px;
+                 }
+                .print-hide {
+                  display: none;
+                }
+               
+              }
+              `,
+  });
 
   useEffect(() => {
     const fetchTimetable = async () => {
@@ -35,12 +64,17 @@ const Timetable = () => {
         );
 
         const periods = response.data.shool_period.map(period => period.school_period);
+        const teachers = response.data.teacher;
 
         setTimetableData({
-          teacher: response.data.teacher,
+          teacher: teachers,
           teacherAssign: response.data.teacherAssign,
           periods
         });
+
+        if (teachers.length > 0 && !activeTeacher) {
+          setActiveTeacher(teachers[0].teacher_ref);
+        }
       } catch (error) {
         setError('Failed to fetch timetable data');
         console.error("Error fetching timetable data", error);
@@ -50,7 +84,7 @@ const Timetable = () => {
     };
     
     fetchTimetable();
-  }, []);
+  }, [selectedYear]);
 
   const getClassSubjectForTeacherDayPeriod = (teacherRef, day, period) => {
     const assignment = timetableData.teacherAssign.find(
@@ -61,6 +95,10 @@ const Timetable = () => {
     );
     
     return assignment ? `${assignment.teachersub_class} - ${assignment.teachersub_subject}` : '';
+  };
+
+  const handleTeacherChange = (event) => {
+    setActiveTeacher(event.target.value);
   };
 
   if (loading) return (
@@ -79,86 +117,105 @@ const Timetable = () => {
     </Layout>
   );
 
-  const totalWidth = parseInt(teacherColumnWidth) + (days.length * timetableData.periods.length * parseInt(cellWidth));
+  const activeTeacherName = timetableData.teacher.find(t => t.teacher_ref === activeTeacher)
+    ? `${timetableData.teacher.find(t => t.teacher_ref === activeTeacher).teacher_title} ${timetableData.teacher.find(t => t.teacher_ref === activeTeacher).teacher_name}`
+    : '';
 
+  const totalWidth = parseInt(dayColumnWidth) + (timetableData.periods.length * parseInt(cellWidth));
+ 
+
+  const inputClassSelect =
+    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
+  
   return (
     <Layout>
-      <div className="p-4 max-w-7xl mx-auto bg-white rounded-lg">
-        <h1 className="text-2xl font-bold text-center text-black mb-6">Teacher Timetable 2024-25</h1>
-        
-        <div className="overflow-x-auto">
-          <div style={{ minWidth: `${totalWidth}px` }}>
-            <table style={{ 
-              width: '100%', 
-              borderCollapse: 'collapse', 
-              tableLayout: 'fixed', 
-              border: '1px solid black'
-            }}>
-              <thead>
-                <tr>
-                  <th 
-                    rowSpan="2" 
-                    className="text-center font-semibold p-2 text-black bg-white" 
-                    style={{ 
-                      width: teacherColumnWidth, 
-                      border: '1px solid black',
-                      height: cellHeight
-                    }}
-                  >
-                    Teacher
-                  </th>
-                  {days.map(day => (
+      <div className="p-4 w-full bg-white rounded-lg">
+        <div className='flex flex-col lg:flex-row items-center justify-between gap-2'>
+          <h1 className="text-xl font-bold text-left text-black">Teacher Timetable {selectedYear}</h1>
+          <div className="flex flex-wrap gap-2">
+            <select
+              value={activeTeacher || ''}
+              onChange={handleTeacherChange}
+              className={inputClassSelect}
+            >
+               <option value="">Select Teacher</option>
+              {timetableData.teacher.map((teacherObj) => (
+                <option key={teacherObj.teacher_ref} value={teacherObj.teacher_ref}>
+                  {teacherObj.teacher_title} {teacherObj.teacher_name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="mt-4">
+          <button
+            onClick={handlePrintPdf}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 print:hidden"
+          >
+            Print
+          </button>
+        </div>
+        <div ref={containerRef}>
+          <div className="mb-6 mt-6">
+            <h2 className="text-lg text-center font-semibold mb-2"> Teacher: {activeTeacherName}</h2>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <div style={{ minWidth: `${totalWidth}px` }}>
+              <table style={{ 
+                width: '100%', 
+                borderCollapse: 'collapse', 
+                tableLayout: 'fixed', 
+                border: '1px solid black'
+              }}>
+                <thead>
+                  <tr>
                     <th 
-                      key={day} 
-                      colSpan={timetableData.periods.length} 
+                      rowSpan="2" 
                       className="text-center font-semibold p-2 text-black bg-white" 
                       style={{ 
+                        width: dayColumnWidth, 
                         border: '1px solid black',
                         height: cellHeight
                       }}
                     >
-                      {day}
+                      Day
                     </th>
-                  ))}
-                </tr>
-                <tr>
-                  {days.map(day =>
-                    timetableData.periods.map(period => (
+                    {timetableData.periods.map(period => (
                       <th 
-                        key={`${day}-${period}`} 
-                        className="text-center text-sm p-1 text-black bg-white" 
+                        key={period} 
+                        colSpan="1" 
+                        className="text-center font-semibold p-2 text-black bg-white" 
                         style={{ 
-                          width: cellWidth, 
                           border: '1px solid black',
-                          height: cellHeight
+                          height: cellHeight,
+                          width: cellWidth
                         }}
                       >
                         {period}
                       </th>
-                    ))
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {timetableData.teacher.map(teacherObj => (
-                  <tr key={teacherObj.teacher_ref}>
-                    <td 
-                      className="text-center font-medium p-2 text-black bg-white" 
-                      style={{ 
-                        width: teacherColumnWidth,
-                        border: '1px solid black',
-                        height: cellHeight
-                      }}
-                    >
-                      {teacherObj.teacher_title} {teacherObj.teacher_name}
-                    </td>
-                    {days.map(day =>
-                      timetableData.periods.map(period => {
-                        const classSubject = getClassSubjectForTeacherDayPeriod(teacherObj.teacher_ref, day, period);
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {days.map(day => (
+                    <tr key={day}>
+                      <td 
+                        className="text-center font-medium p-2 text-black bg-white" 
+                        style={{ 
+                          width: dayColumnWidth,
+                          border: '1px solid black',
+                          height: cellHeight
+                        }}
+                      >
+                        {day}
+                      </td>
+                      {timetableData.periods.map(period => {
+                        const classSubject = activeTeacher ? getClassSubjectForTeacherDayPeriod(activeTeacher, day, period) : '';
                         return (
                           <td
-                            key={`${teacherObj.teacher_ref}-${day}-${period}`}
-                            className="text-center p-1 text-xs text-black bg-white"
+                            key={`${activeTeacher}-${day}-${period}`}
+                            className="text-center p-1 text-sm text-black bg-white"
                             style={{ 
                               width: cellWidth,
                               border: '1px solid black',
@@ -168,12 +225,12 @@ const Timetable = () => {
                             {classSubject}
                           </td>
                         );
-                      })
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

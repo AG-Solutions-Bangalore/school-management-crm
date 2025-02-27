@@ -37,16 +37,14 @@ const FeesStructureList = () => {
       <div className="min-h-screen bg-gray-50 ">
       <div className="mx-auto w-full">
     
-        <div className="mb-4 rounded-xl bg-white p-2 shadow-lg">
+        <div className="mb-4 rounded-xl bg-white p-4 shadow-lg">
           <div className="flex items-center gap-3">
-            <School className="h-6 w-6 text-blue-600" />
+           
             <div>
               <h1 className="text-xl font-bold text-gray-800">
                 School Fees Structure
               </h1>
-              <p className="text-sm text-gray-500">
-                Academic Year {selectedYear}
-              </p>
+             
             </div>
           </div>
         </div>
