@@ -1,5 +1,4 @@
-import { Box, Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
 
 export const Upgrade = ({ isCollapsed }) => {
   return (

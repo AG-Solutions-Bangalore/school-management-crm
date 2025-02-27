@@ -237,7 +237,7 @@ const AttendanceList = () => {
           <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
             <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
               <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-                Attendance List
+                Student Attendance List
               </h1>
               <button
                 // onClick={() => navigate("/attendance-list/createAttendance")}
