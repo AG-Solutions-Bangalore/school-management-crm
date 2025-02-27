@@ -134,7 +134,7 @@ const Timetable = () => {
                 onClick={() => filterByClass(className)}
                 className={`px-2.5 py-1 text-xs font-medium rounded transition-colors ${
                   activeClass === className
-                    ? "bg-orange-600 text-white shadow-sm"
+                    ? "bg-indigo-600 text-white shadow-sm"
                     : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
                 }`}
               >
