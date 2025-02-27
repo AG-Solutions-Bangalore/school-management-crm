@@ -196,16 +196,6 @@ const AttendanceList = () => {
               <div
                 onClick={() => {
                   setAttendanceId(id);
-                  setOpenDialog(true);
-                }}
-                className="flex items-center space-x-2"
-                title="Edit"
-              >
-                <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
-              <div
-                onClick={() => {
-                  setAttendanceId(id);
                   setOpenDeleteDialog(true);
                 }}
                 className="flex items-center space-x-2"
@@ -250,7 +240,8 @@ const AttendanceList = () => {
                 Attendance List
               </h1>
               <button
-                onClick={() => navigate("/attendance-list/createAttendance")}
+                // onClick={() => navigate("/attendance-list/createAttendance")}
+                onClick={() => navigate("/attendance-list/viewAttendance")}
                 className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
               >
                 <IconPlus className="w-4 h-4" /> Attendance

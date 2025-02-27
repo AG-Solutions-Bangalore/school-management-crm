@@ -20,6 +20,7 @@ const TeacherViewAttendance = () => {
   });
 
   const [attendanceData, setAttendanceData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
     setAttendance({
@@ -56,7 +57,7 @@ const TeacherViewAttendance = () => {
 
       if (res.data.weekdays && res.data.teacher) {
         setAttendanceData(res.data);
-        toast.success("Attendance data fetched successfully!");
+        // toast.success("Attendance data fetched successfully!");
       } else {
         toast.error("Invalid response from server");
       }
@@ -65,7 +66,65 @@ const TeacherViewAttendance = () => {
       toast.error("Something went wrong. Please try again.");
     }
   };
+  const toggleAttendance = async (teacher, date) => {
+    const isHoliday = attendanceData.weekdays.find(
+      (day) => day.date === date.date && day.holiday_for
+    );
+    if (isHoliday) return;
 
+    const isAbsent = teacher.attendance_dates.includes(date.date);
+
+    try {
+      setLoading(true);
+      // if the date is Absent
+      if (isAbsent) {
+        const attendanceIndex = teacher.attendance_dates.indexOf(date.date);
+        const attendanceId = teacher.id[attendanceIndex];
+
+        await axios({
+          url: `${BASE_URL}/api/panel-delete-teacher-attendance/${attendanceId}`,
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        toast.success(
+          `${teacher.teacher_name} marked present for ${moment(
+            date.date
+          ).format("DD MMM YYYY")}`
+        );
+      } else {
+        const data = {
+          teacherAttendance_date: date.date,
+          teacher_ref: teacher.teacher_ref,
+        };
+        console.log(data);
+        // else if the date is P
+        await axios({
+          url: `${BASE_URL}/api/panel-create-teacher-attendance`,
+          method: "POST",
+          data,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        toast.success(
+          `${teacher.teacher_name} marked absent for ${moment(date.date).format(
+            "DD MMM YYYY"
+          )}`
+        );
+      }
+
+      handleSubmit(new Event("submit"), false);
+    } catch (error) {
+      console.error("Error toggling attendance:", error);
+      toast.error("Failed to update attendance");
+    } finally {
+      setLoading(false);
+    }
+  };
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}
@@ -111,7 +170,7 @@ const TeacherViewAttendance = () => {
           <h2 className="px-5 text-[black] text-lg flex flex-row justify-between items-center rounded-xl p-2">
             <div className="flex items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
-              <span>View Teacher Attendance </span>
+              <span>Teacher Attendance </span>
             </div>
             <IconArrowBack
               onClick={() => navigate("/attendance-list")}
@@ -228,15 +287,35 @@ const TeacherViewAttendance = () => {
                             if (date.holiday_for) {
                               return null;
                             }
-
+                            const isAbsent = teacher.attendance_dates.includes(
+                              date.date
+                            );
                             return (
                               <td
                                 key={date.date}
-                                className="border border-gray-300 p-1 text-center  font-bold text-xs"
+                                onClick={() => {
+                                  console.log(
+                                    "Teacher:",
+                                    teacher,
+                                    "Date:",
+                                    date
+                                  );
+                                  toggleAttendance(teacher, date);
+                                }}
+                                className={`border border-gray-300 p-1 text-center font-bold text-xs cursor-pointer hover:bg-gray-100 attendance-cell ${
+                                  loading
+                                    ? "opacity-50 pointer-events-none"
+                                    : ""
+                                }`}
                               >
-                                {teacher.attendance_dates.includes(
+                                {/* {teacher.attendance_dates.includes(
                                   date.date
                                 ) ? (
+                                  <span className="text-red-500">A</span>
+                                ) : (
+                                  <span className="text-green-500">P</span>
+                                )} */}
+                                {isAbsent ? (
                                   <span className="text-red-500">A</span>
                                 ) : (
                                   <span className="text-green-500">P</span>

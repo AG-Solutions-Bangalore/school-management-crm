@@ -135,7 +135,7 @@ const DownloadReport = () => {
                 name="status"
                 value={report.status || ""}
                 onChange={onInputChange}
-                className={inputClassSelect}
+                 className={inputClassSelect}
               >
                 <option value="">Select Status</option>
                 {status.map((option, index) => (
