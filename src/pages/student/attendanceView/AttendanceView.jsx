@@ -49,7 +49,7 @@ const AttendanceView = () => {
     fetchClassData();
   }, []);
 
-  const handleSubmit = async (e,showToast = true) => {
+  const handleSubmit = async (e, showToast = true) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
     if (!form || !form.checkValidity()) {
@@ -95,21 +95,21 @@ const AttendanceView = () => {
 
   const toggleAttendance = async (student, date) => {
     // if the date is a holiday
+
     const isHoliday = attendanceData.weekdays.find(
       (day) => day.date === date.date && day.holiday_for
     );
     if (isHoliday) return;
 
     const isAbsent = student.attendance_dates.includes(date.date);
-    
+
     try {
       setLoading(true);
       // if the date is Absent
       if (isAbsent) {
-      
         const attendanceIndex = student.attendance_dates.indexOf(date.date);
         const attendanceId = student.id[attendanceIndex];
-        
+
         await axios({
           url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceId}`,
           method: "DELETE",
@@ -117,10 +117,13 @@ const AttendanceView = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        
-        toast.success(`${student.student_name} marked present for ${moment(date.date).format("DD MMM YYYY")}`);
+
+        toast.success(
+          `${student.student_name} marked present for ${moment(
+            date.date
+          ).format("DD MMM YYYY")}`
+        );
       } else {
-     
         const data = {
           studentAttendance_date: date.date,
           studentAttendance_class: attendance.from_class,
@@ -135,12 +138,15 @@ const AttendanceView = () => {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        
-        toast.success(`${student.student_name} marked absent for ${moment(date.date).format("DD MMM YYYY")}`);
+
+        toast.success(
+          `${student.student_name} marked absent for ${moment(date.date).format(
+            "DD MMM YYYY"
+          )}`
+        );
       }
-      
-      
-      handleSubmit(new Event('submit'), false); 
+
+      handleSubmit(new Event("submit"), false);
     } catch (error) {
       console.error("Error toggling attendance:", error);
       toast.error("Failed to update attendance");
@@ -197,7 +203,7 @@ const AttendanceView = () => {
           <h2 className="px-5 text-[black] text-lg flex flex-row justify-between items-center rounded-xl p-2">
             <div className="flex items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
-              <span>View Attendance</span>
+              <span>Student Attendance</span>
             </div>
             <IconArrowBack
               onClick={() => navigate("/attendance-list")}
@@ -283,7 +289,6 @@ const AttendanceView = () => {
                 </div>
                 <button
                   onClick={handlPrintPdf}
-                
                   className={`text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md print-hide`}
                   type="button"
                 >
@@ -329,7 +334,7 @@ const AttendanceView = () => {
                       {attendanceData.student.map((student, studentIndex) => (
                         <tr key={student.student_name}>
                           <td className="border border-gray-300 text-center text-xs p-1">
-                            {student.student_name} 
+                            {student.student_name}
                           </td>
 
                           {dates.map((date, dateIndex) => {
@@ -362,7 +367,9 @@ const AttendanceView = () => {
                                 key={date.date}
                                 onClick={() => toggleAttendance(student, date)}
                                 className={`border border-gray-300 p-1 text-center font-bold text-xs cursor-pointer hover:bg-gray-100 attendance-cell ${
-                                  loading ? "opacity-50 pointer-events-none" : ""
+                                  loading
+                                    ? "opacity-50 pointer-events-none"
+                                    : ""
                                 }`}
                               >
                                 {isAbsent ? (

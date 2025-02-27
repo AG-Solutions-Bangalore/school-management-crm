@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
-import Layout from '../../../layout/Layout'
-import { useNavigate } from 'react-router-dom';
-import { ContextPanel } from '../../../context/ContextPanel';
-import BASE_URL from '../../../base/BaseUrl';
-import axios from 'axios';
-import { IconEdit } from '@tabler/icons-react';
-import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
-import { PendingFeesDialog } from './PendingFeesDialog';
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import Layout from "../../../layout/Layout";
+import { useNavigate } from "react-router-dom";
+import { ContextPanel } from "../../../context/ContextPanel";
+import BASE_URL from "../../../base/BaseUrl";
+import axios from "axios";
+import { IconEdit } from "@tabler/icons-react";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import { PendingFeesDialog } from "./PendingFeesDialog";
 
 const PendingFees = () => {
-    const [pendingFeesData, setPendingFeesData] = useState(null);
-       const [loading, setLoading] = useState(false);
-        const { selectedYear } = useContext(ContextPanel);
-        const [dialogOpen, setDialogOpen] = useState(false);
-        const [selectedStudent, setSelectedStudent] = useState(null);
+  const [pendingFeesData, setPendingFeesData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { selectedYear } = useContext(ContextPanel);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const fetchPendingFeesData = async () => {
     try {
@@ -51,8 +51,6 @@ const PendingFees = () => {
 
   const columns = useMemo(
     () => [
-   
-
       {
         accessorKey: "student_admission_no",
         header: "Adm. No.",
@@ -106,7 +104,6 @@ const PendingFees = () => {
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
-            
             </div>
           );
         },
@@ -130,16 +127,14 @@ const PendingFees = () => {
   });
   return (
     <Layout>
-       <div className="max-w-screen">
+      <div className="max-w-screen">
         <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
           {/* Header Section */}
           <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
             <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-              Pending Fees List
+              Student Pending Fees List
             </h1>
-            <div className="flex gap-2">
-            
-            </div>
+            <div className="flex gap-2"></div>
           </div>
         </div>
 
@@ -153,9 +148,8 @@ const PendingFees = () => {
           onSuccess={fetchPendingFeesData}
         />
       </div>
-     
     </Layout>
-  )
-}
+  );
+};
 
-export default PendingFees
+export default PendingFees;

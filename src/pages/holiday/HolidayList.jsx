@@ -21,7 +21,7 @@ const HolidayList = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
-  const {selectedYear}= useContext(ContextPanel)
+  const { selectedYear } = useContext(ContextPanel);
 
   const fetchHolidayData = async () => {
     try {
@@ -63,8 +63,8 @@ const HolidayList = () => {
     } catch (error) {
       console.error("Error deleting holiday", error);
     } finally {
-        setDeleteDialogOpen(false); 
-        setDeleteId(null);
+      setDeleteDialogOpen(false);
+      setDeleteId(null);
     }
   };
 
@@ -105,15 +105,15 @@ const HolidayList = () => {
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
               <div
-                                             onClick={() => {
-                                                 setDeleteId(id);
-                                                 setDeleteDialogOpen(true);
-                                             }}
-                                             className="flex items-center space-x-2 cursor-pointer"
-                                             title="Delete"
-                                         >
-                                             <IconTrash className="h-5 w-5 text-red-500" />
-                                         </div>
+                onClick={() => {
+                  setDeleteId(id);
+                  setDeleteDialogOpen(true);
+                }}
+                className="flex items-center space-x-2 cursor-pointer"
+                title="Delete"
+              >
+                <IconTrash className="h-5 w-5 text-red-500" />
+              </div>
             </div>
           );
         },
@@ -158,26 +158,25 @@ const HolidayList = () => {
         <div className=" shadow-md">
           <MantineReactTable table={table} />
         </div>
-      
       </div>
-        {/* Delete Confirmation Modal */}
-        <Dialog
-          open={deleteDialogOpen}
-          handler={() => setDeleteDialogOpen(false)}
-        >
-          <DialogHeader>Confirm Delete</DialogHeader>
-          <DialogBody>
-            <p>Are you sure you want to delete this holiday?</p>
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button color="red" onClick={handleDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </Dialog>
+      {/* Delete Confirmation Modal */}
+      <Dialog
+        open={deleteDialogOpen}
+        handler={() => setDeleteDialogOpen(false)}
+      >
+        <DialogHeader>Confirm Delete</DialogHeader>
+        <DialogBody>
+          <p>Are you sure you want to delete this holiday?</p>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" onClick={() => setDeleteDialogOpen(false)}>
+            Cancel
+          </Button>
+          <Button color="red" onClick={handleDelete}>
+            Delete
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </Layout>
   );
 };

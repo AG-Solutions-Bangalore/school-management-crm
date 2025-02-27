@@ -7,7 +7,10 @@ import axios from "axios";
 
 import moment from "moment/moment";
 import { toast } from "sonner";
-import BASE_URL, { StudentImageUrl, StudentNoImageUrl } from "../../../base/BaseUrl";
+import BASE_URL, {
+  StudentImageUrl,
+  StudentNoImageUrl,
+} from "../../../base/BaseUrl";
 
 const CurrentStudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -16,7 +19,22 @@ const CurrentStudentList = () => {
   const [activeClass, setActiveClass] = useState("ALL");
   const navigate = useNavigate();
 
-  const classList = ["ALL", "NURSERY", "LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  const classList = [
+    "ALL",
+    "NURSERY",
+    "LKG",
+    "UKG",
+    "I",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+  ];
 
   const fetchStudentData = async () => {
     try {
@@ -100,7 +118,7 @@ const CurrentStudentList = () => {
           );
         },
       },
-     
+
       {
         accessorKey: "combined",
         header: "Admission No/Date",
@@ -124,38 +142,31 @@ const CurrentStudentList = () => {
         accessorKey: "combined",
         header: "Name/Class",
         size: 150,
-        accessorFn: (row) =>
-          `${row.student_name} - ${row.studentClass_class}`,
+        accessorFn: (row) => `${row.student_name} - ${row.studentClass_class}`,
         Cell: ({ row }) => (
           <div className="flex flex-col text-xs">
             <span className="text-black font-semibold">
               {row.original.student_name}
             </span>
             <span className="text-black text-xs">
-            {row.original.studentClass_class}
+              {row.original.studentClass_class}
             </span>
           </div>
         ),
       },
-     
-     
 
-        
       {
         accessorKey: "combined",
         header: "Gender /DOB",
         size: 150,
-        accessorFn: (row) =>
-          `${row.student_gender} - ${row.student_dob}`,
+        accessorFn: (row) => `${row.student_gender} - ${row.student_dob}`,
         Cell: ({ row }) => (
           <div className="flex flex-col text-xs">
             <span className="text-black font-semibold">
               {row.original.student_gender}
             </span>
             <span className="text-black text-xs">
-              {moment(row.original.student_dob).format(
-                "DD-MMM-YYYY"
-              )}
+              {moment(row.original.student_dob).format("DD-MMM-YYYY")}
             </span>
           </div>
         ),
@@ -196,14 +207,22 @@ const CurrentStudentList = () => {
           return (
             <div className="flex gap-2">
               <div
-              onClick={() => navigate(`/student-list/editStudent/${id}`, { state: { from: '/current-student-list' } })}
+                onClick={() =>
+                  navigate(`/student-list/editStudent/${id}`, {
+                    state: { from: "/current-student-list" },
+                  })
+                }
                 className="flex items-center space-x-2"
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
               <div
-                onClick={() => navigate(`/student-list/viewStudent/${id}`, { state: { from: '/current-student-list' } })}
+                onClick={() =>
+                  navigate(`/student-list/viewStudent/${id}`, {
+                    state: { from: "/current-student-list" },
+                  })
+                }
                 className="flex items-center space-x-2"
                 title="View"
               >
@@ -240,11 +259,11 @@ const CurrentStudentList = () => {
           {/* Header Section */}
           <div className="flex justify-between items-center mb-4">
             <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-              Student List
+              Current Student List
             </h1>
           </div>
-  
-        {/* Class filter Section  */}
+
+          {/* Class filter Section  */}
           <div className="flex flex-wrap gap-2">
             {classList.map((className) => (
               <button
@@ -261,7 +280,7 @@ const CurrentStudentList = () => {
             ))}
           </div>
         </div>
-  
+
         <div className="shadow-md">
           <MantineReactTable table={table} />
         </div>
