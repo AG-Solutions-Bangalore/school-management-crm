@@ -1,34 +1,46 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Layout from "../../layout/Layout";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
+import { 
+  IconBook, 
+  IconPlus, 
+  IconX, 
+  IconFilter, 
+  IconSearch,
+  IconSchool,
+  IconAdjustments,
+  IconChevronDown,
+  IconChevronUp,
+  IconPresentationAnalytics
+} from "@tabler/icons-react";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { toast } from "sonner";
 import {
-  Button,
   Dialog,
   DialogContent,
-  FormLabel,
-  IconButton,
   Slide,
+  IconButton,
+  CircularProgress
 } from "@mui/material";
-import { IconX } from "@tabler/icons-react";
-import LoaderComponent from "../../components/common/LoaderComponent";
 
 const SubjectList = () => {
   const [subjectData, setSubjectData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [loadingClass, setLoadingClass] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const buttonRef = useRef(null); 
   const [classes, setClasses] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterActive, setFilterActive] = useState(null);
+  const [selectedClass, setSelectedClass] = useState("all");
+  const [showStats, setShowStats] = useState(true);
 
   const [subject, setSubject] = useState({
     class_subject: "",
     subject: "",
   });
+
   const fetchSubjectData = async () => {
     try {
       setLoading(true);
@@ -41,7 +53,6 @@ const SubjectList = () => {
           },
         }
       );
-
       setSubjectData(response.data?.subject);
     } catch (error) {
       console.error("Error fetching subject List data", error);
@@ -49,32 +60,35 @@ const SubjectList = () => {
       setLoading(false);
     }
   };
+
   const fetchClasses = async () => {
     try {
-      setLoading(true);
+      setLoadingClass(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setClasses(response.data?.classes);
     } catch (error) {
-      console.error("Error fetching classes  data", error);
+      console.error("Error fetching classes data", error);
     } finally {
-      setLoading(false);
+      setLoadingClass(false);
     }
   };
+
   useEffect(() => {
     fetchSubjectData();
   }, []);
+
   const onInputChange = (e) => {
     setSubject({
       ...subject,
       [e.target.name]: e.target.value,
     });
   };
+
   const toggleStatus = async (id, currentStatus) => {
     try {
       const token = localStorage.getItem("token");
@@ -102,63 +116,15 @@ const SubjectList = () => {
     }
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "class_subject",
-        header: "Class Subject",
-        size: 150,
-      },
-      {
-        accessorKey: "subject",
-        header: "Subject",
-        size: 150,
-      },
-      {
-        accessorKey: "subject_status",
-        header: "Status",
-        size: 150,
-        Cell: ({ row }) => {
-          const { id, subject_status } = row.original;
-          return (
-            <button
-              onClick={() => toggleStatus(id, subject_status)}
-              className={`px-2 py-1 rounded transition-colors ${
-                subject_status === "Active"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-500 text-white"
-              }`}
-            >
-              {subject_status}
-            </button>
-          );
-        },
-      },
-    ],
-    []
-  );
-
-  const table = useMantineReactTable({
-    columns,
-    data: subjectData || [],
-    enableFullScreenToggle: false,
-    enableDensityToggle: false,
-    enableColumnActions: false,
-    enableHiding: false,
-    enableStickyHeader: true,
-    enableStickyFooter: true,
-    mantineTableContainerProps: { sx: { maxHeight: "400px" } },
-    initialState: { columnVisibility: { address: false } },
-  });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = document.getElementById("addIndiv");
+    const form = document.getElementById("addSubjectForm");
     if (!form.checkValidity()) {
-      toast.error("Fill all required");
+      toast.error("Please fill all required fields");
       setIsButtonDisabled(false);
-
       return;
     }
+    
     const data = {
       class_subject: subject.class_subject,
       subject: subject.subject,
@@ -191,85 +157,343 @@ const SubjectList = () => {
       });
     });
   };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+    fetchClasses()
+   
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  
+  };
+  // Group subjects by class --sajid /27 feb
+  const groupedSubjects = React.useMemo(() => {
+    if (!subjectData) return {};
+    
+    return subjectData.reduce((acc, subject) => {
+      if (!acc[subject.class_subject]) {
+        acc[subject.class_subject] = [];
+      }
+      acc[subject.class_subject].push(subject);
+      return acc;
+    }, {});
+  }, [subjectData]);
+
+  // static class
+  const classOrder = ["NURSERY", "LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  
+  // Sorting the class
+  const sortedClassNames = React.useMemo(() => {
+    if (!groupedSubjects) return [];
+    
+    return Object.keys(groupedSubjects).sort((a, b) => {
+      const indexA = classOrder.indexOf(a);
+      const indexB = classOrder.indexOf(b);
+      
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      
+
+      return a.localeCompare(b);
+    });
+  }, [groupedSubjects]);
+
+
+  const filteredSubjects = React.useMemo(() => {
+    if (!subjectData) return [];
+    
+    return subjectData.filter(subject => {
+      const matchesSearch = searchTerm === "" || 
+        subject.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        subject.class_subject.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesFilter = filterActive === null || 
+        (filterActive === true && subject.subject_status === "Active") ||
+        (filterActive === false && subject.subject_status === "Inactive");
+      
+      const matchesClass = selectedClass === "all" || subject.class_subject === selectedClass;
+      
+      return matchesSearch && matchesFilter && matchesClass;
+    });
+  }, [subjectData, searchTerm, filterActive, selectedClass]);
+
+  // Get class statistics
+  const classStats = React.useMemo(() => {
+    if (!subjectData) return [];
+    
+    const stats = sortedClassNames.map(className => {
+      const subjects = groupedSubjects[className] || [];
+      const activeCount = subjects.filter(s => s.subject_status === "Active").length;
+      
+      return {
+        name: className,
+        total: subjects.length,
+        active: activeCount,
+        inactive: subjects.length - activeCount
+      };
+    });
+    
+    return stats;
+  }, [groupedSubjects, sortedClassNames]);
+
+  // Calculate total stats -- err 409
+  const totalStats = React.useMemo(() => {
+    if (!classStats.length) return { total: 0, active: 0, inactive: 0 };
+    
+    return classStats.reduce((acc, stat) => {
+      return {
+        total: acc.total + stat.total,
+        active: acc.active + stat.active,
+        inactive: acc.inactive + stat.inactive
+      };
+    }, { total: 0, active: 0, inactive: 0 });
+  }, [classStats]);
   const FormLabel = ({ children, required }) => (
-    <label className="block text-sm font-semibold text-black mb-1 ">
-      {children}
-      {required && <span className="text-red-500 ml-1">*</span>}
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      {children} {required && <span className="text-red-500">*</span>}
     </label>
   );
-
-  const inputClassSelect =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
-  const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
   return (
     <>
       <Layout>
-        <div className="max-w-screen">
-          <div className="bg-white p-4 mb-4 rounded-lg shadow-md">
-            <div className="flex flex-col md:flex-row justify-between gap-4 items-center">
-              <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
-                Subject List
-              </h1>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setOpenDialog(true);
-                    fetchClasses();
-                  }}
-                  className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+        <div className="bg-gray-50 min-h-screen">
+         
+          <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+            <div className="max-w-screen-2xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-800">Subject Dashboard</span>
+                {!loading && (
+                  <div className="ml-2 text-xs py-1 px-2 bg-indigo-50 text-indigo-700 rounded-full">
+                    {filteredSubjects.length} Subjects
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-2 ml-auto">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-44 pl-8 pr-3 py-1.5 text-sm rounded-full border border-gray-200 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <IconSearch className="absolute left-2.5 top-2 text-gray-400 w-4 h-4" />
+                </div>
+                
+                <button 
+                  className={`flex items-center gap-1 py-1.5 px-3 rounded-full text-xs font-medium transition-colors ${
+                    filterActive === true 
+                      ? "bg-green-50 text-green-700 border border-green-200" 
+                      : filterActive === false 
+                      ? "bg-gray-50 text-gray-700 border border-gray-200"
+                      : "bg-indigo-50 text-indigo-700 border border-indigo-200"
+                  }`}
+                  onClick={() => setFilterActive(
+                    filterActive === null ? true : 
+                    filterActive === true ? false : null
+                  )}
                 >
-                  <IconPlus className="w-4 h-4" /> Subject
+                  <IconFilter className="w-3.5 h-3.5" />
+                  {filterActive === null ? "All" : 
+                   filterActive === true ? "Active" : "Inactive"}
+                </button>
+                
+                <button
+                 ref={buttonRef} 
+                 onClick={handleOpenDialog}
+                  className="flex items-center gap-1 text-xs font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 rounded-full transition-colors"
+                >
+                  <IconPlus className="w-3.5 h-3.5" /> Subject
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="shadow-md">
-            {!subjectData ? (
-              <LoaderComponent />
+          <div className="max-w-screen-2xl mx-auto px-4 py-3">
+          
+            {selectedClass === "all" && (
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4 overflow-hidden">
+                <div 
+                  className="flex justify-between items-center p-3 border-b border-gray-100 cursor-pointer"
+                  onClick={() => setShowStats(!showStats)}
+                >
+                  <div className="flex items-center gap-2">
+                    <IconPresentationAnalytics className="text-indigo-500 w-4 h-4" />
+                    <h3 className="font-medium text-sm text-gray-800">Subject Overview</h3>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="hidden sm:flex items-center gap-2 text-xs text-gray-900">
+                      <span>Total: <strong>{totalStats.total}</strong></span>
+                      <span className="h-3 w-px bg-gray-200"></span>
+                      <span className="text-green-600">Active: <strong>{totalStats.active}</strong></span>
+                      <span className="h-3 w-px bg-gray-200"></span>
+                      <span className="text-gray-900">Inactive: <strong>{totalStats.inactive}</strong></span>
+                    </div>
+                    {showStats ? (
+                      <IconChevronUp className="w-4 h-4 text-gray-900" />
+                    ) : (
+                      <IconChevronDown className="w-4 h-4 text-gray-900" />
+                    )}
+                  </div>
+                </div>
+                
+                {showStats && (
+                  <div className="p-3 grid grid-cols-2 overflow-x-auto">
+                    <div className="flex gap-2 pb-1">
+                      {classStats.map(stat => (
+                        <div 
+                          key={stat.name}
+                          className={`min-w-[120px] p-2 rounded-lg border transition-all cursor-pointer ${
+                            selectedClass === stat.name 
+                              ? "bg-indigo-50 border-indigo-200" 
+                              : "bg-white border-gray-200 hover:border-indigo-200"
+                          }`}
+                          onClick={() => setSelectedClass(stat.name)}
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <div className="font-medium text-xs">
+                              {stat.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {stat.total}
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-1 mt-1">
+                            <div className="h-1.5 bg-green-200 rounded-full" style={{ width: `${(stat.active/stat.total)*100}%` }}></div>
+                            <div className="h-1.5 bg-gray-200 rounded-full" style={{ width: `${(stat.inactive/stat.total)*100}%` }}></div>
+                          </div>
+                          
+                          <div className="flex justify-between mt-1">
+                            <span className="text-[10px] text-green-600">{stat.active}</span>
+                            <span className="text-[10px] text-gray-500">{stat.inactive}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Class Filter  */}
+            <div className="mb-4 overflow-x-auto">
+              <div className="flex gap-1.5 min-w-max">
+                <button
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                    selectedClass === "all" 
+                      ? "bg-indigo-100 text-indigo-800 border border-indigo-200" 
+                      : "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50"
+                  }`}
+                  onClick={() => setSelectedClass("all")}
+                >
+                  All Classes
+                </button>
+                
+                {sortedClassNames.map(className => (
+                  <button
+                    key={className}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
+                      selectedClass === className 
+                        ? "bg-indigo-100 text-indigo-800 border border-indigo-200" 
+                        : "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setSelectedClass(className)}
+                  >
+                    {className}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <CircularProgress size={40} style={{ color: '#4f46e5' }} />
+              </div>
             ) : (
-              <MantineReactTable table={table} />
-            )}{" "}
+              <div className="mb-6">
+                {filteredSubjects.length === 0 ? (
+                  <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+                    <IconBook className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                    <p className="text-gray-500">No subjects found matching your criteria.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {filteredSubjects.map(subject => (
+                      <div 
+                        key={subject.id}
+                        className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+                      >
+                        <div className={`h-1 ${subject.subject_status === "Active" ? "bg-green-500" : "bg-gray-300"}`}></div>
+                        <div className="p-3">
+                          <div className="flex justify-between items-start">
+                            <div className="text-[10px] font-medium text-gray-900 uppercase tracking-wide mb-1">
+                              {subject.class_subject}
+                            </div>
+                          </div>
+                          <div className="font-medium text-sm text-gray-800 h-10 line-clamp-2" title={subject.subject}>
+                            {subject.subject}
+                          </div>
+                          
+                          <button
+                            onClick={() => toggleStatus(subject.id, subject.subject_status)}
+                            className={`w-full mt-2 px-2 py-1 rounded-full text-[10px] font-medium text-center transition-colors ${
+                              subject.subject_status === "Active"
+                                ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                                : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                            }`}
+                          >
+                            {subject.subject_status}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-      </Layout>
-      <Dialog
+        <Dialog
         open={openDialog}
-        onClose={() => setOpenDialog(false)}
+        onClose={handleCloseDialog}
         fullWidth
         maxWidth="sm"
-        sx={{ backdropFilter: "blur(4px)" }}
-        TransitionComponent={Slide}
-        transitionDuration={500}
+        
+       
       >
-        <DialogContent>
-          <div className="mt-2">
-            <div className="mb-4 flex justify-between">
-              <h3 className="font-bold text-xl">Create Subject</h3>
-              <IconButton edge="end" onClick={() => setOpenDialog(false)}>
-                <IconX />
+        <DialogContent sx={{ padding: '16px' }}>
+          <div className="relative">
+            <div className="absolute top-0 right-0">
+              <IconButton edge="end" onClick={() => setOpenDialog(false)} size="small">
+                <IconX size={18} />
               </IconButton>
             </div>
+            
+            <h3 className="font-bold text-lg text-gray-800 mb-4 pr-8">Add New Subject</h3>
 
             <form
               onSubmit={handleSubmit}
-              id="addIndiv"
-              className="w-full   rounded-lg mx-auto p-4 space-y-6 "
+              id="addSubjectForm"
+              className="space-y-4"
             >
-              <div className="grid grid-cols-1 gap-6">
-                {/* Classes  */}
-
+              <div className="space-y-4">
                 <div>
-                  <FormLabel required>Clasess</FormLabel>
+                <FormLabel required>Class</FormLabel>
                   <select
                     name="class_subject"
                     value={subject.class_subject}
-                    onChange={(e) => onInputChange(e)}
+                    onChange={onInputChange}
                     required
-                    className={inputClassSelect}
+                    className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500"
                   >
-                    <option value="">Select Classes</option>
+                    <option value="">Select Class</option>
                     {classes.map((option) => (
                       <option key={option.classes} value={option.classes}>
                         {option.classes}
@@ -277,42 +501,46 @@ const SubjectList = () => {
                     ))}
                   </select>
                 </div>
-                {/* Subject */}
+                
                 <div>
-                  <FormLabel required>Subject</FormLabel>
+                <FormLabel required>Subject</FormLabel>
                   <input
                     type="text"
                     name="subject"
                     value={subject.subject}
-                    onChange={(e) => onInputChange(e)}
-                    className={inputClass}
+                    onChange={onInputChange}
+                    className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500"
+                    placeholder="Subject Name"
                     required
                   />
                 </div>
               </div>
 
-              {/* Form Actions */}
-              <div className="flex flex-wrap gap-4 justify-center">
-                <button
-                  type="submit"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-                  disabled={isButtonDisabled}
-                >
-                  {isButtonDisabled ? "Creating..." : "Create"}
-                </button>
-
+              <div className="flex gap-2 justify-end pt-2">
                 <button
                   type="button"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
-                  onClick={() => setOpenDialog(false)}
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-gray-700 border border-gray-300 hover:bg-gray-50 transition-colors"
+                  onClick={handleCloseDialog}
                 >
-                  Back
+                  Cancel
+                </button>
+                
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  disabled={isButtonDisabled}
+                >
+                  {isButtonDisabled ? "Adding..." : "Add Subject"}
                 </button>
               </div>
             </form>
           </div>
         </DialogContent>
       </Dialog>
+      </Layout>
+      
+    
+    
     </>
   );
 };

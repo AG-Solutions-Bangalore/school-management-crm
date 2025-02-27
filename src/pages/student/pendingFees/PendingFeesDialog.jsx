@@ -27,6 +27,7 @@ const FormLabel = ({ children, required }) => (
 // Add Fees Dialog Component
 export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess }) => {
   const [loading, setLoading] = useState(false);
+  const [loadingSumbit, setLoadingSumbit] = useState(false);
   const [paymentTypes, setPaymentTypes] = useState([]);
   const { selectedYear } = useContext(ContextPanel);
   const [formData, setFormData] = useState({
@@ -88,7 +89,7 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      setLoadingSumbit(true);
       const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
@@ -125,7 +126,7 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
       console.error("Error creating student fees", error);
       toast.error("Failed to create student fees");
     } finally {
-      setLoading(false);
+      setLoadingSumbit(false);
     }
   };
 
@@ -211,9 +212,9 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
           <button
             type="submit"
             className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
-            disabled={loading}
+            disabled={loadingSumbit}
           >
-            {loading ? "Adding..." : "Add Pending Fees"}
+            {loadingSumbit ? "Adding..." : "Add Pending Fees"}
           </button>
         </DialogActions>
       </form>
