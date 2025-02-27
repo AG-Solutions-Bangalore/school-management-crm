@@ -8,6 +8,8 @@ import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { toast } from "sonner";
 import { Eye } from "lucide-react";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -130,14 +132,32 @@ const TeacherList = () => {
           return (
             <div className="flex gap-2">
               <div
-                onClick={() => navigate(`/teacher-list/editTeacher/${id}`)}
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/teacher-list/editTeacher/${encodeURIComponent(
+                      encryptedId
+                    )}`
+                  );
+                }}
+                // onClick={() => navigate(`/teacher-list/editTeacher/${id}`)}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
               <div
-                onClick={() => navigate(`/teacher-list/viewTeacher/${id}`)}
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/teacher-list/viewTeacher/${encodeURIComponent(
+                      encryptedId
+                    )}`
+                  );
+                }}
+                // onClick={() => navigate(`/teacher-list/viewTeacher/${id}`)}
                 className="flex items-center space-x-2"
                 title="View"
               >
@@ -185,7 +205,11 @@ const TeacherList = () => {
         </div>
 
         <div className=" shadow-md">
-          <MantineReactTable table={table} />
+          {!teacherData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}{" "}
         </div>
       </div>
     </Layout>

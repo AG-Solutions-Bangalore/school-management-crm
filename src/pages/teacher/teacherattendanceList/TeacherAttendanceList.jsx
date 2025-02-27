@@ -21,6 +21,7 @@ import { ContextPanel } from "../../../context/ContextPanel";
 import { Trash } from "lucide-react";
 import CreateAttendance from "../../student/attendanceList/CreateAttendance";
 import CreateTeacherAttendance from "./CreateAttendance";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const TeacherAttendanceList = () => {
   const [teacherAttendanceData, setTeacherAttendanceData] = useState(null);
@@ -245,7 +246,11 @@ const TeacherAttendanceList = () => {
           </div>
 
           <div className="shadow-md">
-            <MantineReactTable table={table} />
+            {!teacherAttendanceData ? (
+              <LoaderComponent />
+            ) : (
+              <MantineReactTable table={table} />
+            )}
           </div>
         </div>
       </Layout>

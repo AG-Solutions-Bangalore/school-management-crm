@@ -3,6 +3,7 @@ import Layout from "../../../layout/Layout";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const EnquiryList = () => {
   const [enquiryData, setEnquiryData] = useState(null);
@@ -91,7 +92,11 @@ const EnquiryList = () => {
         </div>
 
         <div className=" shadow-md">
-          <MantineReactTable table={table} />
+          {!enquiryData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}
         </div>
       </div>
     </Layout>

@@ -1,12 +1,12 @@
+
 import {
-  Button,
   Dialog,
-  DialogBody,
-  DialogFooter,
-  DialogHeader,
-  Slider,
-} from "@material-tailwind/react";
-import { Slide } from "@mui/material";
+  DialogActions,
+  DialogContent,
+  IconButton,
+  Slide,
+} from "@mui/material";
+import { IconX } from "@tabler/icons-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -21,12 +21,22 @@ const Logout = ({ open, handleOpen }) => {
     <Dialog
       open={open}
       handler={handleOpen}
-      transition="slide-in"
-      transitionDuration="500"
+      TransitionComponent={Slide}
+      transitionDuration={500}
+      maxWidth="sm"
+      fullWidth
+      sx={{ backdropFilter: "blur(4px)", padding: "10px" }}
     >
-      <DialogHeader>Confirm Logout</DialogHeader>
-      <DialogBody>Are you sure you want to log out?</DialogBody>
-      <DialogFooter>
+      <DialogContent>
+        <div className="mb-4 flex justify-between">
+          <h2 className="font-bold text-2xl">Confirm Logout</h2>
+          <IconButton edge="end" onClick={handleOpen}>
+            <IconX />
+          </IconButton>
+        </div>
+        <h3 className="text-lg">Are you sure you want to log out?</h3>
+      </DialogContent>
+      <DialogActions>
         <button
           className="text-center text-sm font-[400] cursor-pointer hover:animate-pulse w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md mr-2"
           onClick={handleOpen}
@@ -39,7 +49,7 @@ const Logout = ({ open, handleOpen }) => {
         >
           <span>Confirm</span>
         </button>
-      </DialogFooter>
+      </DialogActions>
     </Dialog>
   );
 };

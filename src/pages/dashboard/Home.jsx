@@ -3,16 +3,21 @@ import { FileText, Users, Briefcase } from "lucide-react";
 import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../context/ContextPanel";
+import LoaderComponent from "../../components/common/LoaderComponent";
 import ReactApexChart from 'react-apexcharts';
 
 const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
   <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
     <div className="flex items-center justify-between mb-2">
-      <h3 className="text-gray-600 font-medium text-sm md:text-base">{title}</h3>
+      <h3 className="text-gray-600 font-medium text-sm md:text-base">
+        {title}
+      </h3>
       <Icon className={`h-6 w-6 text-${color}-500`} />
     </div>
     <div className="mt-2">
-      <p className="text-2xl md:text-3xl font-bold text-gray-800">{value || 0}</p>
+      <p className="text-2xl md:text-3xl font-bold text-gray-800">
+        {value || 0}
+      </p>
     </div>
   </div>
 );
@@ -143,7 +148,7 @@ const Home = () => {
         <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
 
         {isLoading ? (
-          <LoadingSpinner />
+          <LoaderComponent />
         ) : (
           <>
             <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

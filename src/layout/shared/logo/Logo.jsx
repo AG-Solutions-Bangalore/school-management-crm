@@ -30,7 +30,6 @@ const Logo = ({ isCollapsed }) => {
             src={`${LoginImageUrl}/ppvn.png`}
             alt="logo"
             className="h-16"
-            priority
           />
         </LinkStyled>
       ) : (
@@ -39,7 +38,6 @@ const Logo = ({ isCollapsed }) => {
             src={`${LoginImageUrl}/ppvn.png`}
             alt="logo"
             className="h-[2rem]"
-            priority
           />
         </LargeLinkStyled>
       )}

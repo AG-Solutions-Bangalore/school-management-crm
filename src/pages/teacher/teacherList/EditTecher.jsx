@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 const status = [
   {
     value: "Active",
@@ -17,6 +18,8 @@ const status = [
 ];
 const EditTeacher = () => {
   const { id } = useParams();
+  const decryptedId = decryptId(id);
+
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
 
@@ -48,7 +51,7 @@ const EditTeacher = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-by-id/${id}`,
+        `${BASE_URL}/api/panel-fetch-teacher-by-id/${decryptedId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -169,7 +172,7 @@ const EditTeacher = () => {
     setIsButtonDisabled(true);
     try {
       const response = await axios.put(
-        `${BASE_URL}/api/panel-update-teacher/${id}`,
+        `${BASE_URL}/api/panel-update-teacher/${decryptedId}`,
         data,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
