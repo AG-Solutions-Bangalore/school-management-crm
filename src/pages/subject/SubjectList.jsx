@@ -317,7 +317,7 @@ const SubjectList = () => {
 
           <div className="max-w-screen-2xl mx-auto px-4 py-3">
           
-            {selectedClass === "all" && (
+            {/* {selectedClass === "all" && (
               <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4 overflow-hidden">
                 <div 
                   className="flex justify-between items-center p-3 border-b border-gray-100 cursor-pointer"
@@ -380,9 +380,9 @@ const SubjectList = () => {
                   </div>
                 )}
               </div>
-            )}
+            )} */}
 
-            {/* Class Filter  */}
+         
             <div className="mb-4 overflow-x-auto">
               <div className="flex gap-1.5 min-w-max">
                 <button
@@ -432,25 +432,35 @@ const SubjectList = () => {
                       >
                         <div className={`h-1 ${subject.subject_status === "Active" ? "bg-green-500" : "bg-gray-300"}`}></div>
                         <div className="p-3">
-                          <div className="flex justify-between items-start">
-                            <div className="text-[10px] font-medium text-gray-900 uppercase tracking-wide mb-1">
+
+
+
+                          <div className="flex flex-row items-center justify-between ">
+                            <div className="text-[10px]  font-medium text-gray-900 uppercase tracking-wide ">
                               {subject.class_subject}
                             </div>
+                            <div
+  onClick={() => toggleStatus(subject.id, subject.subject_status)}
+  className={`w-8 h-4 flex items-center rounded-full p-0.5 cursor-pointer transition-colors ${
+    subject.subject_status === "Active"
+      ? "bg-green-400"
+      : "bg-gray-300"
+  }`}
+>
+  <div
+    className={`bg-white w-3 h-3 rounded-full shadow-sm transform transition-transform ${
+      subject.subject_status === "Active" ? "translate-x-4" : "translate-x-0"
+    }`}
+  />
+</div>
                           </div>
-                          <div className="font-medium text-sm text-gray-800 h-10 line-clamp-2" title={subject.subject}>
+
+
+                          <div className="font-medium text-sm text-gray-800 line-clamp-2" title={subject.subject}>
                             {subject.subject}
                           </div>
                           
-                          <button
-                            onClick={() => toggleStatus(subject.id, subject.subject_status)}
-                            className={`w-full mt-2 px-2 py-1 rounded-full text-[10px] font-medium text-center transition-colors ${
-                              subject.subject_status === "Active"
-                                ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
-                                : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
-                            }`}
-                          >
-                            {subject.subject_status}
-                          </button>
+                         
                         </div>
                       </div>
                     ))}

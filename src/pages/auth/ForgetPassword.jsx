@@ -3,10 +3,7 @@ import { toast } from "sonner";
 import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FormLabel } from "@mui/material";
-import logo from "../../assets/Companylogo/dfc.png";
-import logo1 from "../../assets/Companylogo/logo1.jpg";
-
+import CrmLogo from "../../assets/Companylogo/ppvn-logo.png"
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -55,7 +52,7 @@ const ForgetPassword = () => {
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
               <img
-                src={`${LoginImageUrl}/ppvn.png`}
+                src={CrmLogo}
                 alt="Logo"
                 className="w-35 h-35"
               />

@@ -1,11 +1,11 @@
 import { styled } from "@mui/material";
 import { Link } from "react-router-dom";
-import logo from "../../../assets/Companylogo/dfc.png";
 import { LoginImageUrl } from "../../../base/BaseUrl";
 
+import CrmLogo from "../../../assets/Companylogo/ppvn-logo.png"
 const LinkStyled = styled(Link)(() => ({
-  height: "63px",
-  width: "180px",
+  height: "65px",
+  width: "220px",
   overflow: "hidden",
   display: "flex",
   justifyContent: "center",
@@ -27,7 +27,7 @@ const Logo = ({ isCollapsed }) => {
       {!isCollapsed ? (
         <LinkStyled to="/home">
           <img
-            src={`${LoginImageUrl}/ppvn.png`}
+            src={CrmLogo}
             alt="logo"
             className="h-16"
           />

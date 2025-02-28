@@ -3,7 +3,7 @@ import { FileText, Users, Briefcase } from "lucide-react";
 import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../context/ContextPanel";
-import ReactApexChart from 'react-apexcharts';
+import ReactApexChart from "react-apexcharts";
 
 const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
   <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
@@ -33,17 +33,16 @@ const Home = () => {
     const fetchDashboardData = async () => {
       try {
         const token = localStorage.getItem("token");
-
         if (!token) {
           throw new Error("Authentication token not found");
         }
 
         const response = await fetch(`${BASE_URL}/api/panel-fetch-dashboard/${selectedYear}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         });
 
         if (!response.ok) {
@@ -63,7 +62,6 @@ const Home = () => {
     fetchDashboardData();
   }, [selectedYear]);
 
-  // Error state handling
   if (errorMessage) {
     return (
       <Layout>
@@ -82,59 +80,97 @@ const Home = () => {
     );
   }
 
-  // Prepare chart data
-  const chartData = dashboardData?.graph1 || [];
+  const allClasses = ["NURSERY", "LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+
+  const chartData = allClasses.map((className) => {
+    const classData = dashboardData?.graph1?.find((item) => item.studentClass_class === className);
+    const totalCount = classData ? classData.total_count : 0;
+    const pendingCount = classData ? classData.pending_count : 0;
+    const nonPendingCount = totalCount - pendingCount;
+
+    return {
+      studentClass_class: className,
+      total_count: totalCount,
+      pending_count: pendingCount,
+      non_pending_count: nonPendingCount,
+    };
+  });
+
   const chartSeries = [
     {
-      name: 'Total Count',
-      data: chartData.map(item => item.total_count)
+      name: "Pending Students",
+      data: chartData.map((item) => item.pending_count),
+      color: "#E63946", 
     },
     {
-      name: 'Pending Count',
-      data: chartData.map(item => item.pending_count)
-    }
+      name: "Total Students",
+      data: chartData.map((item) => item.non_pending_count),
+      color: "#2A9D8F", 
+    },
   ];
+
   const chartOptions = {
     chart: {
-      type: 'bar',
-      height: 350
+      type: "bar",
+      height: 350,
+      stacked: true,
+      toolbar: {
+        show: false,
+      },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: '55%',
-        endingShape: 'rounded'
+        columnWidth: "55%", 
+        barHeight: "100%", 
       },
     },
     dataLabels: {
-      enabled: false
+      enabled: true,
+      formatter: (val, { seriesIndex, dataPointIndex }) => {
+        if (seriesIndex === 0) return chartData[dataPointIndex].pending_count;
+        if (seriesIndex === 1) return chartData[dataPointIndex].total_count;
+        return "";
+      },
+      style: {
+        fontSize: "12px",
+        fontWeight: "bold",
+        colors: ["#fff"],
+      },
+      offsetY: -10,
     },
     stroke: {
-      show: true,
-      width: 2,
-      colors: ['transparent']
+      show: false, 
     },
     xaxis: {
-      categories: chartData.map(item => item.studentClass_class),
+      categories: chartData.map((item) => item.studentClass_class),
       title: {
-        text: 'Classes'
-      }
+        text: "Classes",
+      },
     },
     yaxis: {
       title: {
-        text: 'Count'
-      }
+        text: "Total Students",
+      },
     },
     fill: {
-      opacity: 1
+      opacity: 1,
     },
     tooltip: {
-      y: {
-        formatter: function (val) {
-          return val;
-        }
-      }
-    }
+      enabled: false,
+    },
+    legend: {
+      position: "bottom", 
+      markers: {
+        fillColors: ["#E63946", "#2A9D8F"],
+      },
+      onItemClick: {
+        toggleDataSeries: false, 
+      },
+      onItemHover: {
+        highlightDataSeries: false, 
+      },
+    },
   };
 
   return (
@@ -147,32 +183,13 @@ const Home = () => {
         ) : (
           <>
             <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              <StatCard
-                title="Total Students"
-                value={dashboardData?.allstudentCount}
-                icon={Users}
-              />
-              <StatCard
-                title="Current Students"
-                value={dashboardData?.currentstudentCount}
-                icon={FileText}
-                color="blue"
-              />
-              <StatCard
-                title="Total Teachers"
-                value={dashboardData?.allteacherCount}
-                icon={Briefcase}
-                color="green"
-              />
+              <StatCard title="Total Students" value={dashboardData?.allstudentCount} icon={Users} />
+              <StatCard title="Current Students" value={dashboardData?.currentstudentCount} icon={FileText} color="blue" />
+              <StatCard title="Total Teachers" value={dashboardData?.allteacherCount} icon={Briefcase} color="green" />
             </div>
 
             <div className="mt-8">
-              <ReactApexChart
-                options={chartOptions}
-                series={chartSeries}
-                type="bar"
-                height={350}
-              />
+              <ReactApexChart options={chartOptions} series={chartSeries} type="bar" height={350} />
             </div>
           </>
         )}
