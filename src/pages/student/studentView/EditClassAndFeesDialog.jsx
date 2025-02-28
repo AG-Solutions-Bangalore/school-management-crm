@@ -9,6 +9,10 @@ import {
 import axios from "axios";
 import { toast } from "sonner";
 import BASE_URL from "../../../base/BaseUrl";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -152,16 +156,20 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpen} color="inherit" disabled={loading}>
+          <button
+            onClick={handleOpen}
+            className={BackButton}
+            disabled={loading}
+          >
             Cancel
-          </Button>
+          </button>
 
           <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={CreateButton}
           >
             {loading ? "Updating..." : "Update Van"}
           </button>
@@ -351,16 +359,20 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpen} color="inherit" disabled={loading}>
+          <button
+            onClick={handleOpen}
+            className={BackButton}
+            disabled={loading}
+          >
             Cancel
-          </Button>
+          </button>
 
           <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={CreateButton}
           >
             {loading ? "Updating..." : "Update Fees"}
           </button>
@@ -486,16 +498,20 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpen} color="inherit" disabled={loading}>
+          <button
+            onClick={handleOpen}
+            className={BackButton}
+            disabled={loading}
+          >
             Cancel
-          </Button>
+          </button>
 
           <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={`${CreateButton} w-40`}
           >
             {loading ? "Updating..." : "Update Attendence"}
           </button>

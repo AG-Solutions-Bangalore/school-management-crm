@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { useReactToPrint } from "react-to-print";
+import {
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
 
 const TeacherViewAttendance = () => {
   const navigate = useNavigate();
@@ -166,7 +170,7 @@ const TeacherViewAttendance = () => {
   return (
     <Layout>
       <div className="bg-[#FFFFFF] p-2 rounded-lg">
-        <div className="sticky top-0 p-2 mb-4 border-b-2 border-red-500 rounded-lg bg-[#E1F5FA]">
+        <div className={HeaderColor}>
           <h2 className="px-5 text-[black] text-lg flex flex-row justify-between items-center rounded-xl p-2">
             <div className="flex items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
@@ -209,10 +213,7 @@ const TeacherViewAttendance = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button
-              type="submit"
-              className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-            >
+            <button type="submit" className={CreateButton}>
               View
             </button>
           </div>
@@ -237,7 +238,7 @@ const TeacherViewAttendance = () => {
 
                 <button
                   onClick={handlPrintPdf}
-                  className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                   type="button"
                 >
                   Print

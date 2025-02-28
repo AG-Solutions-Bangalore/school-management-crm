@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Popover, Button } from "@mui/material";
+import { Popover, Button, useTheme } from "@mui/material";
 import { toast } from "sonner";
 
 const Footer = () => {
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const theme = useTheme();
   useEffect(() => {
     const storedYears = localStorage.getItem("years");
     if (storedYears) {
@@ -23,7 +23,6 @@ const Footer = () => {
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
-
 
   const handleSubmit = () => {
     localStorage.setItem("default_year", selectedYear);
@@ -62,7 +61,7 @@ const Footer = () => {
 
     // Logo Image
     const animation = document.createElement("img");
-    animation.src = "http://bhsppvn.site/public/assets/letterHead/ppvn.png"; 
+    animation.src = "http://bhsppvn.site/public/assets/letterHead/ppvn.png";
     animation.style.width = "150px";
     animation.style.height = "150px";
     animation.style.marginBottom = "20px";
@@ -76,27 +75,27 @@ const Footer = () => {
     message.style.marginBottom = "15px";
     message.innerText = "Updating Year! Preparing your dashboard...";
 
-  // Progress Bar Container
-const progressBarContainer = document.createElement("div");
-progressBarContainer.style.width = "300px";
-progressBarContainer.style.height = "8px"; 
-progressBarContainer.style.borderRadius = "10px";
-progressBarContainer.style.background = "rgba(0, 0, 0, 0.1)";
-progressBarContainer.style.overflow = "hidden";
-progressBarContainer.style.boxShadow = "0px 0px 8px rgba(0, 0, 0, 0.1)";
+    // Progress Bar Container
+    const progressBarContainer = document.createElement("div");
+    progressBarContainer.style.width = "300px";
+    progressBarContainer.style.height = "8px";
+    progressBarContainer.style.borderRadius = "10px";
+    progressBarContainer.style.background = "rgba(0, 0, 0, 0.1)";
+    progressBarContainer.style.overflow = "hidden";
+    progressBarContainer.style.boxShadow = "0px 0px 8px rgba(0, 0, 0, 0.1)";
 
-// Progress Bar
-const progressBar = document.createElement("div");
-progressBar.style.width = "0%";
-progressBar.style.height = "100%";
-progressBar.style.borderRadius = "10px";
-progressBar.style.background = "linear-gradient(to right, #007bff, #00c6ff)";
-progressBar.style.transition = "width 0.3s ease-in-out";
-progressBar.style.boxShadow = "0px 0px 5px rgba(0, 123, 255, 0.5)"; 
+    // Progress Bar
+    const progressBar = document.createElement("div");
+    progressBar.style.width = "0%";
+    progressBar.style.height = "100%";
+    progressBar.style.borderRadius = "10px";
+    progressBar.style.background =
+      "linear-gradient(to right, #007bff, #00c6ff)";
+    progressBar.style.transition = "width 0.3s ease-in-out";
+    progressBar.style.boxShadow = "0px 0px 5px rgba(0, 123, 255, 0.5)";
 
-// Append progress bar inside the container
-progressBarContainer.appendChild(progressBar);
-
+    // Append progress bar inside the container
+    progressBarContainer.appendChild(progressBar);
 
     // Progress Text
     const percentageText = document.createElement("p");
@@ -113,28 +112,24 @@ progressBarContainer.appendChild(progressBar);
 
     let progress = 1;
     const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 10) + 5;
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(interval);
-            percentageText.innerText = "Processing... 100%";
-            progressBar.style.width = "100%";
+      progress += Math.floor(Math.random() * 10) + 5;
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+        percentageText.innerText = "Processing... 100%";
+        progressBar.style.width = "100%";
 
-            setTimeout(() => {
-                
-                document.body.innerHTML = ""; 
-                document.body.appendChild(overlay); 
-                window.location.replace("/home"); 
-            }, 700);
-        } else {
-            progressBar.style.width = `${progress}%`;
-            percentageText.innerText = `Processing... ${progress}%`;
-        }
+        setTimeout(() => {
+          document.body.innerHTML = "";
+          document.body.appendChild(overlay);
+          window.location.replace("/home");
+        }, 700);
+      } else {
+        progressBar.style.width = `${progress}%`;
+        percentageText.innerText = `Processing... ${progress}%`;
+      }
     }, 180);
-};
-
-
-
+  };
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -154,7 +149,8 @@ progressBarContainer.appendChild(progressBar);
       </p>
       <button
         onClick={handleOpen}
-        className="text-blue-600 hover:underline text-sm font-medium"
+        className={`hover:underline text-sm font-medium`}
+        style={{ color: theme.palette.text.secondary }}
       >
         Change Year
       </button>
@@ -163,7 +159,8 @@ progressBarContainer.appendChild(progressBar);
         <Link
           to="https://ag-solutions.in/"
           target="_blank"
-          className="text-blue-600 font-medium ml-1"
+          className={`hover:underline text-sm font-medium`}
+          style={{ color: theme.palette.text.secondary }}
         >
           AG Solutions
         </Link>
@@ -198,8 +195,8 @@ progressBarContainer.appendChild(progressBar);
             </Button>
             <button
               className="w-full px-0 py-1 text-sm border text-white bg-red-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 border-gray-300"
-            
-            onClick={handleSubmit} >
+              onClick={handleSubmit}
+            >
               Submit
             </button>
           </div>

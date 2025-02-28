@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogActions,
@@ -9,6 +8,7 @@ import {
 import { IconX } from "@tabler/icons-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { BackButton, CreateButton } from "./common/ButttonConfig";
 
 const Logout = ({ open, handleOpen }) => {
   const navigate = useNavigate();
@@ -37,16 +37,10 @@ const Logout = ({ open, handleOpen }) => {
         <h3 className="text-lg">Are you sure you want to log out?</h3>
       </DialogContent>
       <DialogActions>
-        <button
-          className="text-center text-sm font-[400] cursor-pointer hover:animate-pulse w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md mr-2"
-          onClick={handleOpen}
-        >
+        <button className={BackButton} onClick={handleOpen}>
           <span>Cancel</span>
         </button>
-        <button
-          className="text-center text-sm font-[400] cursor-pointer hover:animate-pulse w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md mr-2"
-          onClick={handleLogout}
-        >
+        <button className={CreateButton} onClick={handleLogout}>
           <span>Confirm</span>
         </button>
       </DialogActions>

@@ -54,9 +54,9 @@ const FeesStructureList = () => {
           <div className="mb-6 flex space-x-4 ">
             <button
               onClick={() => setActiveTab("basic")}
-              className={`${CreateButton} w-[11.1rem] ${
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-color w-[11.1rem] ${
                 activeTab === "basic"
-                  ? `${CreateButton} `
+                  ? `${CreateButton}`
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -65,7 +65,7 @@ const FeesStructureList = () => {
             </button>
             <button
               onClick={() => setActiveTab("additional")}
-              className={`${CreateButton}  w-[11.1rem] ${
+              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors  w-[11.1rem] ${
                 activeTab === "additional"
                   ? `${CreateButton}`
                   : "bg-white text-gray-600 hover:bg-gray-50"

@@ -7,6 +7,10 @@ import { CircleMinus, SquarePlus } from "lucide-react";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import Weekday from "../../../components/common/data.json";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 const TeacherSubCreate = ({
   openDialog,
   setOpenDialog,
@@ -219,7 +223,7 @@ const TeacherSubCreate = ({
                         <button
                           onClick={addItem}
                           type="button"
-                          className="px-2 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                          className={`${CreateButton} w-[40px]`}
                         >
                           <SquarePlus />
                         </button>
@@ -296,12 +300,12 @@ const TeacherSubCreate = ({
                         </select>
                       </td>
 
-                      <td className="border border-gray-300 px-4 py-2 text-center">
+                      <td className="border border-gray-300 px-4 py-2 text-center flex justify-center">
                         {!user.id && (
                           <button
                             onClick={() => removeItem(index)}
                             type="button"
-                            className="px-1 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                            className={`${BackButton} w-[40px]`}
                           >
                             <CircleMinus />
                           </button>
@@ -315,14 +319,14 @@ const TeacherSubCreate = ({
             <div className="flex gap-4 justify-center">
               <button
                 type="submit"
-                className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
                 disabled={isButtonDisabled}
               >
                 {isButtonDisabled ? "Creating..." : "Create"}
               </button>
               <button
                 type="button"
-                className="w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                className={BackButton}
                 onClick={handleClose}
               >
                 Back

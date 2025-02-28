@@ -22,6 +22,7 @@ import { Trash } from "lucide-react";
 import CreateAttendance from "../../student/attendanceList/CreateAttendance";
 import CreateTeacherAttendance from "./CreateAttendance";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
 
 const TeacherAttendanceList = () => {
   const [teacherAttendanceData, setTeacherAttendanceData] = useState(null);
@@ -238,7 +239,7 @@ const TeacherAttendanceList = () => {
               <button
                 // onClick={() => setOpenCreateDialog(true)}
                 onClick={() => navigate("/teacher-viewAttendance")}
-                className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Attendance
               </button>

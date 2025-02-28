@@ -30,6 +30,7 @@ import {
   EditFeesDialog,
 } from "./EditClassAndFeesDialog";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { CreateButton } from "../../../components/common/ButttonConfig";
 
 const StudentView = () => {
   const { id } = useParams();
@@ -356,7 +357,7 @@ const StudentView = () => {
                 <span className="font-medium">Year: {updatedYear}</span>
                 <button
                   onClick={() => setIsFeesDialogOpen(true)}
-                  className="flex items-center gap-1 text-sm  bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                  className={CreateButton}
                 >
                   <IconPlus className="w-4 h-4" /> Add Fee
                 </button>
@@ -371,7 +372,7 @@ const StudentView = () => {
               {studentClassLength === 0 && (
                 <button
                   onClick={() => setIsClassDialogOpen(true)}
-                  className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+                  className={CreateButton}
                 >
                   <IconPlus className="w-4 h-4" /> Add Class
                 </button>

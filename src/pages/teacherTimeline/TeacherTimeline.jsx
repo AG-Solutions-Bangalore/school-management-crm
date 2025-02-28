@@ -5,6 +5,7 @@ import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../context/ContextPanel";
 import { useReactToPrint } from "react-to-print";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { CreateButton } from "../../components/common/ButttonConfig";
 
 const Timetable = () => {
   const containerRef = useRef();
@@ -174,10 +175,7 @@ const Timetable = () => {
           </div>
         </div>
         <div className="mt-4">
-          <button
-            onClick={handlePrintPdf}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 print:hidden"
-          >
+          <button onClick={handlePrintPdf} className={CreateButton}>
             Print
           </button>
         </div>
