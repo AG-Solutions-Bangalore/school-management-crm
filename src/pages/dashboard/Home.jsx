@@ -4,15 +4,20 @@ import Layout from "../../layout/Layout";
 import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../context/ContextPanel";
 import ReactApexChart from "react-apexcharts";
+import LoaderComponent from "../../components/common/LoaderComponent";
 
 const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
   <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
     <div className="flex items-center justify-between mb-2">
-      <h3 className="text-gray-600 font-medium text-sm md:text-base">{title}</h3>
+      <h3 className="text-gray-600 font-medium text-sm md:text-base">
+        {title}
+      </h3>
       <Icon className={`h-6 w-6 text-${color}-500`} />
     </div>
     <div className="mt-2">
-      <p className="text-2xl md:text-3xl font-bold text-gray-800">{value || 0}</p>
+      <p className="text-2xl md:text-3xl font-bold text-gray-800">
+        {value || 0}
+      </p>
     </div>
   </div>
 );
@@ -37,13 +42,16 @@ const Home = () => {
           throw new Error("Authentication token not found");
         }
 
-        const response = await fetch(`${BASE_URL}/api/panel-fetch-dashboard/${selectedYear}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${BASE_URL}/api/panel-fetch-dashboard/${selectedYear}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Server responded with status: ${response.status}`);
@@ -80,10 +88,26 @@ const Home = () => {
     );
   }
 
-  const allClasses = ["NURSERY", "LKG", "UKG", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+  const allClasses = [
+    "NURSERY",
+    "LKG",
+    "UKG",
+    "I",
+    "II",
+    "III",
+    "IV",
+    "V",
+    "VI",
+    "VII",
+    "VIII",
+    "IX",
+    "X",
+  ];
 
   const chartData = allClasses.map((className) => {
-    const classData = dashboardData?.graph1?.find((item) => item.studentClass_class === className);
+    const classData = dashboardData?.graph1?.find(
+      (item) => item.studentClass_class === className
+    );
     const totalCount = classData ? classData.total_count : 0;
     const pendingCount = classData ? classData.pending_count : 0;
     const nonPendingCount = totalCount - pendingCount;
@@ -100,7 +124,7 @@ const Home = () => {
     {
       name: "Pending Students",
       data: chartData.map((item) => item.pending_count),
-      color: "#E63946", 
+      color: "#E63946",
     },
     {
       name: "Total Students",
@@ -108,7 +132,7 @@ const Home = () => {
       color: "#2A9D8F", 
     },
   ];
-  
+
   const chartOptions = {
     chart: {
       type: "bar",
@@ -134,37 +158,37 @@ const Home = () => {
           },
           csv: {
             filename: "pendingFees-data",
-            columnDelimiter: ',',
-            headerCategory: 'Class',
-            headerValue: 'Value',
+            columnDelimiter: ",",
+            headerCategory: "Class",
+            headerValue: "Value",
           },
         },
       },
       animations: {
         enabled: true,
-        easing: 'easeinout',
+        easing: "easeinout",
         speed: 800,
         animateGradually: {
           enabled: true,
-          delay: 150
+          delay: 150,
         },
         dynamicAnimation: {
           enabled: true,
-          speed: 350
-        }
+          speed: 350,
+        },
       },
     },
     plotOptions: {
       bar: {
         horizontal: false,
-        columnWidth: "55%", 
+        columnWidth: "55%",
         borderRadius: 4,
         borderRadiusApplication: "end",
       },
     },
     dataLabels: {
       enabled: true,
-      formatter: function(val, opts) {
+      formatter: function (val, opts) {
         if (opts.seriesIndex === 0) {
           return val;
         }
@@ -172,12 +196,12 @@ const Home = () => {
           const dataPointIndex = opts.dataPointIndex;
           return chartData[dataPointIndex].total_count;
         }
-        return '';
+        return "";
       },
       style: {
-        fontSize: '12px',
-        fontWeight: 'bold',
-        colors: ["#fff", "#fff"]
+        fontSize: "12px",
+        fontWeight: "bold",
+        colors: ["#fff", "#fff"],
       },
       offsetY: -5,
     },
@@ -190,52 +214,52 @@ const Home = () => {
       title: {
         text: "Classes",
         style: {
-          fontSize: '14px',
+          fontSize: "14px",
           fontWeight: 600,
-          cssClass: 'apexcharts-xaxis-title',
-        }
+          cssClass: "apexcharts-xaxis-title",
+        },
       },
       labels: {
         style: {
-          fontSize: '12px',
+          fontSize: "12px",
           fontWeight: 500,
-        }
-      }
+        },
+      },
     },
     yaxis: {
       title: {
         text: "Number of Students",
         style: {
-          fontSize: '14px',
+          fontSize: "14px",
           fontWeight: 600,
-          cssClass: 'apexcharts-yaxis-title',
-        }
+          cssClass: "apexcharts-yaxis-title",
+        },
       },
       labels: {
         formatter: function (val) {
           return val.toFixed(0);
         },
         style: {
-          fontSize: '12px',
+          fontSize: "12px",
           fontWeight: 500,
-        }
-      }
+        },
+      },
     },
     fill: {
       opacity: 1,
-      type: 'solid',
+      type: "solid",
     },
     tooltip: {
       enabled: true,
       shared: true,
       intersect: false,
       followCursor: true,
-      custom: function({ series, seriesIndex, dataPointIndex, w }) {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
         const className = w.globals.labels[dataPointIndex];
         const pendingCount = chartData[dataPointIndex].pending_count;
         const totalCount = chartData[dataPointIndex].total_count;
         const activeCount = chartData[dataPointIndex].non_pending_count;
-        
+
         return `
           <div class="apexcharts-tooltip-title" style="font-weight: bold; padding: 6px 10px; background: #f8f9fa; border-bottom: 1px solid #ddd;">
             Class: ${className}
@@ -258,63 +282,63 @@ const Home = () => {
             </div>
           </div>
         `;
-      }
+      },
     },
     legend: {
-      position: "bottom", 
+      position: "bottom",
       horizontalAlign: "center",
       offsetY: 10,
-      fontSize: '14px',
+      fontSize: "14px",
       fontWeight: 500,
       markers: {
         width: 12,
         height: 12,
         strokeWidth: 0,
-        strokeColor: '#fff',
+        strokeColor: "#fff",
         fillColors: ["#E63946", "#2A9D8F"],
         radius: 6,
       },
       itemMargin: {
         horizontal: 10,
-        vertical: 0
+        vertical: 0,
       },
       onItemClick: {
-        toggleDataSeries: false, 
+        toggleDataSeries: false,
       },
       onItemHover: {
-        highlightDataSeries: false, 
+        highlightDataSeries: false,
       },
     },
     grid: {
-      borderColor: '#f1f1f1',
+      borderColor: "#f1f1f1",
       padding: {
         top: 0,
         right: 0,
         bottom: 0,
-        left: 10
-      }
+        left: 10,
+      },
     },
     states: {
       hover: {
         filter: {
-          type: 'darken',
+          type: "darken",
           value: 0.9,
-        }
+        },
       },
       active: {
         filter: {
-          type: 'darken',
+          type: "darken",
           value: 0.85,
-        }
-      }
+        },
+      },
     },
     title: {
-      text: 'Pending Fees by Class',
-      align: 'center',
+      text: "Pending Fees by Class",
+      align: "center",
       style: {
-        fontSize: '16px',
-        fontWeight: 'bold',
-        color: '#263238'
+        fontSize: "16px",
+        fontWeight: "bold",
+        color: "#263238",
       },
     },
   };
@@ -322,27 +346,53 @@ const Home = () => {
   return (
     <Layout>
       <div className="p-4 bg-white rounded-lg md:p-6 shadow-md">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">
+          Dashboard Overview
+        </h1>
 
         {isLoading ? (
-          <LoadingSpinner />
+          <LoaderComponent />
         ) : (
           <>
             <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              <StatCard title="Total Students" value={dashboardData?.allstudentCount} icon={Users} />
-              <StatCard title="Current Students" value={dashboardData?.currentstudentCount} icon={FileText} color="blue" />
-              <StatCard title="Total Teachers" value={dashboardData?.allteacherCount} icon={Briefcase} color="green" />
+              <StatCard
+                title="Total Students"
+                value={dashboardData?.allstudentCount}
+                icon={Users}
+              />
+              <StatCard
+                title="Current Students"
+                value={dashboardData?.currentstudentCount}
+                icon={FileText}
+                color="blue"
+              />
+              <StatCard
+                title="Total Teachers"
+                value={dashboardData?.allteacherCount}
+                icon={Briefcase}
+                color="green"
+              />
             </div>
 
             <div className="mt-8 bg-white p-4 rounded-lg shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-700">Pending Fees </h2>
+                <h2 className="text-lg font-semibold text-gray-700">
+                  Pending Fees{" "}
+                </h2>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-500">Academic Year: {selectedYear}</span>
+                  <span className="text-sm text-gray-500">
+                    Academic Year: {selectedYear}
+                  </span>
                 </div>
               </div>
               <div className="h-96">
-                <ReactApexChart options={chartOptions} series={chartSeries} type="bar" height="100%" width="98%" />
+                <ReactApexChart
+                  options={chartOptions}
+                  series={chartSeries}
+                  type="bar"
+                  height="100%"
+                  width="98%"
+                />
               </div>
             </div>
           </>

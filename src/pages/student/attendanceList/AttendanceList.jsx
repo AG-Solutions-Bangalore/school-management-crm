@@ -20,6 +20,10 @@ import { toast } from "sonner";
 import { ContextPanel } from "../../../context/ContextPanel";
 import { Trash } from "lucide-react";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -243,7 +247,7 @@ const AttendanceList = () => {
               <button
                 // onClick={() => navigate("/attendance-list/createAttendance")}
                 onClick={() => navigate("/attendance-list/viewAttendance")}
-                className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Attendance
               </button>
@@ -293,13 +297,13 @@ const AttendanceList = () => {
                 <button
                   type="submit"
                   disabled={isButtonDisabled}
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                 >
                   {isButtonDisabled ? "Updating..." : "Update"}
                 </button>
                 <button
                   type="button"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                  className={BackButton}
                   onClick={() => setOpenDialog(false)}
                 >
                   Cancel
@@ -339,15 +343,13 @@ const AttendanceList = () => {
               <button
                 onClick={handleDelete}
                 disabled={isButtonDisabled}
-                className="text-center text-sm font-medium cursor-pointer w-36 
-                     text-white bg-blue-600 hover:bg-blue-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 {isButtonDisabled ? "Deleting..." : "Delete"}
               </button>
               <button
                 type="button"
-                className="text-center text-sm font-medium cursor-pointer w-36 
-                     text-white bg-red-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={BackButton}
                 onClick={() => setOpenDeleteDialog(false)}
               >
                 Cancel

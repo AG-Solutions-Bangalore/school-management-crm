@@ -38,7 +38,6 @@ const iconComponents = {
   Fees:IconClipboardData,
   "Time Table":IconTablePlus,
   Class:IconTablePlus,
-  Teacher:IconTablePlus,
   Website:IconWorld,
   Enquiry:IconUserQuestion,
   Contact:IconCalendarCheck,

@@ -3,11 +3,6 @@ import { createTheme } from "@mui/material/styles";
 const baselightTheme = createTheme({
   direction: "ltr",
   palette: {
-    button: {
-      main: "#001A6E",
-      light: "#E8EAF6",
-      text: "#0085db",
-    },
     primary: {
       main: "#001A6E", //when selected text-color
       light: "#E8EAF6", //this is for side bar color hover and bg color
@@ -52,7 +47,7 @@ const baselightTheme = createTheme({
     },
     text: {
       primary: "#111c2d",
-      secondary: "#001A6E", //when not selected tetxt color in side bar
+      secondary: "#001A6E", //when not selected text color in side bar and navbar and fotter text
     },
     action: {
       disabledBackground: "rgba(73,82,88,0.12)",

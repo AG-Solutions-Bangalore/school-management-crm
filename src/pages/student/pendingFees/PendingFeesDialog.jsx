@@ -5,27 +5,36 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Slide,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "sonner";
 import { ContextPanel } from "../../../context/ContextPanel";
 import BASE_URL from "../../../base/BaseUrl";
 import { getTodayDate } from "../../../utils/currentDate";
-
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 
 const FormLabel = ({ children, required }) => (
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      {children} {required && <span className="text-red-500">*</span>}
-    </label>
-  );
-  
-  const inputClassSelect =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
-  const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    {children} {required && <span className="text-red-500">*</span>}
+  </label>
+);
+
+const inputClassSelect =
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
+const inputClass =
+  "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-500 border-blue-500";
 
 // Add Fees Dialog Component
-export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess }) => {
+export const PendingFeesDialog = ({
+  open,
+  handleClose,
+  studentData,
+  onSuccess,
+}) => {
   const [loading, setLoading] = useState(false);
   const [loadingSumbit, setLoadingSumbit] = useState(false);
   const [paymentTypes, setPaymentTypes] = useState([]);
@@ -34,12 +43,14 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
     studentFees_year: selectedYear || "",
     studentFees_admission_no: studentData?.student_admission_no || "",
     studentFees_class: studentData?.studentClass_class || "",
-    studentFees_paid: studentData ? (studentData.total_amount - studentData.paid_amount).toString() : "",
+    studentFees_paid: studentData
+      ? (studentData.total_amount - studentData.paid_amount).toString()
+      : "",
     studentFees_pay_mode: "",
     studentFees_transactiondetails: "",
     studentFees_paid_date: getTodayDate(),
   });
-  
+
   // Update form data when studentData changes
   useEffect(() => {
     if (studentData) {
@@ -48,7 +59,8 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
         studentFees_year: selectedYear || "",
         studentFees_admission_no: studentData.student_admission_no || "",
         studentFees_class: studentData.studentClass_class || "",
-        studentFees_paid: (studentData.total_amount - studentData.paid_amount).toString() || "",
+        studentFees_paid:
+          (studentData.total_amount - studentData.paid_amount).toString() || "",
       });
     }
   }, [studentData, selectedYear]);
@@ -58,7 +70,7 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
       setLoading(true);
       const token = localStorage.getItem("token");
       const paymentTypeResponse = await axios.get(
-        `${BASE_URL}/api/panel-fetch-paymentType`, 
+        `${BASE_URL}/api/panel-fetch-paymentType`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -95,7 +107,7 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
-      
+
       const response = await axios.post(
         `${BASE_URL}/api/panel-create-student-class-fees`,
         formattedData,
@@ -131,7 +143,15 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      sx={{ backdropFilter: "blur(4px)" }}
+      TransitionComponent={Slide}
+      transitionDuration={500}
+    >
       <form onSubmit={handleSubmit}>
         <DialogTitle className="flex flex-row items-center justify-between">
           <p className="text-start flex flex-row items-center gap-2">
@@ -206,12 +226,12 @@ export const PendingFeesDialog = ({ open, handleClose, studentData, onSuccess })
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="inherit">
+          <button onClick={handleClose} className={BackButton}>
             Cancel
-          </Button>
+          </button>
           <button
             type="submit"
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={`${CreateButton} w-40`}
             disabled={loadingSumbit}
           >
             {loadingSumbit ? "Adding..." : "Add Pending Fees"}

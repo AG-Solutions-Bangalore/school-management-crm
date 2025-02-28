@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Eye } from "lucide-react";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -196,7 +197,7 @@ const TeacherList = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => navigate("/teacher-list/createTeacher")}
-                className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Teacher
               </button>

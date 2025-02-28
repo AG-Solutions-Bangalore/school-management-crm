@@ -12,6 +12,7 @@ import moment from "moment/moment";
 import { toast } from "sonner";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -230,8 +231,8 @@ const StudentList = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => navigate("/student-list/createStudent")}
-                className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-              >
+                className={CreateButton}
+                >
                 <IconPlus className="w-4 h-4" /> Student
               </button>
             </div>

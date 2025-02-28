@@ -3,9 +3,10 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
-import CrmLogo from "../../assets/Companylogo/ppvn-logo.png"
+import CrmLogo from "../../assets/Companylogo/ppvn-logo.png";
 import { toast } from "sonner";
 import { ContextPanel } from "../../context/ContextPanel";
+import { CreateButton } from "../../components/common/ButttonConfig";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,14 +20,14 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     const formData = new FormData();
     formData.append("username", email);
     formData.append("password", password);
-  
+
     try {
       const res = await axios.post(`${BASE_URL}/api/panel-login`, formData);
-  
+
       if (res.status === 200) {
         const token = res.data.UserInfo?.token;
         const default_year = res.data.school_detils.school_default_year;
@@ -37,7 +38,10 @@ const SignIn = () => {
           localStorage.setItem("allUsers", JSON.stringify(allUser));
           localStorage.setItem("id", res.data.UserInfo.user.id);
           localStorage.setItem("name", res.data.UserInfo.user.name);
-          localStorage.setItem("user_position", res.data.UserInfo.user.user_position);
+          localStorage.setItem(
+            "user_position",
+            res.data.UserInfo.user.user_position
+          );
           localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
   
           await fetchPermissions();
@@ -54,10 +58,9 @@ const SignIn = () => {
     } catch (error) {
       toast.error("An error occurred during login.");
     }
-  
+
     setLoading(false);
   };
-  
 
   const inputClass =
     "w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-green-500";
@@ -83,11 +86,7 @@ const SignIn = () => {
         <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 h-full lg:w-1/2">
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
-              <img
-                src={CrmLogo}
-                alt="Company Logo"
-                className="w-35 h-35"
-              />
+              <img src={CrmLogo} alt="Company Logo" className="w-35 h-35" />
             </div>
 
             <Typography
@@ -122,7 +121,7 @@ const SignIn = () => {
 
               <div className="flex justify-center ">
                 <button
-                  className=" text-center text-sm font-[400 ] cursor-pointer hover:animate-pulse w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                   type="submit"
                   disabled={loading}
                 >
@@ -132,7 +131,7 @@ const SignIn = () => {
               </div>
             </form>
             <div className="text-end mt-4" onClick={handleForgetPasswordClick}>
-              <Link className="text-sm text-gray-700 hover:text-blue-600">
+              <Link className="text-sm text-gray-700 hover:text-indigo-600">
                 Forgot password?
               </Link>
             </div>

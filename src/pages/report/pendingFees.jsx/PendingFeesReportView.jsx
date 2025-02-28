@@ -17,6 +17,10 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { Center, Loader, Text } from "@mantine/core";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
 
 const PendingFeesReportView = () => {
   const location = useLocation();
@@ -77,7 +81,7 @@ const PendingFeesReportView = () => {
 
   return (
     <Layout>
-      <div className="sticky top-0 p-2 mb-4 border-b-2 border-red-500 bg-[#E1F5FA] rounded-lg">
+      <div className={HeaderColor}>
         <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
           <div className="flex items-center gap-2">
             <IconArrowBack
@@ -86,10 +90,7 @@ const PendingFeesReportView = () => {
             />
             <span>View Pending Fees</span>
           </div>
-          <button
-            onClick={handlePendingFees}
-            className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-          >
+          <button onClick={handlePendingFees} className={CreateButton}>
             Download
           </button>
         </h2>

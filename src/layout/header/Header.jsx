@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, AppBar, Toolbar, styled, Stack, IconButton } from "@mui/material";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  styled,
+  Stack,
+  IconButton,
+  useTheme,
+} from "@mui/material";
 import PropTypes from "prop-types";
 import Profile from "./Profile";
 import { IconMenu, IconMenuDeep } from "@tabler/icons-react";
@@ -19,7 +27,7 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }) => {
     width: "100%",
     color: theme.palette.text.secondary,
   }));
-
+  const theme = useTheme();
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
@@ -54,11 +62,13 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }) => {
 
         <Stack spacing={1} direction="row" alignItems="center">
           <div className="flex  flex-row items-center justify-between ">
-            <div className="flex flex-col text-[10px] md:text-xs">
-              <div className="font-semibold text-blue-700">
+            <div
+              className={`flex flex-col text-[10px] md:text-xs text-[${theme.palette.text.secondary}]`}
+            >
+              <div className="font-semibold ">
                 {localStorage.getItem("name")}
               </div>
-              <div className="font-semibold text-blue-700 text-[10px] flex justify-center">
+              <div className="font-semibold  text-[10px] flex justify-center">
                 {" "}
                 {localStorage.getItem("user_position")}
               </div>
