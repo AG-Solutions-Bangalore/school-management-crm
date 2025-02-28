@@ -11,7 +11,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const { fetchYears } = useContext(ContextPanel);
+  const {fetchYears ,fetchPagePermission, fetchPermissions}= useContext(ContextPanel)
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -31,10 +31,11 @@ const SignIn = () => {
       if (res.status === 200) {
         const token = res.data.UserInfo?.token;
         const default_year = res.data.school_detils.school_default_year;
-
+        const allUser = res.data?.userN;
         if (token && default_year) {
           localStorage.setItem("token", token);
           localStorage.setItem("default_year", default_year);
+          localStorage.setItem("allUsers", JSON.stringify(allUser));
           localStorage.setItem("id", res.data.UserInfo.user.id);
           localStorage.setItem("name", res.data.UserInfo.user.name);
           localStorage.setItem(
@@ -42,9 +43,12 @@ const SignIn = () => {
             res.data.UserInfo.user.user_position
           );
           localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
-
-          await fetchYears();
-          navigate("/home");
+  
+          await fetchPermissions();
+          await fetchPagePermission();
+            await fetchYears(); 
+            navigate("/home");
+        
         } else {
           toast.error("Login Failed, Token not received.");
         }
