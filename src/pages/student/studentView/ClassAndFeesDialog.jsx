@@ -11,6 +11,10 @@ import { toast } from "sonner";
 import BASE_URL from "../../../base/BaseUrl";
 import { ContextPanel } from "../../../context/ContextPanel";
 import { getTodayDate } from "../../../utils/currentDate";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -164,16 +168,16 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpen} color="inherit">
+          <button onClick={handleOpen} className={BackButton}>
             Cancel
-          </Button>
+          </button>
 
           <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={CreateButton}
           >
             {loading ? "Adding..." : "Add Class"}
           </button>
@@ -222,18 +226,17 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const [yearResponse, paymentTypeResponse] =
-        await Promise.all([
-          axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
+      const [yearResponse, paymentTypeResponse] = await Promise.all([
+        axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
 
       setYears(yearResponse.data?.year || []);
-      
+
       setPaymentTypes(paymentTypeResponse.data?.paymentType || []);
     } catch (error) {
       console.error("Error fetching data", error);
@@ -419,16 +422,16 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOpen} color="inherit">
+          <button onClick={handleOpen} className={BackButton}>
             Cancel
-          </Button>
+          </button>
 
           <button
             type="submit"
             variant="contained"
             color="primary"
             disabled={loading}
-            className="flex items-center gap-1 text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded"
+            className={CreateButton}
           >
             {loading ? "Adding..." : "Add Fees"}
           </button>

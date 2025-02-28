@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import TeacherSubCreate from "./TeacherSubCreate";
 import TeacherSubEdit from "./TeacherSubEdit";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
 
 const TeacherSubList = ({ teacherData, fetchStudentData }) => {
   const navigate = useNavigate();
@@ -112,7 +113,7 @@ const TeacherSubList = ({ teacherData, fetchStudentData }) => {
             <MRT_ToggleFiltersButton table={table} />
 
             <Button
-              className="w-36 text-white bg-blue-600 !important hover:bg-violet-400 hover:animate-pulse"
+              className={CreateButton}
               onClick={() => setOpenDialog(true)}
             >
               Add

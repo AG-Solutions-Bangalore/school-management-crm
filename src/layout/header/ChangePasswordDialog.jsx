@@ -7,6 +7,7 @@ import {
   Slide,
 } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
+import { CreateButton } from "../../components/common/ButttonConfig";
 
 const ChangePasswordDialog = ({
   open,
@@ -92,14 +93,13 @@ const ChangePasswordDialog = ({
           </div>
 
           <div className="mt-5 flex justify-center">
-            <Button
+            <button
               onClick={onChangePassword}
-              variant="contained"
-              color="primary"
-              className="text-center text-sm font-[400] cursor-pointer hover:animate-pulse  h-15 p-2 rounded-lg shadow-md mr-2"
+              type="button"
+              className={`${CreateButton} w-40`}
             >
               Change Password
-            </Button>
+            </button>
           </div>
         </div>
       </DialogContent>

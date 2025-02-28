@@ -5,6 +5,15 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import {
+  BackButton,
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
+import {
+  ReportPendingFeesDownload,
+  ReportPendingFeesView,
+} from "../../../components/buttonIndex/ButtonComponents";
 const status = [
   {
     value: "Active",
@@ -134,7 +143,7 @@ const PendingFeesReport = () => {
   return (
     <Layout>
       <div className=" bg-[#FFFFFF] p-2  rounded-lg  ">
-        <div className="sticky top-0 p-2  mb-4 border-b-2 border-red-500 rounded-lg  bg-[#E1F5FA] ">
+        <div className={HeaderColor}>
           <h2 className=" px-5 text-[black] text-lg   flex flex-row  justify-between items-center  rounded-xl p-2 ">
             <div className="flex  items-center gap-2">
               <IconInfoCircle className="w-4 h-4 " />
@@ -183,18 +192,24 @@ const PendingFeesReport = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <button
-              onClick={handlePendingFees}
-              className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-            >
+            {/* <button onClick={handlePendingFees} className={CreateButton}>
               Download
             </button>
-            <button
+            <button onClick={handleNavigate} className={CreateButton}>
+              View
+            </button> */}
+            <ReportPendingFeesDownload
+              onClick={handlePendingFees}
+              className={CreateButton}
+            >
+              Download
+            </ReportPendingFeesDownload>
+            <ReportPendingFeesView
               onClick={handleNavigate}
-              className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+              className={CreateButton}
             >
               View
-            </button>
+            </ReportPendingFeesView>
           </div>
         </form>
       </div>

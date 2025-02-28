@@ -22,6 +22,11 @@ import { Trash } from "lucide-react";
 import CreateAttendance from "../../student/attendanceList/CreateAttendance";
 import CreateTeacherAttendance from "./CreateAttendance";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import {
+  TeacherAttendanceListCreate,
+  TeacherAttendanceListDelete,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const TeacherAttendanceList = () => {
   const [teacherAttendanceData, setTeacherAttendanceData] = useState(null);
@@ -188,7 +193,7 @@ const TeacherAttendanceList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   setAttendanceId(id);
                   setOpenDeleteDialog(true);
@@ -197,7 +202,14 @@ const TeacherAttendanceList = () => {
                 title="Delete"
               >
                 <Trash className="h-5 w-5 text-red-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <TeacherAttendanceListDelete
+                onClick={() => {
+                  setAttendanceId(id);
+                  setOpenDeleteDialog(true);
+                }}
+                className="flex items-center space-x-2"
+              ></TeacherAttendanceListDelete>
             </div>
           );
         },
@@ -235,13 +247,10 @@ const TeacherAttendanceList = () => {
               <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
                 Teacher Attendance List
               </h1>
-              <button
-                // onClick={() => setOpenCreateDialog(true)}
+              <TeacherAttendanceListCreate
                 onClick={() => navigate("/teacher-viewAttendance")}
-                className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-              >
-                <IconPlus className="w-4 h-4" /> Attendance
-              </button>
+                className={CreateButton}
+              ></TeacherAttendanceListCreate>
             </div>
           </div>
 

@@ -10,6 +10,12 @@ import { toast } from "sonner";
 import { Eye } from "lucide-react";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import {
+  TeacherTeacherListCreate,
+  TeacherTeacherListEdit,
+  TeacherTeacherListView,
+} from "../../../components/buttonIndex/ButtonComponents";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -131,7 +137,7 @@ const TeacherList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   const encryptedId = encryptId(id);
 
@@ -141,13 +147,24 @@ const TeacherList = () => {
                     )}`
                   );
                 }}
-                // onClick={() => navigate(`/teacher-list/editTeacher/${id}`)}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
-              <div
+              </div> */}
+              <TeacherTeacherListEdit
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/teacher-list/editTeacher/${encodeURIComponent(
+                      encryptedId
+                    )}`
+                  );
+                }}
+                className="flex items-center space-x-2"
+              ></TeacherTeacherListEdit>
+              {/* <div
                 onClick={() => {
                   const encryptedId = encryptId(id);
 
@@ -157,12 +174,23 @@ const TeacherList = () => {
                     )}`
                   );
                 }}
-                // onClick={() => navigate(`/teacher-list/viewTeacher/${id}`)}
                 className="flex items-center space-x-2"
                 title="View"
               >
                 <Eye className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <TeacherTeacherListView
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/teacher-list/viewTeacher/${encodeURIComponent(
+                      encryptedId
+                    )}`
+                  );
+                }}
+                className="flex items-center space-x-2"
+              ></TeacherTeacherListView>
             </div>
           );
         },
@@ -194,12 +222,16 @@ const TeacherList = () => {
               Teacher List
             </h1>
             <div className="flex gap-2">
-              <button
+              {/* <button
                 onClick={() => navigate("/teacher-list/createTeacher")}
-                className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Teacher
-              </button>
+              </button> */}
+              <TeacherTeacherListCreate
+                onClick={() => navigate("/teacher-list/createTeacher")}
+                className={CreateButton}
+              ></TeacherTeacherListCreate>
             </div>
           </div>
         </div>

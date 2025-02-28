@@ -6,6 +6,11 @@ import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
+import {
+  BackButton,
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
 const status = [
   {
     value: "Active",
@@ -206,7 +211,7 @@ const EditTeacher = () => {
   return (
     <Layout>
       <div className="bg-white p-2 rounded-lg">
-        <div className="sticky top-0 p-2 mb-4 border-b-2 border-red-500 bg-[#E1F5FA] rounded-lg">
+        <div className={HeaderColor}>
           <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
             <div className="flex items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
@@ -457,14 +462,14 @@ const EditTeacher = () => {
           <div className="flex gap-4 justify-center">
             <button
               type="submit"
-              className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+              className={CreateButton}
               disabled={isButtonDisabled}
             >
               {isButtonDisabled ? "Updatting..." : "Update"}
             </button>
             <button
               type="button"
-              className="w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+              className={BackButton}
               onClick={() => navigate("/teacher-list")}
             >
               Back

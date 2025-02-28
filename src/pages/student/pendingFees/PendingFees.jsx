@@ -9,6 +9,11 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { PendingFeesDialog } from "./PendingFeesDialog";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import { AddFees } from "./AddFees";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import {
+  StudentFeesCreate,
+  StudentFeesEdit,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const PendingFees = () => {
   const [pendingFeesData, setPendingFeesData] = useState(null);
@@ -18,7 +23,6 @@ const PendingFees = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [isFeesDialogOpen, setIsFeesDialogOpen] = useState(false);
-  
 
   const fetchPendingFeesData = async () => {
     try {
@@ -139,7 +143,7 @@ const PendingFees = () => {
           </div>
         ),
       },
-    
+
       {
         id: "id",
         header: "Action",
@@ -150,13 +154,17 @@ const PendingFees = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => handleOpenDialog(row.original)}
                 className="flex items-center space-x-2"
                 title="Pending fee"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <StudentFeesEdit
+                onClick={() => handleOpenDialog(row.original)}
+                className="flex items-center space-x-2"
+              ></StudentFeesEdit>
             </div>
           );
         },
@@ -177,9 +185,6 @@ const PendingFees = () => {
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
 
     initialState: { columnVisibility: { address: false } },
-    state: {
-      isLoading: loading,
-    },
   });
   return (
     <Layout>
@@ -191,13 +196,17 @@ const PendingFees = () => {
               Student Pending Fees List
             </h1>
             <div className="flex gap-2">
-                         <button
-                         onClick={() => setIsFeesDialogOpen(true)}
-                           className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[5rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-                         >
-                           <IconPlus className="w-4 h-4" /> Fees
-                         </button>
-                       </div>
+              {/* <button
+                onClick={() => setIsFeesDialogOpen(true)}
+                className={CreateButton}
+              >
+                <IconPlus className="w-4 h-4" /> Fees
+              </button> */}
+              <StudentFeesCreate
+                onClick={() => setIsFeesDialogOpen(true)}
+                className={CreateButton}
+              ></StudentFeesCreate>
+            </div>
           </div>
         </div>
 
@@ -214,14 +223,13 @@ const PendingFees = () => {
           studentData={selectedStudent}
           onSuccess={fetchPendingFeesData}
         />
-         <AddFees
-                  open={isFeesDialogOpen}
-                  handleOpen={() => {
-                    setIsFeesDialogOpen(false);
-                    fetchPendingFeesData();
-                  }}
-                
-                />
+        <AddFees
+          open={isFeesDialogOpen}
+          handleOpen={() => {
+            setIsFeesDialogOpen(false);
+            fetchPendingFeesData();
+          }}
+        />
       </div>
     </Layout>
   );

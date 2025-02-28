@@ -7,6 +7,10 @@ import { CircleMinus, SquarePlus } from "lucide-react";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import Weekday from "../../../components/common/data.json";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
 const status = [
   {
     value: "Active",
@@ -261,14 +265,14 @@ const TeacherSubEdit = ({
             <div className="flex gap-4 justify-center">
               <button
                 type="submit"
-                className="w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
                 disabled={isButtonDisabled}
               >
                 {isButtonDisabled ? "Updatting..." : "Update"}
               </button>
               <button
                 type="button"
-                className="w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                className={BackButton}
                 onClick={handleClose}
               >
                 Back

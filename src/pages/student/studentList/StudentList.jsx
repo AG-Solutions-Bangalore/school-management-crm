@@ -12,6 +12,12 @@ import moment from "moment/moment";
 import { toast } from "sonner";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import {
+  StudentAllStudentCreate,
+  StudentAllStudentEdit,
+  StudentAllStudentView,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -165,7 +171,7 @@ const StudentList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   const encryptedId = encryptId(id);
 
@@ -196,7 +202,33 @@ const StudentList = () => {
                 title="Edit"
               >
                 <IconEye className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <StudentAllStudentEdit
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/editStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/student-list" } }
+                  );
+                }}
+                className="flex items-center space-x-2"
+              ></StudentAllStudentEdit>
+              <StudentAllStudentView
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/viewStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/student-list" } }
+                  );
+                }}
+                className="flex items-center space-x-2"
+              ></StudentAllStudentView>
             </div>
           );
         },
@@ -228,12 +260,16 @@ const StudentList = () => {
               All Student
             </h1>
             <div className="flex gap-2">
-              <button
+              {/* <button
                 onClick={() => navigate("/student-list/createStudent")}
-                className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
-              >
+                className={CreateButton}
+                >
                 <IconPlus className="w-4 h-4" /> Student
-              </button>
+              </button> */}
+              <StudentAllStudentCreate
+                onClick={() => navigate("/student-list/createStudent")}
+                className={CreateButton}
+              ></StudentAllStudentCreate>
             </div>
           </div>
         </div>

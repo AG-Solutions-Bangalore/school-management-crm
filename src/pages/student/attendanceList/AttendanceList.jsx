@@ -20,6 +20,14 @@ import { toast } from "sonner";
 import { ContextPanel } from "../../../context/ContextPanel";
 import { Trash } from "lucide-react";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
+import {
+  StudentAttendanceListCreate,
+  StudentAttendanceListDelete,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -194,7 +202,7 @@ const AttendanceList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   setAttendanceId(id);
                   setOpenDeleteDialog(true);
@@ -203,7 +211,14 @@ const AttendanceList = () => {
                 title="Delete"
               >
                 <Trash className="h-5 w-5 text-red-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <StudentAttendanceListDelete
+                onClick={() => {
+                  setAttendanceId(id);
+                  setOpenDeleteDialog(true);
+                }}
+                className="flex items-center space-x-2"
+              ></StudentAttendanceListDelete>
             </div>
           );
         },
@@ -240,13 +255,18 @@ const AttendanceList = () => {
               <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
                 Student Attendance List
               </h1>
-              <button
-                // onClick={() => navigate("/attendance-list/createAttendance")}
+              {/* <button
                 onClick={() => navigate("/attendance-list/viewAttendance")}
-                className="flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Attendance
-              </button>
+              </button> */}
+              <StudentAttendanceListCreate
+                onClick={() => navigate("/attendance-list/viewAttendance")}
+                className={CreateButton}
+              >
+                <IconPlus className="w-4 h-4" /> Attendance
+              </StudentAttendanceListCreate>
             </div>
           </div>
 
@@ -293,13 +313,13 @@ const AttendanceList = () => {
                 <button
                   type="submit"
                   disabled={isButtonDisabled}
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                 >
                   {isButtonDisabled ? "Updating..." : "Update"}
                 </button>
                 <button
                   type="button"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                  className={BackButton}
                   onClick={() => setOpenDialog(false)}
                 >
                   Cancel
@@ -339,15 +359,13 @@ const AttendanceList = () => {
               <button
                 onClick={handleDelete}
                 disabled={isButtonDisabled}
-                className="text-center text-sm font-medium cursor-pointer w-36 
-                     text-white bg-blue-600 hover:bg-blue-700 p-2 rounded-lg shadow-md"
+                className={CreateButton}
               >
                 {isButtonDisabled ? "Deleting..." : "Delete"}
               </button>
               <button
                 type="button"
-                className="text-center text-sm font-medium cursor-pointer w-36 
-                     text-white bg-red-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                className={BackButton}
                 onClick={() => setOpenDeleteDialog(false)}
               >
                 Cancel

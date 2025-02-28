@@ -5,14 +5,11 @@ import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery, useMutation } from "@tanstack/react-query";
 
-
-
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../context/ContextPanel";
 import BASE_URL from "../../base/BaseUrl";
 import Layout from "../../layout/Layout";
 import ButtonComponents from "../../components/buttonIndex/ButtonComponents";
-
 const CreateButton = () => {
   const [selectedPage, setSelectedPage] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
@@ -21,16 +18,17 @@ const CreateButton = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [availablePages, setAvailablePages] = useState([]);
   const { fetchPermissions } = useContext(ContextPanel);
-    const navigate= useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
-  
     const existingControls = JSON.parse(
       localStorage.getItem("buttonControl") || "[]"
     );
 
-  
     const existingPageButtonMap = new Map(
-      existingControls.map(control => [`${control.pages}-${control.button}`, true])
+      existingControls.map((control) => [
+        `${control.pages}-${control.button}`,
+        true,
+      ])
     );
     const allButtons = Object.entries(ButtonComponents).map(
       ([key, component]) => ({
@@ -39,12 +37,14 @@ const CreateButton = () => {
       })
     );
 
-    const filteredButtons = allButtons.filter(button => 
-      !existingPageButtonMap.has(`${button.page}-${button.name}`)
+    const filteredButtons = allButtons.filter(
+      (button) => !existingPageButtonMap.has(`${button.page}-${button.name}`)
     );
 
-    const uniquePages = [...new Set(filteredButtons.map(button => button.page))];
-    
+    const uniquePages = [
+      ...new Set(filteredButtons.map((button) => button.page)),
+    ];
+
     setAvailablePages(uniquePages.length > 0 ? ["All", ...uniquePages] : []);
   }, []);
 
@@ -58,9 +58,12 @@ const CreateButton = () => {
       const existingControls = JSON.parse(
         localStorage.getItem("buttonControl") || "[]"
       );
-      
+
       const existingPageButtonMap = new Map(
-        existingControls.map(control => [`${control.pages}-${control.button}`, true])
+        existingControls.map((control) => [
+          `${control.pages}-${control.button}`,
+          true,
+        ])
       );
 
       const allButtons = Object.entries(ButtonComponents).map(
@@ -70,8 +73,8 @@ const CreateButton = () => {
         })
       );
 
-      const filteredButtons = allButtons.filter(button => 
-        !existingPageButtonMap.has(`${button.page}-${button.name}`)
+      const filteredButtons = allButtons.filter(
+        (button) => !existingPageButtonMap.has(`${button.page}-${button.name}`)
       );
 
       setSelectedItems(filteredButtons);
@@ -80,23 +83,27 @@ const CreateButton = () => {
 
   const getAvailableButtons = () => {
     if (!selectedPage || selectedPage === "All") return [];
-    
+
     const existingControls = JSON.parse(
       localStorage.getItem("buttonControl") || "[]"
     );
 
     const existingPageButtonMap = new Map(
-      existingControls.map(control => [`${control.pages}-${control.button}`, true])
+      existingControls.map((control) => [
+        `${control.pages}-${control.button}`,
+        true,
+      ])
     );
 
     return Object.entries(ButtonComponents)
       .filter(([key, component]) => {
-        return component.page === selectedPage && 
-          !existingPageButtonMap.has(`${selectedPage}-${key}`);
+        return (
+          component.page === selectedPage &&
+          !existingPageButtonMap.has(`${selectedPage}-${key}`)
+        );
       })
       .map(([key]) => key);
   };
-
 
   const handleButtonChange = (e) => {
     const buttonName = e.target.value;
@@ -124,19 +131,15 @@ const CreateButton = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
-    
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        `${BASE_URL}/api/panel-create-usercontrol`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/panel-create-usercontrol`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
@@ -147,7 +150,7 @@ const CreateButton = () => {
     onSuccess: async () => {
       await fetchPermissions();
       toast.success("Button control created successfully!");
-      navigate('/userManagement')
+      navigate("/userManagement");
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
@@ -295,7 +298,7 @@ const CreateButton = () => {
           <button
             onClick={handleSubmit}
             disabled={!selectedItems.length || createMutation.isLoading}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center gap-2 disabled:opacity-60"
+            className="flex flex-row items-center gap-1 text-center justify-center text-sm font-[400] cursor-pointer   w-[7rem]  text-white bg-indigo-600 hover:bg-red-700 transition-all duration-300 transform hover:scale-105 active:scale-95 p-2 rounded-lg shadow-md"
           >
             <Plus size={20} />
             Create

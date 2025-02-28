@@ -3,7 +3,8 @@ import { toast } from "sonner";
 import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import CrmLogo from "../../assets/Companylogo/ppvn-logo.png"
+import CrmLogo from "../../assets/Companylogo/ppvn-logo.png";
+import { CreateButton } from "../../components/common/ButttonConfig";
 const ForgetPassword = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -51,11 +52,7 @@ const ForgetPassword = () => {
         <div className="flex-1 flex items-center bg-blue-50 justify-center px-4 lg:px-8 py-12 h-full lg:w-1/2">
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
-              <img
-                src={CrmLogo}
-                alt="Logo"
-                className="w-35 h-35"
-              />
+              <img src={CrmLogo} alt="Logo" className="w-35 h-35" />
             </div>
             <Typography
               variant="h6"
@@ -87,16 +84,13 @@ const ForgetPassword = () => {
                 />
               </div>
               <div className="flex justify-center">
-                <button
-                  className="text-center text-sm font-[400] cursor-pointer hover:animate-pulse w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-                  type="submit"
-                >
+                <button className={`${CreateButton} w-40`} type="submit">
                   Reset Password
                 </button>
               </div>
             </form>
             <div className="text-end mt-4" onClick={() => navigate("/")}>
-              <Link className="text-sm text-gray-700 hover:text-blue-600">
+              <Link className="text-sm text-gray-700 hover:text-indigo-600">
                 Sign In
               </Link>
             </div>
