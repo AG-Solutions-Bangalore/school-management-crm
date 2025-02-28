@@ -128,8 +128,8 @@ const Home = () => {
     },
     {
       name: "Total Students",
-      data: chartData.map((item) => item.non_pending_count),
-      color: "#2A9D8F",
+      data: chartData.map((item) => item.total_count),
+      color: "#2A9D8F", 
     },
   ];
 

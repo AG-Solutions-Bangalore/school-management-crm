@@ -45,6 +45,9 @@ import UserPage from "./pages/userManagement/UserPage";
 import CreatePage from "./pages/userManagement/CreatePage";
 import ManagementDashboard from "./pages/userManagement/ManagementDashboard";
 import CreateButton from "./pages/userManagement/CreateButton";
+import FeeSummary from "./pages/student/feesSummary/FeeSummary";
+import UserTypeList from "./pages/userType/UserTypeList";
+import EditUserType from "./pages/userType/EditUserType";
 const queryClient = new QueryClient();
 const App = () => {
   return (
@@ -93,6 +96,7 @@ const App = () => {
         <Route path="/student-list" element={<StudentList />} />
         <Route path="/current-student-list" element={<CurrentStudentList />} />
         <Route path="/pending-fees" element={<PendingFees />} />
+        <Route path="/fees-summary" element={<FeeSummary />} />
         <Route path="/student-list/createStudent" element={<CreateStudent />} />
         <Route path="/student-list/editStudent/:id" element={<EditStudent />} />
         <Route path="/student-list/viewStudent/:id" element={<StudentView />} />
@@ -140,6 +144,9 @@ const App = () => {
                   /> 
                   <Route path="/page-management" element={<CreatePage />} />
                   <Route path="/button-management" element={<CreateButton />} />
+
+          <Route path="/user-type" element={<UserTypeList />} />
+          <Route path="/edit-user-type/:id" element={<EditUserType />} />
       </Routes>
       </QueryClientProvider>
     </>

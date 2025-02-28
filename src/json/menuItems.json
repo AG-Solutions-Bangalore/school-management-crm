@@ -141,5 +141,10 @@
       "id": "usermanagement",
       "title": "User Management",
       "href": "/userManagement"
+    },
+    {
+      "id": "usertype",
+      "title": "User Type",
+      "href": "/user-type"
     }
   ]
