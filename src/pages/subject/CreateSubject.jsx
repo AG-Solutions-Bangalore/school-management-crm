@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
-import Select from "react-select";
 
 const CreateSubject = () => {
   const navigate = useNavigate();

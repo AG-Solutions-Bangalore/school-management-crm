@@ -19,6 +19,7 @@ import moment from "moment";
 import { toast } from "sonner";
 import { ContextPanel } from "../../../context/ContextPanel";
 import { Trash } from "lucide-react";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -250,7 +251,11 @@ const AttendanceList = () => {
           </div>
 
           <div className="shadow-md">
-            <MantineReactTable table={table} />
+            {!studentAttendanceData ? (
+              <LoaderComponent />
+            ) : (
+              <MantineReactTable table={table} />
+            )}
           </div>
         </div>
       </Layout>

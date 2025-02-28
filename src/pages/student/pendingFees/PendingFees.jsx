@@ -7,6 +7,7 @@ import axios from "axios";
 import { IconEdit, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { PendingFeesDialog } from "./PendingFeesDialog";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import { AddFees } from "./AddFees";
 
 const PendingFees = () => {
@@ -201,7 +202,11 @@ const PendingFees = () => {
         </div>
 
         <div className=" shadow-md">
-          <MantineReactTable table={table} />
+          {!pendingFeesData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}
         </div>
         <PendingFeesDialog
           open={dialogOpen}

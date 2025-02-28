@@ -221,13 +221,28 @@ const TeacherViewAttendance = () => {
           <div className="mt-6">
             <div className=" flex justify-between">
               <h3 className="text-lg font-bold">Attendance List</h3>
-              <button
-                onClick={handlPrintPdf}
-                className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-                type="button"
-              >
-                Print
-              </button>
+              <div className="flex space-x-3">
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                  <span>Present</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                  <span>Absent</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full"></span>
+                  <span>Holiday</span>
+                </div>
+
+                <button
+                  onClick={handlPrintPdf}
+                  className="text-center text-sm font-[400] cursor-pointer w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  type="button"
+                >
+                  Print
+                </button>
+              </div>
             </div>
             <div ref={componentRef}>
               <h3 className="text-lg font-bold print:block hidden text-center">

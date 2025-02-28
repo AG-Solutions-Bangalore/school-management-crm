@@ -4,9 +4,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
 import axios from "axios";
 import { toast } from "sonner";
-import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-const EditHoliday = () => {
-  const { id } = useParams();
+import { IconArrowBack, IconInfoCircle, IconX } from "@tabler/icons-react";
+import { decryptId } from "../../components/common/EncryptionDecryption";
+import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
+const EditHoliday = ({
+  openEditDialog,
+  setOpenEditDialog,
+  editId,
+  fetchHolidayData,
+}) => {
+  const id = editId;
 
   const navigate = useNavigate();
   const [holiday, setHoliday] = useState({
@@ -36,9 +43,17 @@ const EditHoliday = () => {
     }
   };
   useEffect(() => {
-    fetchEditHolidayData();
-  }, []);
-
+    if ((openEditDialog, id)) {
+      fetchEditHolidayData();
+    }
+  }, [openEditDialog, id]);
+  const handleClose = () => {
+    setOpenEditDialog(false);
+    setHoliday({
+      holiday_for: "",
+      holiday_date: "",
+    });
+  };
   const onInputChange = (e) => {
     setHoliday({
       ...holiday,
@@ -71,6 +86,9 @@ const EditHoliday = () => {
     }).then((res) => {
       if (res.data.code == 200) {
         toast.success(res.data.msg);
+        handleClose();
+        fetchHolidayData();
+        setIsButtonDisabled(false);
       } else if (res.data.code == 400) {
         toast.error(res.data.msg);
       }
@@ -88,75 +106,79 @@ const EditHoliday = () => {
   const inputClass =
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
   return (
-    <Layout>
-      <div className=" bg-[#FFFFFF] p-2  rounded-lg  ">
-        <div className="sticky top-0 p-2  mb-4 border-b-2 border-red-500 rounded-lg  bg-[#E1F5FA] ">
-          <h2 className=" px-5 text-[black] text-lg   flex flex-row  justify-between items-center  rounded-xl p-2 ">
-            <div className="flex  items-center gap-2">
-              <IconInfoCircle className="w-4 h-4" />
-              <span>Edit Holiday </span>
+    <>
+      <Dialog
+        open={openEditDialog}
+        onClose={handleClose}
+        fullWidth
+        maxWidth="sm"
+        sx={{ backdropFilter: "blur(4px)" }}
+        TransitionComponent={Slide}
+        transitionDuration={500}
+      >
+        <div className=" bg-[#FFFFFF] p-2  rounded-lg  ">
+          <DialogContent>
+            <div className="mb-4 flex justify-between">
+              <h3 className="font-bold text-xl">Edit Attendance</h3>
+              <IconButton edge="end" onClick={handleClose}>
+                <IconX />
+              </IconButton>
             </div>
-            <IconArrowBack
-              onClick={() => navigate("/holiday-list")}
-              className="cursor-pointer hover:text-red-600"
-            />
-          </h2>
+            <form
+              onSubmit={handleSubmit}
+              id="addIndiv"
+              className="w-full   rounded-lg mx-auto p-4 space-y-6 "
+            >
+              <div className="grid grid-cols-1  md:grid-cols-2  gap-6">
+                {/* present Date  */}
+                <div>
+                  <FormLabel required>Holiday Date</FormLabel>
+                  <input
+                    type="date"
+                    name="holiday_date"
+                    value={holiday?.holiday_date || ""}
+                    onChange={(e) => onInputChange(e)}
+                    className={inputClass}
+                    required
+                  />
+                </div>
+                {/* Holiday For  */}
+                <div>
+                  <FormLabel required>Holiday For</FormLabel>
+                  <input
+                    type="text"
+                    name="holiday_for"
+                    value={holiday?.holiday_for || ""}
+                    onChange={(e) => onInputChange(e)}
+                    className={inputClass}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Form Actions */}
+              <div className="flex flex-wrap gap-4 justify-center">
+                <button
+                  type="submit"
+                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  disabled={isButtonDisabled}
+                >
+                  {isButtonDisabled ? "Updating..." : "Update"}
+                </button>
+
+                <button
+                  type="button"
+                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                  onClick={handleClose}
+                >
+                  Back
+                </button>
+              </div>
+            </form>
+          </DialogContent>
         </div>
-        <hr />
-        <form
-          onSubmit={handleSubmit}
-          id="addIndiv"
-          className="w-full   rounded-lg mx-auto p-4 space-y-6 "
-        >
-          <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-5   gap-6">
-            {/* present Date  */}
-            <div>
-              <FormLabel>Holiday Date</FormLabel>
-              <input
-                type="date"
-                name="holiday_date"
-                value={holiday.holiday_date}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-              />
-            </div>
-            {/* Holiday For  */}
-            <div>
-              <FormLabel required>Holiday For</FormLabel>
-              <input
-                type="text"
-                name="holiday_for"
-                value={holiday.holiday_for}
-                onChange={(e) => onInputChange(e)}
-                className={inputClass}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Form Actions */}
-          <div className="flex flex-wrap gap-4 justify-start">
-            <button
-              type="submit"
-              className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
-              disabled={isButtonDisabled}
-            >
-              {isButtonDisabled ? "Updating..." : "Update"}
-            </button>
-
-            <button
-              type="button"
-              className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
-              onClick={() => {
-                navigate("/holiday-list");
-              }}
-            >
-              Back
-            </button>
-          </div>
-        </form>
-      </div>
-    </Layout>
+      </Dialog>
+    </>
   );
 };
 

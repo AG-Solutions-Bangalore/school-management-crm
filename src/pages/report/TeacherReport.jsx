@@ -15,12 +15,15 @@ const status = [
     label: "Inactive",
   },
 ];
-const DownloadReport = () => {
+const TeacherReport = () => {
   const [yearData, setYearData] = useState([]);
+  const [teacherdesignation, setTeacherDesignation] = useState([]);
 
   const [report, setReport] = useState({
-    student_year: "",
-    status: "",
+    teacher_year: "",
+    teacher_status: "",
+
+    teacher_designation: "",
   });
   const onInputChange = (e) => {
     setReport({
@@ -47,21 +50,38 @@ const DownloadReport = () => {
         console.error("Error fetching holiday List data", error);
       }
     };
+    const fetchTeacherData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${BASE_URL}/api/panel-fetch-usertypes`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setTeacherDesignation(response.data.userType);
+      } catch (error) {
+        console.error("Error fetching teacher data", error);
+      }
+    };
+    fetchTeacherData();
     fetchYearData();
   }, []);
 
-  const handleDownload = (e) => {
+  const handleTeacher = (e) => {
     e.preventDefault();
     let data = {
-      student_year: report.student_year,
-      status: report.status,
+      teacher_year: report.teacher_year,
+      teacher_status: report.teacher_status,
+      teacher_designation: report.teacher_designation,
     };
 
     e.preventDefault();
-    console.log("Data : ", data);
 
     axios({
-      url: BASE_URL + "/api/panel-download-student-details-report",
+      url: BASE_URL + "/api/panel-download-teacher-details-report",
       method: "POST",
       data,
       headers: {
@@ -72,19 +92,22 @@ const DownloadReport = () => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "student_details.csv");
+        link.setAttribute("download", "teacher_details.csv");
         document.body.appendChild(link);
         link.click();
-        toast.success("Student Details Downloaded Successfully");
+        toast.success("Teacher Details Downloaded Successfully");
         setReport({
-          student_year: "",
-          status: "",
+          teacher_year: "",
+          teacher_status: "",
+
+          teacher_designation: "",
         });
       })
       .catch((err) => {
-        toast.error("Student Details is Not Downloaded");
+        toast.error("Teacher Details is Not Downloaded");
       });
   };
+
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}
@@ -93,8 +116,7 @@ const DownloadReport = () => {
   );
   const inputClassSelect =
     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
-  const inputClass =
-    "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
+
   return (
     <Layout>
       <div className=" bg-[#FFFFFF] p-2  rounded-lg  ">
@@ -102,22 +124,22 @@ const DownloadReport = () => {
           <h2 className=" px-5 text-[black] text-lg   flex flex-row  justify-between items-center  rounded-xl p-2 ">
             <div className="flex  items-center gap-2">
               <IconInfoCircle className="w-4 h-4" />
-              <span>Download Report </span>
+              <span>Download Teacher Report </span>
             </div>
           </h2>
         </div>
         <hr />
         <form
-          onSubmit={handleDownload}
           className="w-full   rounded-lg mx-auto p-4 space-y-6"
+          onSubmit={handleTeacher}
         >
-          <div className="grid grid-cols-1  md:grid-cols-2  gap-6">
+          <div className="grid grid-cols-1  md:grid-cols-3  gap-6">
             {/* present Date  */}
             <div>
               <FormLabel>Year</FormLabel>
               <select
-                name="student_year"
-                value={report.student_year || ""}
+                name="teacher_year"
+                value={report.teacher_year || ""}
                 onChange={onInputChange}
                 className={inputClassSelect}
               >
@@ -132,15 +154,32 @@ const DownloadReport = () => {
             <div>
               <FormLabel>Status</FormLabel>
               <select
-                name="status"
-                value={report.status || ""}
+                name="teacher_status"
+                value={report.teacher_status || ""}
                 onChange={onInputChange}
-                 className={inputClassSelect}
+                className={inputClassSelect}
               >
                 <option value="">Select Status</option>
                 {status.map((option, index) => (
                   <option key={index} value={option.value}>
                     {option.value}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <FormLabel>Designation</FormLabel>
+              <select
+                name="teacher_designation"
+                value={report.teacher_designation || ""}
+                onChange={onInputChange}
+                className={inputClassSelect}
+              >
+                <option value="">Select Designation</option>
+                {teacherdesignation.map((option, index) => (
+                  <option key={index} value={option.user_position}>
+                    {option.user_position}
                   </option>
                 ))}
               </select>
@@ -162,4 +201,4 @@ const DownloadReport = () => {
   );
 };
 
-export default DownloadReport;
+export default TeacherReport;

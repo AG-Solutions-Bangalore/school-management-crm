@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
   IconUser,
-  IconCalendar,
   IconSchool,
-  IconHome,
 } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import moment from "moment";
 import Layout from "../../../layout/Layout";
 import BASE_URL from "../../../base/BaseUrl";
 import { Card, CardBody } from "@material-tailwind/react";
@@ -16,9 +13,12 @@ import TeacherDetailsView from "./TeacherDetailsView";
 import { Phone } from "lucide-react";
 import { IconArrowBack } from "@tabler/icons-react";
 import TeacherSubList from "./TeacherSubList";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 
 const TeacherView = () => {
   const { id } = useParams();
+  const decryptedId = decryptId(id);
+
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { selectedYear } = useContext(ContextPanel);
@@ -29,7 +29,7 @@ const TeacherView = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-view/${selectedYear}/${id}`,
+        `${BASE_URL}/api/panel-fetch-teacher-view/${selectedYear}/${decryptedId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const TeacherView = () => {
 
   useEffect(() => {
     fetchStudentData();
-  }, [id, selectedYear]);
+  }, [decryptedId, selectedYear]);
 
   return (
     <Layout>

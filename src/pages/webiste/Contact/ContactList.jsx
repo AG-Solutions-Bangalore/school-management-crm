@@ -3,6 +3,7 @@ import Layout from "../../../layout/Layout";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const ContactList = () => {
   const [contactData, setContactData] = useState(null);
@@ -72,6 +73,7 @@ const ContactList = () => {
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
 
     initialState: { columnVisibility: { address: false } },
+ 
   });
   return (
     <Layout>
@@ -87,7 +89,11 @@ const ContactList = () => {
         </div>
 
         <div className=" shadow-md">
-          <MantineReactTable table={table} />
+          {!contactData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}
         </div>
       </div>
     </Layout>

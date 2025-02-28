@@ -10,6 +10,8 @@ import BASE_URL, {
 } from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { toast } from "sonner";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -164,22 +166,32 @@ const StudentList = () => {
           return (
             <div className="flex gap-2">
               <div
-                onClick={() =>
-                  navigate(`/student-list/editStudent/${id}`, {
-                    state: { from: "/student-list" },
-                  })
-                }
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/editStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/student-list" } }
+                  );
+                }}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
               </div>
               <div
-                onClick={() =>
-                  navigate(`/student-list/viewStudent/${id}`, {
-                    state: { from: "/student-list" },
-                  })
-                }
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/student-list/viewStudent/${encodeURIComponent(
+                      encryptedId
+                    )}`,
+                    { state: { from: "/student-list" } }
+                  );
+                }}
                 className="flex items-center space-x-2"
                 title="Edit"
               >
@@ -204,9 +216,6 @@ const StudentList = () => {
     enableStickyFooter: true,
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
     initialState: { columnVisibility: { address: false } },
-    state: {
-      isLoading: loading,
-    },
   });
 
   return (
@@ -230,7 +239,11 @@ const StudentList = () => {
         </div>
 
         <div className="shadow-md">
-          <MantineReactTable table={table} />
+          {!studentData ? (
+            <LoaderComponent />
+          ) : (
+            <MantineReactTable table={table} />
+          )}
         </div>
       </div>
     </Layout>

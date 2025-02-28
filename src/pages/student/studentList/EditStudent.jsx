@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 const status = [
   {
     value: "Active",
@@ -17,10 +18,11 @@ const status = [
 ];
 const EditStudent = () => {
   const { id } = useParams();
+  const decryptedId = decryptId(id);
 
   const navigate = useNavigate();
   const location = useLocation();
-  const sourceRoute = location.state?.from || '/student-list';
+  const sourceRoute = location.state?.from || "/student-list";
   const [student, setStudent] = useState({
     student_stats_no: "",
     student_dob: "",
@@ -49,7 +51,7 @@ const EditStudent = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-by-id/${id}`,
+        `${BASE_URL}/api/panel-fetch-student-by-id/${decryptedId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -205,7 +207,7 @@ const EditStudent = () => {
     setIsButtonDisabled(true);
     try {
       const response = await axios.post(
-        `${BASE_URL}/api/panel-update-student/${id}?_method=PUT`,
+        `${BASE_URL}/api/panel-update-student/${decryptedId}?_method=PUT`,
         formData,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -214,7 +216,7 @@ const EditStudent = () => {
 
       if (response.data.code === 200) {
         toast.success(response.data.msg);
-        navigate('/student-list');
+        navigate("/student-list");
       } else {
         toast.error(response.data.msg);
       }

@@ -1,5 +1,6 @@
 import {
   IconCalendarCheck,
+  IconReport,
   IconTablePlus,
   IconUserQuestion,
   IconWorld,
@@ -8,8 +9,6 @@ import {
   IconLayoutDashboard,
   IconUsers,
   IconDownload,
-  IconBuilding,
-  IconPin,
   IconTool,
   IconCalendarWeek,
   IconFileReport,
@@ -21,11 +20,9 @@ import {
   IconClipboardData,
 } from "@tabler/icons-react";
 
-import { uniqueId } from "lodash";
-
 const Menuitems = () => [
   {
-    id: uniqueId(),
+    id: "dashboard",
     title: "Dashboard",
     icon: IconLayoutDashboard,
     href: "/home",
@@ -33,24 +30,24 @@ const Menuitems = () => [
 
   //master
   {
-    id: uniqueId(),
+    id: "master",
     title: "Master",
     icon: IconUserCog,
     subItems: [
       {
-        id: uniqueId(),
+        id: "subject",
         title: "Subject",
         icon: IconBook,
         href: "/subject-list",
       },
       {
-        id: uniqueId(),
+        id: "holiday",
         title: "Holiday",
         icon: IconCalendarWeek,
         href: "/holiday-list",
       },
       {
-        id: uniqueId(),
+        id: "feesStructure",
         title: "Fees Structure",
         icon: IconFileReport,
         href: "/feesStructure-list",
@@ -60,24 +57,24 @@ const Menuitems = () => [
 
   //techer
   {
-    id: uniqueId(),
+    id: "teacher",
     title: "Teacher",
     icon: IconUsers,
     subItems: [
       {
-        id: uniqueId(),
+        id: "teacherlist",
         title: "Teacher List",
         icon: IconUsers,
         href: "/teacher-list",
       },
       {
-        id: uniqueId(),
+        id: "teacherattendance",
         title: "Attendance List",
         icon: IconListDetails,
         href: "/teacher-attendance-list",
       },
       {
-        id: uniqueId(),
+        id: "teacherattendanceview",
         title: "Attendance",
         icon: IconEye,
         href: "/teacher-viewAttendance",
@@ -86,55 +83,55 @@ const Menuitems = () => [
   },
   //students
   {
-    id: uniqueId(),
+    id: "student",
     title: "Student",
     icon: IconUsersGroup,
     subItems: [
       {
-        id: uniqueId(),
+        id: "studentlist",
         title: "All Student",
         icon: IconUsersGroup,
         href: "/student-list",
       },
       {
-        id: uniqueId(),
+        id: "studentcurrentlist",
         title: "Current Student",
         icon: IconUsersGroup,
         href: "/current-student-list",
       },
       {
-        id: uniqueId(),
+        id: "studentattendancelist",
         title: "Attendance List ",
         icon: IconListDetails,
         href: "/attendance-list",
       },
       {
-        id: uniqueId(),
+        id: "studentattendanceview",
         title: "Attendance",
         icon: IconEye,
         href: "/attendance-list/viewAttendance",
       },
       {
-        id: uniqueId(),
-        title: "Pending Fees",
+        id: "studentfees",
+        title: "Fees",
         icon: IconClipboardData,
         href: "/pending-fees",
       },
     ],
   },
   {
-    id: uniqueId(),
+    id: "timetable",
     title: "Time Table",
     icon: IconTablePlus,
     subItems: [
       {
-        id: uniqueId(),
+        id: "classtimetable",
         title: "Class",
         icon: IconTablePlus,
         href: "/timetable",
       },
       {
-        id: uniqueId(),
+        id: "teachertimetable",
         title: "Teacher",
         icon: IconTablePlus,
         href: "/teacher-timetable",
@@ -142,18 +139,18 @@ const Menuitems = () => [
     ],
   },
   {
-    id: uniqueId(),
+    id: "website",
     title: "Website",
     icon: IconWorld,
     subItems: [
       {
-        id: uniqueId(),
+        id: "enquiry",
         title: "Enquiry",
         icon: IconUserQuestion,
         href: "/website-list/enquiry",
       },
       {
-        id: uniqueId(),
+        id: "contact",
         title: "Contact",
         icon: IconCalendarCheck,
         href: "/website-list/contact",
@@ -162,21 +159,27 @@ const Menuitems = () => [
   },
 
   {
-    id: uniqueId(),
-    title: "Download",
-    icon: IconDownload,
+    id: "report",
+    title: "Report",
+    icon: IconReport,
     subItems: [
       {
-        id: uniqueId(),
+        id: "reportstudent",
         title: "Student",
         icon: IconDownload,
-        href: "/download-report",
+        href: "/report-student/download",
       },
       {
-        id: uniqueId(),
+        id: "reportteacher",
         title: "Teacher",
         icon: IconDownload,
-        href: "/teacher-timetable",
+        href: "/report-teacher/download",
+      },
+      {
+        id: "reportfees",
+        title: "Pending Fees",
+        icon: IconClipboardData,
+        href: "/report-pending/download",
       },
     ],
   },

@@ -11,6 +11,7 @@ import { IconEdit } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import TeacherSubCreate from "./TeacherSubCreate";
 import TeacherSubEdit from "./TeacherSubEdit";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 
 const TeacherSubList = ({ teacherData, fetchStudentData }) => {
   const navigate = useNavigate();
@@ -124,16 +125,7 @@ const TeacherSubList = ({ teacherData, fetchStudentData }) => {
 
   return (
     <Box className="max-w-screen">
-      {!teacherData ? (
-        <Center style={{ height: "70vh", flexDirection: "column" }}>
-          <Loader size="lg" variant="dots" color="pink" />
-          <Text mt="md" color="gray" size="lg">
-            Loading, please wait...
-          </Text>
-        </Center>
-      ) : (
-        <MantineReactTable table={table} />
-      )}
+      {!teacherData ? <LoaderComponent /> : <MantineReactTable table={table} />}
       <TeacherSubCreate
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
