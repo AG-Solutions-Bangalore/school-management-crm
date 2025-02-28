@@ -26,9 +26,7 @@ const NavItem = memo(
     const isExpanded = currentOpenItem === item?.id;
 
     console.log(!isExpanded ? item.id : "", "id");
-    // const handleToggle = () => {
-    //   setCurrentOpenItem(!isExpanded ? item.id : "");
-    // };
+
     const handleToggle = () => {
       if (!isExpanded && item.id === "dashboard") {
         setCurrentOpenItem(!isExpanded ? item?.id : "");
@@ -97,7 +95,7 @@ const NavItem = memo(
           width: "calc(100% + 16px)",
         },
         "&:hover": {
-          // backgroundColor: theme.palette.primary.light,
+          backgroundColor: theme.palette.primary.light,
           color: theme.palette.text.primary,
         },
       },
@@ -177,10 +175,8 @@ const NavItem = memo(
             disabled={item?.disabled}
             selected={pathDirect === item?.href}
             onClick={(e) => {
-              // if (item?.subItems) {
               e.preventDefault();
               handleToggle();
-              // }
             }}
             sx={{
               "&:hover": {
