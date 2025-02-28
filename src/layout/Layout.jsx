@@ -54,7 +54,8 @@ const Layout = ({ children }) => {
           sx={{
             maxWidth: "100% !important",
             px: "10px !important",
-            mx: "10px !important",
+            // mx: "10px !important",
+            mx: { md: "10px !important" },
           }}
         >
           {/* ------------------------------------------- */}

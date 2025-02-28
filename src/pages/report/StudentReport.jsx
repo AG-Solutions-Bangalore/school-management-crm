@@ -5,7 +5,14 @@ import { FormLabel } from "@mui/material";
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { toast } from "sonner";
-import { CreateButton, HeaderColor } from "../../components/common/ButttonConfig";
+import {
+  CreateButton,
+  HeaderColor,
+} from "../../components/common/ButttonConfig";
+import {
+  ReportStudentAll,
+  ReportStudentCurrent,
+} from "../../components/buttonIndex/ButtonComponents";
 const status = [
   {
     value: "Active",
@@ -222,7 +229,7 @@ const StudentReport = () => {
 
           {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center">
-            <button onClick={handleAllStudent} className={CreateButton}>
+            {/* <button onClick={handleAllStudent} className={CreateButton}>
               All Student
             </button>
             <button
@@ -230,7 +237,19 @@ const StudentReport = () => {
               className={`${CreateButton} w-40`}
             >
               Current Student
-            </button>
+            </button> */}
+            <ReportStudentAll
+              onClick={handleAllStudent}
+              className={CreateButton}
+            >
+              All Student
+            </ReportStudentAll>
+            <ReportStudentCurrent
+              onClick={handleCurrentStudent}
+              className={`${CreateButton} w-40`}
+            >
+              Current Student
+            </ReportStudentCurrent>
           </div>
         </form>
       </div>

@@ -6,6 +6,7 @@ import { ContextPanel } from "../../context/ContextPanel";
 import { useReactToPrint } from "react-to-print";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { CreateButton } from "../../components/common/ButttonConfig";
+import { TeacherTimeTablePrint } from "../../components/buttonIndex/ButtonComponents";
 
 const Timetable = () => {
   const containerRef = useRef();
@@ -175,9 +176,13 @@ const Timetable = () => {
           </div>
         </div>
         <div className="mt-4">
-          <button onClick={handlePrintPdf} className={CreateButton}>
+          {/* <button onClick={handlePrintPdf} className={CreateButton}>
             Print
-          </button>
+          </button> */}
+          <TeacherTimeTablePrint
+            onClick={handlePrintPdf}
+            className={CreateButton}
+          ></TeacherTimeTablePrint>
         </div>
         <div ref={containerRef}>
           <div className="mb-6 mt-6">

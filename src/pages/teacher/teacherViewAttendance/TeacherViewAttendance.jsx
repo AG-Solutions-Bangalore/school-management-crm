@@ -11,6 +11,7 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import { TeacherAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 
 const TeacherViewAttendance = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const TeacherViewAttendance = () => {
   });
 
   const [attendanceData, setAttendanceData] = useState(null);
+  const [loading1, setLoading1] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onInputChange = (e) => {
@@ -45,7 +47,7 @@ const TeacherViewAttendance = () => {
       from_date: attendance?.from_date,
       to_date: attendance?.to_date,
     };
-
+    setLoading1(true);
     try {
       const res = await axios.post(
         `${BASE_URL}/api/panel-fetch-teacher-attendance`,
@@ -68,6 +70,8 @@ const TeacherViewAttendance = () => {
     } catch (error) {
       console.error("API Error:", error);
       toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading1(false);
     }
   };
   const toggleAttendance = async (teacher, date) => {
@@ -213,9 +217,14 @@ const TeacherViewAttendance = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button type="submit" className={CreateButton}>
+            {/* <button type="submit" className={CreateButton}>
               View
-            </button>
+            </button> */}
+            <TeacherAttendanceView
+              type="submit"
+              loading={loading1}
+              className={CreateButton}
+            ></TeacherAttendanceView>
           </div>
         </form>
         {attendanceData && (

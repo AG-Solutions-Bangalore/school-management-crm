@@ -10,6 +10,10 @@ import { PendingFeesDialog } from "./PendingFeesDialog";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import { AddFees } from "./AddFees";
 import { CreateButton } from "../../../components/common/ButttonConfig";
+import {
+  StudentFeesCreate,
+  StudentFeesEdit,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const PendingFees = () => {
   const [pendingFeesData, setPendingFeesData] = useState(null);
@@ -150,13 +154,17 @@ const PendingFees = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => handleOpenDialog(row.original)}
                 className="flex items-center space-x-2"
                 title="Pending fee"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <StudentFeesEdit
+                onClick={() => handleOpenDialog(row.original)}
+                className="flex items-center space-x-2"
+              ></StudentFeesEdit>
             </div>
           );
         },
@@ -188,12 +196,16 @@ const PendingFees = () => {
               Student Pending Fees List
             </h1>
             <div className="flex gap-2">
-              <button
+              {/* <button
                 onClick={() => setIsFeesDialogOpen(true)}
                 className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Fees
-              </button>
+              </button> */}
+              <StudentFeesCreate
+                onClick={() => setIsFeesDialogOpen(true)}
+                className={CreateButton}
+              ></StudentFeesCreate>
             </div>
           </div>
         </div>

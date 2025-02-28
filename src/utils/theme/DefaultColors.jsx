@@ -4,9 +4,10 @@ const baselightTheme = createTheme({
   direction: "ltr",
   palette: {
     primary: {
-      main: "#001A6E", //when selected text-color
+      main: "#001A6E", //when selected text-color and
       light: "#E8EAF6", //this is for side bar color hover and bg color
       dark: "#0085db",
+      icon: "#001A6E", //edit icon color and view
     },
     secondary: {
       main: "#707a82",
@@ -26,7 +27,8 @@ const baselightTheme = createTheme({
       contrastText: "#ffffff",
     },
     error: {
-      main: "#fb977d",
+      // main: "#fb977d", //delete icon color
+      main: "#E52020", //delete icon color
       light: "#ffede9",
       dark: "#fb977d",
       contrastText: "#ffffff",

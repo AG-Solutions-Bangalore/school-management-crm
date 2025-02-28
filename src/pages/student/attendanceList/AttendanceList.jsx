@@ -24,6 +24,10 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import {
+  StudentAttendanceListCreate,
+  StudentAttendanceListDelete,
+} from "../../../components/buttonIndex/ButtonComponents";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -198,7 +202,7 @@ const AttendanceList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   setAttendanceId(id);
                   setOpenDeleteDialog(true);
@@ -207,7 +211,14 @@ const AttendanceList = () => {
                 title="Delete"
               >
                 <Trash className="h-5 w-5 text-red-500 cursor-pointer" />
-              </div>
+              </div> */}
+              <StudentAttendanceListDelete
+                onClick={() => {
+                  setAttendanceId(id);
+                  setOpenDeleteDialog(true);
+                }}
+                className="flex items-center space-x-2"
+              ></StudentAttendanceListDelete>
             </div>
           );
         },
@@ -244,13 +255,18 @@ const AttendanceList = () => {
               <h1 className="border-b-2 font-[400] border-dashed border-orange-800 text-center md:text-left">
                 Student Attendance List
               </h1>
-              <button
-                // onClick={() => navigate("/attendance-list/createAttendance")}
+              {/* <button
                 onClick={() => navigate("/attendance-list/viewAttendance")}
                 className={CreateButton}
               >
                 <IconPlus className="w-4 h-4" /> Attendance
-              </button>
+              </button> */}
+              <StudentAttendanceListCreate
+                onClick={() => navigate("/attendance-list/viewAttendance")}
+                className={CreateButton}
+              >
+                <IconPlus className="w-4 h-4" /> Attendance
+              </StudentAttendanceListCreate>
             </div>
           </div>
 
