@@ -15,10 +15,11 @@ import {
 } from "@material-tailwind/react";
 import { IconTrash } from "@tabler/icons-react";
 import { ContextPanel } from "../../context/ContextPanel";
-import { encryptId } from "../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import CreateHoliday from "./CreateHoliday";
 import EditHoliday from "./EditHoliday";
+import { CreateButton } from "../../components/common/ButttonConfig";
+
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -158,7 +159,7 @@ const HolidayList = () => {
               <div className="flex gap-2">
                 <button
                   onClick={() => setCreateDialogOpen(true)}
-                  className=" flex flex-row items-center gap-1 text-center text-sm font-[400] cursor-pointer  w-[7rem] text-white bg-blue-600 hover:bg-red-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                 >
                   <IconPlus className="w-4 h-4" /> Holiday
                 </button>

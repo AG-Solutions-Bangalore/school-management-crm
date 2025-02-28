@@ -5,6 +5,7 @@ import BASE_URL from "../../base/BaseUrl";
 import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../context/ContextPanel";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { CreateButton } from "../../components/common/ButttonConfig";
 
 const FeesStructureList = () => {
   const [feesStructureData, setFeesStructureData] = useState([]);
@@ -53,9 +54,9 @@ const FeesStructureList = () => {
           <div className="mb-6 flex space-x-4 ">
             <button
               onClick={() => setActiveTab("basic")}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              className={`${CreateButton} w-[11.1rem] ${
                 activeTab === "basic"
-                  ? "bg-blue-600 text-white shadow-md"
+                  ? `${CreateButton} `
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >
@@ -64,9 +65,9 @@ const FeesStructureList = () => {
             </button>
             <button
               onClick={() => setActiveTab("additional")}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              className={`${CreateButton}  w-[11.1rem] ${
                 activeTab === "additional"
-                  ? "bg-blue-600 text-white shadow-md"
+                  ? `${CreateButton}`
                   : "bg-white text-gray-600 hover:bg-gray-50"
               }`}
             >

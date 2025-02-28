@@ -1,184 +1,325 @@
-import React, { useContext, useEffect, useState } from "react";
-import { FileText, Users, Briefcase } from "lucide-react";
-import Layout from "../../layout/Layout";
-import BASE_URL from "../../base/BaseUrl";
-import { ContextPanel } from "../../context/ContextPanel";
-import ReactApexChart from 'react-apexcharts';
+import React, { memo } from "react";
+import Chip from "@mui/material/Chip";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
+import { styled, useTheme } from "@mui/material/styles";
+import { Link, useNavigate } from "react-router-dom";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 
-const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
-  <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
-    <div className="flex items-center justify-between mb-2">
-      <h3 className="text-gray-600 font-medium text-sm md:text-base">{title}</h3>
-      <Icon className={`h-6 w-6 text-${color}-500`} />
-    </div>
-    <div className="mt-2">
-      <p className="text-2xl md:text-3xl font-bold text-gray-800">{value || 0}</p>
-    </div>
-  </div>
-);
+const NavItem = memo(
+  ({
+    item,
+    level,
+    pathDirect,
+    hideMenu,
+    isCollapsed,
+    currentOpenItem,
+    setCurrentOpenItem,
+  }) => {
+    const Icon = item.icon;
+    const theme = useTheme();
+    const itemIcon = <Icon stroke={1.5} size="1.3rem" />;
+    const navigate = useNavigate();
+    const isExpanded = currentOpenItem === item?.id;
 
-const LoadingSpinner = () => (
-  <div className="flex justify-center items-center h-64">
-    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
-  </div>
-);
+    console.log(!isExpanded ? item.id : "", "id");
 
-const Home = () => {
-  const [dashboardData, setDashboardData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const { selectedYear } = useContext(ContextPanel);
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          throw new Error("Authentication token not found");
-        }
-
-        const response = await fetch(`${BASE_URL}/api/panel-fetch-dashboard/${selectedYear}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setDashboardData(data);
-      } catch (err) {
-        console.error("Dashboard data fetch error:", err);
-        setErrorMessage(err.message || "Failed to fetch dashboard data");
-      } finally {
-        setIsLoading(false);
+    const handleToggle = () => {
+      if (!isExpanded && item.id === "dashboard") {
+        setCurrentOpenItem(!isExpanded ? item?.id : "");
+        localStorage.setItem("currentOpenItem", item.id);
+        navigate(item.href);
+      } else {
+        setCurrentOpenItem(!isExpanded ? item?.id : "");
       }
     };
 
-    fetchDashboardData();
-  }, [selectedYear]);
+    const ListItemStyled = styled(ListItemButton)(() => ({
+      whiteSpace: "nowrap",
+      marginBottom: "2px",
+      padding: "5px 10px 5px 0",
+      borderRadius: `30px`,
+      backgroundColor: level > 1 ? "transparent !important" : "inherit",
+      color:
+        level > 1 && pathDirect === item?.href
+          ? `${theme.palette.primary.main}!important`
+          : theme.palette.text.secondary,
+      fontWeight:
+        level > 1 && pathDirect === item?.href ? "600 !important" : "400",
+      paddingLeft: hideMenu
+        ? "0"
+        : level > 2
+        ? `${level * 15}px`
+        : level > 1
+        ? "10px"
+        : "0",
+      "&:before": {
+        content: '""',
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: "-20px",
+        height: "100%",
+        zIndex: "-1",
+        borderRadius: " 0 24px 24px 0",
+        transition: "all .3s ease-in-out",
+        width: "0",
+      },
+      "&:hover::before": {
+        width: "calc(100% + 20px)",
+        backgroundColor: theme.palette.primary.light,
+      },
+      "& > .MuiListItemIcon-root": {
+        width: 45,
+        height: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "8px",
+        marginRight: "8px",
+        transition: "all .3s ease-in-out",
+      },
+      "&:hover": {
+        backgroundColor: "transparent !important",
+      },
+      "&.Mui-selected": {
+        backgroundColor: "transparent !important",
+        ".MuiListItemIcon-root": {
+          color: theme.palette.primary.main,
+        },
+        "&:before": {
+          backgroundColor: theme.palette.primary.light,
+          width: "calc(100% + 16px)",
+        },
+        "&:hover": {
+          backgroundColor: theme.palette.primary.light,
+          color: theme.palette.text.primary,
+        },
+      },
+    }));
 
-  // Error state handling
-  if (errorMessage) {
+    const SubItemStyled = styled(ListItemButton)(() => ({
+      whiteSpace: "nowrap",
+      marginBottom: "2px",
+      padding: "5px 10px 5px 0",
+      borderRadius: `30px`,
+      backgroundColor: "transparent !important",
+      color:
+        pathDirect === item?.href
+          ? `${theme.palette.primary.main}!important`
+          : theme.palette.text.secondary,
+      fontWeight: pathDirect === item?.href ? "600 !important" : "400",
+      paddingLeft: !isCollapsed ? "20px" : "10px",
+      "&:before": {
+        content: '""',
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: "-20px",
+        height: "100%",
+        zIndex: "-1",
+        borderRadius: " 0 24px 24px 0",
+        transition: "all .3s ease-in-out",
+        width: "0",
+      },
+      "&:hover::before": {
+        width: "calc(100% + 20px)",
+        backgroundColor: theme.palette.primary.light,
+      },
+      "& > .MuiListItemIcon-root": {
+        width: 45,
+        height: 40,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "8px",
+        marginRight: "8px",
+        transition: "all .3s ease-in-out",
+      },
+      "&:hover": {
+        backgroundColor: "transparent !important",
+      },
+      "&.Mui-selected": {
+        backgroundColor: "transparent !important",
+        ".MuiListItemIcon-root": {
+          color: theme.palette.primary.main,
+        },
+        "&:before": {
+          backgroundColor: theme.palette.primary.light,
+          width: "calc(100% + 16px)",
+        },
+        "&:hover": {
+          color: theme.palette.primary.main,
+          ".MuiListItemIcon-root": {
+            color: theme.palette.primary.main,
+          },
+        },
+      },
+    }));
+
+    const listItemProps = {
+      component: item?.external ? "a" : Link,
+      to: item?.href,
+      href: item?.external ? item?.href : "",
+      target: item?.external ? "_blank" : "",
+    };
+
     return (
-      <Layout>
-        <div className="p-6 text-center">
-          <div className="bg-red-100 p-4 rounded-lg text-red-800">
-            <p className="font-medium">{errorMessage}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      <List component="li" disablePadding key={item?.id && item.title}>
+        <Link to={item.href} style={{ textDecoration: "none" }}>
+          <ListItemStyled
+            {...listItemProps}
+            disabled={item?.disabled}
+            selected={pathDirect === item?.href}
+            onClick={(e) => {
+              e.preventDefault();
+              handleToggle();
+            }}
+            sx={{
+              "&:hover": {
+                ".MuiListItemIcon-root": {
+                  color: item.bgcolor + ".main",
+                },
+              },
+              "&:hover::before": {
+                backgroundColor: item.bgcolor + ".light",
+              },
+
+              "&.Mui-selected": {
+                color:
+                  level > 1
+                    ? `${theme.palette.text.secondary} !important`
+                    : "primary.main",
+                "& .MuiTypography-root": {
+                  fontWeight: "600 !important",
+                },
+                ".MuiListItemIcon-root": {
+                  color: "primary.main",
+                },
+                "&:before": {
+                  backgroundColor: "primary.light",
+                },
+                "&:hover": {
+                  color: "primary.main",
+                  ".MuiListItemIcon-root": {
+                    color: "primary.main",
+                  },
+                },
+              },
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: "36px",
+                p: "3px 0",
+                color:
+                  level > 1 && pathDirect === item?.href
+                    ? `${theme.palette.primary.main}!important`
+                    : "inherit",
+              }}
             >
-              Retry
-            </button>
-          </div>
-        </div>
-      </Layout>
+              {itemIcon}
+            </ListItemIcon>
+            <ListItemText>
+              {!isCollapsed ? hideMenu ? null : <>{item?.title}</> : ""}
+              <br />
+              {item?.subtitle ? (
+                <Typography variant="caption">
+                  {hideMenu ? "" : item?.subtitle}
+                </Typography>
+              ) : (
+                ""
+              )}
+            </ListItemText>
+
+            {!item?.chip || hideMenu ? null : (
+              <Chip
+                color={item?.chipColor}
+                variant={item?.variant ? item?.variant : "filled"}
+                size="small"
+                label={item?.chip}
+              />
+            )}
+            {isCollapsed
+              ? ""
+              : item?.subItems && (
+                  <ListItemIcon
+                    sx={{
+                      minWidth: "36px",
+                      p: "3px 0",
+                      color: "inherit",
+                    }}
+                  >
+                    {isExpanded ? <IconChevronUp /> : <IconChevronDown />}
+                  </ListItemIcon>
+                )}
+          </ListItemStyled>
+        </Link>
+        {/* Sub-Menu Items (Collapsible) */}
+        {item?.subItems && (
+          <List component="div" disablePadding>
+            {isExpanded &&
+              item.subItems.map((subItem) => (
+                <Link
+                  key={subItem.id}
+                  to={subItem.href}
+                  style={{ textDecoration: "none" }}
+                >
+                  <SubItemStyled
+                    selected={pathDirect === subItem.href}
+                    sx={{
+                      "&:hover": {
+                        ".MuiListItemIcon-root": {
+                          color: subItem.bgcolor + ".main",
+                        },
+                      },
+                      "&:hover::before": {
+                        backgroundColor: subItem.bgcolor + ".light",
+                      },
+                      "&.Mui-selected": {
+                        color: "primary.main",
+                        "& .MuiTypography-root": {
+                          fontWeight: "600 !important",
+                        },
+                        ".MuiListItemIcon-root": {
+                          color: "primary.main",
+                        },
+                        "&:before": {
+                          backgroundColor: "primary.light",
+                        },
+                        "&:hover": {
+                          color: "primary.main",
+                          ".MuiListItemIcon-root": {
+                            color: "primary.main",
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: "36px",
+                        p: "3px 0",
+                        color:
+                          pathDirect === subItem?.href
+                            ? `${theme.palette.primary.main}!important`
+                            : "inherit",
+                      }}
+                    >
+                      <subItem.icon stroke={1.5} size="1.1rem" />
+                    </ListItemIcon>
+                    <ListItemText primary={!isCollapsed ? subItem.title : ""} />
+                  </SubItemStyled>
+                </Link>
+              ))}
+          </List>
+        )}
+      </List>
     );
   }
+);
 
-  // Prepare chart data
-  const chartData = dashboardData?.graph1 || [];
-  const chartSeries = [
-    {
-      name: 'Total Count',
-      data: chartData.map(item => item.total_count)
-    },
-    {
-      name: 'Pending Count',
-      data: chartData.map(item => item.pending_count)
-    }
-  ];
-  const chartOptions = {
-    chart: {
-      type: 'bar',
-      height: 350
-    },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '55%',
-        endingShape: 'rounded'
-      },
-    },
-    dataLabels: {
-      enabled: false
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ['transparent']
-    },
-    xaxis: {
-      categories: chartData.map(item => item.studentClass_class),
-      title: {
-        text: 'Classes'
-      }
-    },
-    yaxis: {
-      title: {
-        text: 'Count'
-      }
-    },
-    fill: {
-      opacity: 1
-    },
-    tooltip: {
-      y: {
-        formatter: function (val) {
-          return val;
-        }
-      }
-    }
-  };
-
-  return (
-    <Layout>
-      <div className="p-4 bg-white rounded-lg md:p-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
-
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <>
-            <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              <StatCard
-                title="Total Students"
-                value={dashboardData?.allstudentCount}
-                icon={Users}
-              />
-              <StatCard
-                title="Current Students"
-                value={dashboardData?.currentstudentCount}
-                icon={FileText}
-                color="blue"
-              />
-              <StatCard
-                title="Total Teachers"
-                value={dashboardData?.allteacherCount}
-                icon={Briefcase}
-                color="green"
-              />
-            </div>
-
-            <div className="mt-8">
-              <ReactApexChart
-                options={chartOptions}
-                series={chartSeries}
-                type="bar"
-                height={350}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    </Layout>
-  );
-};
-
-export default Home;
+export default NavItem;

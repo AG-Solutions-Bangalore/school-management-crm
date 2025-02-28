@@ -1,11 +1,16 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 const baselightTheme = createTheme({
   direction: "ltr",
   palette: {
+    button: {
+      main: "#001A6E",
+      light: "#E8EAF6",
+      text: "#0085db",
+    },
     primary: {
-      main: "#0085db",
-      light: "#e5f3fb",
+      main: "#001A6E", //when selected text-color
+      light: "#E8EAF6", //this is for side bar color hover and bg color
       dark: "#0085db",
     },
     secondary: {
@@ -47,7 +52,7 @@ const baselightTheme = createTheme({
     },
     text: {
       primary: "#111c2d",
-      secondary: "#111c2d",
+      secondary: "#001A6E", //when not selected tetxt color in side bar
     },
     action: {
       disabledBackground: "rgba(73,82,88,0.12)",
@@ -122,9 +127,10 @@ const baselightTheme = createTheme({
         ".MuiPaper-elevation9, .MuiPopover-root .MuiPaper-elevation": {
           boxShadow: "0 9px 17.5px rgb(0,0,0,0.05) !important",
         },
-        ".rounded-bars .apexcharts-bar-series.apexcharts-plot-series .apexcharts-series path": {
-          clipPath: "inset(0 0 5% 0 round 20px)",
-        },
+        ".rounded-bars .apexcharts-bar-series.apexcharts-plot-series .apexcharts-series path":
+          {
+            clipPath: "inset(0 0 5% 0 round 20px)",
+          },
       },
     },
     MuiCard: {
@@ -146,7 +152,6 @@ const baselightTheme = createTheme({
         },
       },
     },
-    
   },
 });
 

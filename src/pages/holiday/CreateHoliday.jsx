@@ -6,6 +6,10 @@ import { IconArrowBack, IconInfoCircle, IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
+import {
+  BackButton,
+  CreateButton,
+} from "../../components/common/ButttonConfig";
 
 const CreateHoliday = ({
   setCreateDialogOpen,
@@ -132,7 +136,7 @@ const CreateHoliday = ({
               <div className="flex flex-wrap gap-4 justify-center">
                 <button
                   type="submit"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-blue-600 hover:bg-green-700 p-2 rounded-lg shadow-md"
+                  className={CreateButton}
                   disabled={isButtonDisabled}
                 >
                   {isButtonDisabled ? "Creating..." : "Create"}
@@ -140,7 +144,7 @@ const CreateHoliday = ({
 
                 <button
                   type="button"
-                  className="text-center text-sm font-[400] cursor-pointer  w-36 text-white bg-red-600 hover:bg-red-400 p-2 rounded-lg shadow-md"
+                  className={BackButton}
                   onClick={() => setCreateDialogOpen(false)}
                 >
                   Back
