@@ -1,0 +1,145 @@
+
+[
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "href": "/home"
+    },
+    {
+      "id": "master",
+      "title": "Master",
+      "subItems": [
+        {
+          "id": "subject",
+          "title": "Subject",
+          "href": "/subject-list"
+        },
+        {
+          "id": "holiday",
+          "title": "Holiday",
+          "href": "/holiday-list"
+        },
+        {
+          "id": "feesStructure",
+          "title": "Fees Structure",
+          "href": "/feesStructure-list"
+        }
+       
+      ]
+    },
+    {
+      "id": "teacher",
+      "title": "Teacher",
+      "subItems": [
+        {
+          "id": "teacherlist",
+          "title": "Teacher List",
+          "href": "/teacher-list"
+        },
+        {
+          "id": "teacherattendance",
+          "title": "T Attendance List",
+          "href": "/teacher-attendance-list"
+        },
+        {
+          "id": "teacherattendanceview",
+          "title": "T Attendance",
+          "href": "/teacher-viewAttendance"
+        }
+       
+      ]
+    },
+    {
+      "id": "student",
+      "title": "Student",
+      "subItems": [
+        {
+          "id": "studentlist",
+          "title": "All Student",
+          "href": "/student-list"
+        },
+        {
+          "id": "studentcurrentlist",
+          "title": "Current Student",
+          "href": "/current-student-list"
+        },
+        {
+          "id": "studentattendancelist",
+          "title": "Attendance List",
+          "href": "/attendance-list"
+        },
+        {
+          "id": "studentattendanceview",
+          "title": "Attendance",
+          "href": "/attendance-list/viewAttendance"
+        },
+        {
+          "id": "studentfees",
+          "title": "Fees",
+          "href": "/pending-fees"
+        }
+       
+      ]
+    },
+    {
+      "id": "timetable",
+      "title": "Time Table",
+      "subItems": [
+        {
+          "id": "classtimetable",
+          "title": "Class",
+          "href": "/timetable"
+        },
+        {
+          "id": "teachertimetable",
+          "title": "Teacher",
+          "href": "/teacher-timetable"
+        }
+       
+      ]
+    },
+    {
+      "id": "website",
+      "title": "Website",
+      "subItems": [
+        {
+          "id": "enquiry",
+          "title": "Enquiry",
+          "href": "/website-list/enquiry"
+        },
+        {
+          "id": "contact",
+          "title": "Contact",
+          "href": "/website-list/contact"
+        }
+       
+      ]
+    },
+    {
+      "id": "report",
+      "title": "Report",
+      "subItems": [
+        {
+          "id": "reportstudent",
+          "title": "Student R",
+          "href": "/report-student/download"
+        },
+        {
+          "id": "reportteacher",
+          "title": "Teacher R",
+          "href": "/report-teacher/download"
+        },
+        {
+          "id": "reportfees",
+          "title": "Pending Fees",
+          "href": "/report-pending/download"
+        }
+       
+      ]
+    },
+    {
+      "id": "usermanagement",
+      "title": "User Management",
+      "href": "/userManagement"
+    }
+  ]

@@ -6,7 +6,7 @@
     { "id": 4, "title": "Dr." },
     { "id": 5, "title": "Prof." },
     { "id": 6, "title": "Sir" },
-    { "id": 7, "title": "Madam" }
+    { "id": 7, "title": "Madam" } 
   ],
   "Weekday": [
     { "id": 1, "title": "Monday" },

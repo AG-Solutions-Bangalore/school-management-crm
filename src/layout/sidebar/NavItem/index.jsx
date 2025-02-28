@@ -32,7 +32,12 @@ const NavItem = memo(
         setCurrentOpenItem(!isExpanded ? item?.id : "");
         localStorage.setItem("currentOpenItem", item.id);
         navigate(item.href);
-      } else {
+      } 
+      else if (!isExpanded && item.id === "usermanagement") {
+        setCurrentOpenItem(!isExpanded ? item?.id : "");
+        localStorage.setItem("currentOpenItem", item.id);
+        navigate(item.href);
+      }else {
         setCurrentOpenItem(!isExpanded ? item?.id : "");
       }
     };
