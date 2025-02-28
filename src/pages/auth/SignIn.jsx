@@ -2,7 +2,8 @@ import { Typography } from "@material-tailwind/react";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import BASE_URL, { LoginImageUrl } from "../../base/BaseUrl";
+import BASE_URL from "../../base/BaseUrl";
+import CrmLogo from "../../assets/Companylogo/ppvn-logo.png"
 import { toast } from "sonner";
 import { ContextPanel } from "../../context/ContextPanel";
 const SignIn = () => {
@@ -68,7 +69,7 @@ const SignIn = () => {
     <>
       <div className="flex flex-col lg:flex-row h-screen">
         {/* Left Side - Image */}
-
+        {/* ppvn-logo  */}
         <div className="hidden  lg:block lg:w-[50%] xl:block xl:w-[70%] h-full">
           <img
             src="https://img.freepik.com/free-vector/large-school-building-scene_1308-32058.jpg"
@@ -81,7 +82,7 @@ const SignIn = () => {
           <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-lg  shadow-blue-600 ">
             <div className="flex justify-center mb-4">
               <img
-                src={`${LoginImageUrl}/ppvn.png`}
+                src={CrmLogo}
                 alt="Company Logo"
                 className="w-35 h-35"
               />
