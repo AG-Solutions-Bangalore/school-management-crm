@@ -2,13 +2,13 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Table, ChevronDown, Plus } from "lucide-react";
-import menuItems from "../../json/menuItems.json"
+import menuItems from "../../json/menuItems.json";
 import { toast } from "sonner";
 import BASE_URL from "../../base/BaseUrl";
 import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../context/ContextPanel";
 import { useNavigate } from "react-router-dom";
-
+import { CreateButton } from "../../components/common/ButttonConfig";
 
 const CreatePage = () => {
   const [selectedPage, setSelectedPage] = useState("");
@@ -17,17 +17,17 @@ const CreatePage = () => {
   const [userIds, setUserIds] = useState("1,2");
   const [status, setStatus] = useState("Active");
   const [availablePages, setAvailablePages] = useState([]);
-  const navigate = useNavigate()
- const {fetchPagePermission} = useContext(ContextPanel)
+  const navigate = useNavigate();
+  const { fetchPagePermission } = useContext(ContextPanel);
   const flattenMenuItems = (items) => {
     let flattened = [];
     items.forEach((item) => {
-        if (item.href && !item.subItems) {
-            flattened.push({
-              title: item.title,
-              href: item.href,
-            });
-          }
+      if (item.href && !item.subItems) {
+        flattened.push({
+          title: item.title,
+          href: item.href,
+        });
+      }
       if (item.subItems) {
         flattened = [...flattened, ...flattenMenuItems(item.subItems)];
       }
@@ -35,22 +35,22 @@ const CreatePage = () => {
     return flattened;
   };
 
-  
   useEffect(() => {
-    const existingControls = JSON.parse(localStorage.getItem('pageControl') || '[]');
+    const existingControls = JSON.parse(
+      localStorage.getItem("pageControl") || "[]"
+    );
     const allFlattenedPages = flattenMenuItems(menuItems);
-    
-   
-    const filteredPages = allFlattenedPages.filter(menuItem => {
-      return !existingControls.some(control => 
-        control.page === menuItem.title || 
-        control.url === menuItem.href.replace("/", "")
+
+    const filteredPages = allFlattenedPages.filter((menuItem) => {
+      return !existingControls.some(
+        (control) =>
+          control.page === menuItem.title ||
+          control.url === menuItem.href.replace("/", "")
       );
     });
 
-
     if (filteredPages.length > 0) {
-      setAvailablePages(["All", ...filteredPages.map(item => item.title)]);
+      setAvailablePages(["All", ...filteredPages.map((item) => item.title)]);
     } else {
       setAvailablePages([]);
     }
@@ -61,14 +61,16 @@ const CreatePage = () => {
     setSelectedPage(page);
 
     if (page === "All") {
-      const existingControls = JSON.parse(localStorage.getItem('pageControl') || '[]');
+      const existingControls = JSON.parse(
+        localStorage.getItem("pageControl") || "[]"
+      );
       const allFlattenedPages = flattenMenuItems(menuItems);
-      
-     
-      const filteredPages = allFlattenedPages.filter(menuItem => {
-        return !existingControls.some(control => 
-          control.page === menuItem.title || 
-          control.url === menuItem.href.replace("/", "")
+
+      const filteredPages = allFlattenedPages.filter((menuItem) => {
+        return !existingControls.some(
+          (control) =>
+            control.page === menuItem.title ||
+            control.url === menuItem.href.replace("/", "")
         );
       });
 
@@ -83,32 +85,33 @@ const CreatePage = () => {
     }
   };
 
-
   const createMutation = useMutation({
     mutationFn: async (data) => {
       const token = localStorage.getItem("token");
       console.log("data sent: ", data);
-  
-      const response = await fetch(`${BASE_URL}/api/panel-create-usercontrol-new`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-  
+
+      const response = await fetch(
+        `${BASE_URL}/api/panel-create-usercontrol-new`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-  
+
       return response.json();
     },
-    onSuccess:async () => {
-        await fetchPagePermission()
+    onSuccess: async () => {
+      await fetchPagePermission();
       toast.success("Page control created successfully!");
-      navigate('/userManagement')
-      
+      navigate("/userManagement");
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
@@ -134,11 +137,10 @@ const CreatePage = () => {
           status,
         },
       ];
-    } 
+    }
 
-   
     const payload = {
-        usercontrol_data: payloadData
+      usercontrol_data: payloadData,
     };
 
     console.log("Submitting payload:", payload);
@@ -253,7 +255,7 @@ const CreatePage = () => {
           <button
             onClick={handleSubmit}
             disabled={!selectedPage || createMutation.isLoading}
-            className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md flex items-center gap-2 disabled:opacity-60"
+            className={CreateButton}
           >
             <Plus size={20} />
             Create
