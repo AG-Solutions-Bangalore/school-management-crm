@@ -9,6 +9,7 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../components/common/ButttonConfig";
+import { ReportTeacherDownload } from "../../components/buttonIndex/ButtonComponents";
 const status = [
   {
     value: "Active",
@@ -192,9 +193,12 @@ const TeacherReport = () => {
 
           {/* Form Actions */}
           <div className="flex flex-wrap gap-4 justify-center">
-            <button type="submit" className={CreateButton}>
+            {/* <button type="submit" className={CreateButton}>
               Download
-            </button>
+            </button> */}
+            <ReportTeacherDownload type="submit" className={CreateButton}>
+              Download
+            </ReportTeacherDownload>
           </div>
         </form>
       </div>

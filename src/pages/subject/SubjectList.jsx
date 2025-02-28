@@ -27,6 +27,7 @@ import {
   BackButton,
   CreateButton,
 } from "../../components/common/ButttonConfig";
+import { MasterSubjectCreate } from "../../components/buttonIndex/ButtonComponents";
 
 const SubjectList = () => {
   const [subjectData, setSubjectData] = useState(null);
@@ -336,13 +337,20 @@ const SubjectList = () => {
                     : "Inactive"}
                 </button>
 
-                <button
+                {/* <button
                   ref={buttonRef}
                   onClick={handleOpenDialog}
                   className={CreateButton}
                 >
                   <IconPlus className="w-3.5 h-3.5" /> Subject
-                </button>
+                </button> */}
+                <MasterSubjectCreate
+                  ref={buttonRef}
+                  onClick={handleOpenDialog}
+                  className={CreateButton}
+                >
+                  {/* <IconPlus className="w-3.5 h-3.5" /> Subject */}
+                </MasterSubjectCreate>
               </div>
             </div>
           </div>

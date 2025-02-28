@@ -19,6 +19,11 @@ import LoaderComponent from "../../components/common/LoaderComponent";
 import CreateHoliday from "./CreateHoliday";
 import EditHoliday from "./EditHoliday";
 import { CreateButton } from "../../components/common/ButttonConfig";
+import {
+  MasterHolidayCreate,
+  MasterHolidayDelete,
+  MasterHolidayEdit,
+} from "../../components/buttonIndex/ButtonComponents";
 
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState(null);
@@ -105,7 +110,7 @@ const HolidayList = () => {
 
           return (
             <div className="flex gap-2">
-              <div
+              {/* <div
                 onClick={() => {
                   setOpenEditDialog(true);
                   setEditeId(id);
@@ -114,8 +119,17 @@ const HolidayList = () => {
                 title="Edit"
               >
                 <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div>
-              <div
+              </div> */}
+              <MasterHolidayEdit
+                onClick={() => {
+                  setOpenEditDialog(true);
+                  setEditeId(id);
+                }}
+                className="flex items-center space-x-2"
+              >
+                <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
+              </MasterHolidayEdit>
+              {/* <div
                 onClick={() => {
                   setDeleteId(id);
                   setDeleteDialogOpen(true);
@@ -124,7 +138,14 @@ const HolidayList = () => {
                 title="Delete"
               >
                 <IconTrash className="h-5 w-5 text-red-500" />
-              </div>
+              </div> */}
+              <MasterHolidayDelete
+                onClick={() => {
+                  setDeleteId(id);
+                  setDeleteDialogOpen(true);
+                }}
+                className="flex items-center space-x-2 cursor-pointer"
+              ></MasterHolidayDelete>
             </div>
           );
         },
@@ -157,12 +178,16 @@ const HolidayList = () => {
                 Holiday List
               </h1>
               <div className="flex gap-2">
-                <button
+                {/* <button
                   onClick={() => setCreateDialogOpen(true)}
                   className={CreateButton}
                 >
                   <IconPlus className="w-4 h-4" /> Holiday
-                </button>
+                </button> */}
+                <MasterHolidayCreate
+                  onClick={() => setCreateDialogOpen(true)}
+                  className={CreateButton}
+                ></MasterHolidayCreate>
               </div>
             </div>
           </div>

@@ -11,6 +11,7 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import { StudentAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 
 const AttendanceView = () => {
   const navigate = useNavigate();
@@ -263,9 +264,14 @@ const AttendanceView = () => {
             </div>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button type="submit" disabled={loading} className={CreateButton}>
+            {/* <button type="submit" disabled={loading} className={CreateButton}>
               {loading ? "Loading..." : "View"}
-            </button>
+            </button> */}
+            <StudentAttendanceView
+              type="submit"
+              loading={loading}
+              className={CreateButton}
+            ></StudentAttendanceView>
           </div>
         </form>
         {attendanceData && (

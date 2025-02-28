@@ -5,7 +5,7 @@ import { LoginImageUrl } from "../../../base/BaseUrl";
 import CrmLogo from "../../../assets/Companylogo/ppvn-logo.png";
 const LinkStyled = styled(Link)(() => ({
   height: "65px",
-  width: "220px",
+  width: "210px",
   overflow: "hidden",
   display: "flex",
   justifyContent: "center",

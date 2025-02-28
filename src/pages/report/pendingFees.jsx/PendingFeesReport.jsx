@@ -10,6 +10,10 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  ReportPendingFeesDownload,
+  ReportPendingFeesView,
+} from "../../../components/buttonIndex/ButtonComponents";
 const status = [
   {
     value: "Active",
@@ -188,12 +192,24 @@ const PendingFeesReport = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 justify-center">
-            <button onClick={handlePendingFees} className={CreateButton}>
+            {/* <button onClick={handlePendingFees} className={CreateButton}>
               Download
             </button>
             <button onClick={handleNavigate} className={CreateButton}>
               View
-            </button>
+            </button> */}
+            <ReportPendingFeesDownload
+              onClick={handlePendingFees}
+              className={CreateButton}
+            >
+              Download
+            </ReportPendingFeesDownload>
+            <ReportPendingFeesView
+              onClick={handleNavigate}
+              className={CreateButton}
+            >
+              View
+            </ReportPendingFeesView>
           </div>
         </form>
       </div>
