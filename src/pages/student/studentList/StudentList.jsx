@@ -18,6 +18,7 @@ import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { Printer } from "lucide-react";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -171,6 +172,19 @@ const StudentList = () => {
 
           return (
             <div className="flex gap-2">
+                 <div
+                onClick={() => {
+
+                  navigate(
+                    `/student-print/${id
+                    }`
+                  );
+                }}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <Printer className="h-4 w-4 text-indigo-600 cursor-pointer" />
+              </div>
               {/* <div
                 onClick={() => {
                   const encryptedId = encryptId(id);
@@ -215,7 +229,7 @@ const StudentList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></StudentAllStudentEdit>
+              />
               <StudentAllStudentView
                 onClick={() => {
                   const encryptedId = encryptId(id);
@@ -228,7 +242,7 @@ const StudentList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></StudentAllStudentView>
+              />
             </div>
           );
         },
@@ -269,7 +283,7 @@ const StudentList = () => {
               <StudentAllStudentCreate
                 onClick={() => navigate("/student-list/createStudent")}
                 className={CreateButton}
-              ></StudentAllStudentCreate>
+              />
             </div>
           </div>
         </div>

@@ -48,6 +48,8 @@ import CreateButton from "./pages/userManagement/CreateButton";
 import FeeSummary from "./pages/student/feesSummary/FeeSummary";
 import UserTypeList from "./pages/userType/UserTypeList";
 import EditUserType from "./pages/userType/EditUserType";
+import TeacherPrint from "./pages/teacher/teacherList/TeacherPrint";
+import StudentPrint from "./pages/student/studentList/StudentPrint";
 const queryClient = new QueryClient();
 const App = () => {
   return (
@@ -78,6 +80,8 @@ const App = () => {
         <Route path="/subject-list" element={<SubjectList />} />
         {/* Teacher  */}
         <Route path="/teacher-list" element={<TeacherList />} />
+        <Route path="/teacher-print/:id" element={<TeacherPrint />} />
+        <Route path="/student-print/:id" element={<StudentPrint />} />
         <Route path="/teacher-list/viewTeacher/:id" element={<TeacherView />} />
         <Route path="/teacher-list/createTeacher" element={<CreateTeacher />} />
         <Route path="/teacher-list/editTeacher/:id" element={<EditTeacher />} />
