@@ -77,6 +77,11 @@
           "id": "studentfees",
           "title": "Fees",
           "href": "/pending-fees"
+        },
+        {
+          "id": "studentfeessummary",
+          "title": "Fees Summary",
+          "href": "/fees-summary"
         }
        
       ]

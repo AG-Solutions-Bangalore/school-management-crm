@@ -248,7 +248,7 @@ const StudentView = () => {
                 <div className="flex items-center gap-3 mb-3">
                   <img
                     src={
-                      "http://bhsppvn.site/public/assets/student/1_Moorthy_S.jpeg"
+                      `http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`
                     }
                     alt={`Student Photo`}
                     className="w-16 h-16 object-cover rounded-lg border-2 border-blue-500 cursor-pointer"
@@ -453,7 +453,7 @@ const StudentView = () => {
           </DialogHeader>
           <DialogBody className="flex justify-center">
             <img
-              src={"http://bhsppvn.site/public/assets/student/1_Moorthy_S.jpeg"}
+              src={`http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`}
               alt={`student photo`}
               className="max-h-96 object-contain"
             />

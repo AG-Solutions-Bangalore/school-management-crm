@@ -36,6 +36,7 @@ const iconComponents = {
   "Attendance List":IconListDetails,
   Attendance:IconEye,
   Fees:IconClipboardData,
+  "Fees Summary":IconClipboardData,
   "Time Table":IconTablePlus,
   Class:IconTablePlus,
   Website:IconWorld,
