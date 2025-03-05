@@ -11,7 +11,7 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const {fetchYears ,fetchPagePermission, fetchPermissions}= useContext(ContextPanel)
+  const {fetchYears ,fetchPagePermission, fetchPermissions,fetchUserType}= useContext(ContextPanel)
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -46,6 +46,7 @@ const SignIn = () => {
   
           await fetchPermissions();
           await fetchPagePermission();
+          await fetchUserType();
             await fetchYears(); 
             navigate("/home");
         

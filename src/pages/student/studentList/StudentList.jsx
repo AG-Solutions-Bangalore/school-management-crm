@@ -76,24 +76,25 @@ const StudentList = () => {
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "student_image",
-        header: "Photo",
-        size: 100,
-        Cell: ({ row }) => {
-          const imageUrl = row.original.student_photo
-            ? `${StudentImageUrl}/${row.original.student_photo}`
-            : { StudentNoImageUrl };
-
-          return (
-            <img
-              src={imageUrl}
-              alt="Student"
-              className="w-12 h-12 rounded-full object-cover border"
-            />
-          );
-        },
-      },
+    
+          {
+              accessorKey: "student_photo",
+              header: "Photo",
+              size: 100,
+              Cell: ({ row }) => {
+                const imageUrl = row.original.student_photo
+                  ? `${StudentImageUrl}/${row.original.student_photo}`
+                  : StudentNoImageUrl;
+      
+                return (
+                  <img
+                    src={imageUrl}
+                    alt="Student"
+                    className="w-12 h-12 rounded-full object-cover border"
+                  />
+                );
+              },
+            },
 
       {
         accessorKey: "combined",
@@ -107,9 +108,9 @@ const StudentList = () => {
               {row.original.student_admission_no}
             </span>
             <span className="text-black text-xs">
-              {moment(row.original.student_admission_date).format(
-                "DD-MMM-YYYY"
-              )}
+              {row.original.student_admission_date ? (moment(row.original.student_admission_date).format(
+                "DD-MM-YYYY"
+              )):""}
             </span>
           </div>
         ),
