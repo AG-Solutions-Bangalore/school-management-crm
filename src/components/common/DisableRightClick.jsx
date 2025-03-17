@@ -14,7 +14,7 @@ const DisableRightClick = () => {
         (e.ctrlKey && e.key.toLowerCase() === "u") || // Ctrl + U - View Source
         (e.ctrlKey && e.key.toLowerCase() === "s") || // Ctrl + S - Save Page
         (e.ctrlKey && e.key.toLowerCase() === "h") || // Ctrl + H - History
-        (e.ctrlKey && e.key.toLowerCase() === "a") || // Ctrl + A - Select All
+        // (e.ctrlKey && e.key.toLowerCase() === "a") || // Ctrl + A - Select All
         (e.ctrlKey && e.key.toLowerCase() === "p") || // Ctrl + P - Print
         // (e.ctrlKey && e.key.toLowerCase() === "c") || // Ctrl + c - COpy
         // (e.ctrlKey && e.key.toLowerCase() === "v") || // Ctrl + V - Paster

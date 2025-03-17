@@ -30,8 +30,7 @@ const SignIn = () => {
 
     try {
       const res = await axios.post(`${BASE_URL}/api/panel-login`, formData);
-
-      if (res.status === 200) {
+      if (res.data.code == 200) {
         const token = res.data.UserInfo?.token;
         const default_year = res.data.school_detils.school_default_year;
         const allUser = res.data?.userN;
@@ -42,6 +41,10 @@ const SignIn = () => {
           localStorage.setItem("id", res.data.UserInfo.user.id);
           localStorage.setItem("name", res.data.UserInfo.user.name);
           localStorage.setItem(
+            "token-expire-time",
+            res.data.UserInfo.token_expires_at
+          );
+          localStorage.setItem(
             "user_position",
             res.data.UserInfo.user.user_position
           );
@@ -51,12 +54,13 @@ const SignIn = () => {
           await fetchPagePermission();
           await fetchUserType();
           await fetchYears();
+
           navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");
         }
-      } else {
-        toast.error("Login Failed, Please check your credentials.");
+      } else if (res.data.code == 400) {
+        toast.error(res.data.msg);
       }
     } catch (error) {
       toast.error("An error occurred during login.");

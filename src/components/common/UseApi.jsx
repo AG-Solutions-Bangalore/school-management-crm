@@ -1,5 +1,6 @@
 import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
+////////////////////*****************All Api is Called Here Except UseManagement Page And Sigin And Forgot Password************************************** */
 
 // Generic API Request Function
 const apiRequest = async (method, endpoint, data = null) => {
@@ -49,6 +50,9 @@ const apiRequestUpdate = async (method, endpoint, data = null) => {
     return { code: 500, msg: "Internal Server Error" };
   }
 };
+// ---------------------------LOGOUT------------------------------
+// Create LOGOUT API
+export const LogoutApi = () => apiRequest("POST", "/api/panel-logout");
 // --------------------------HOLIDAY------------------------
 // Fetch Holidays API
 export const fetchHolidays = (selectedYear) =>
