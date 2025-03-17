@@ -5,7 +5,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { Edit, ChevronDown, ChevronUp } from "lucide-react";
 import LoaderComponent from "../../components/common/LoaderComponent";
-import { fetchUserType } from "../../components/common/UseApi";
+import { fetchUserTypeList } from "../../components/common/UseApi";
 
 const UserTypeList = () => {
   const [userTypeData, setUserTypeData] = useState([]);
@@ -16,8 +16,7 @@ const UserTypeList = () => {
   const fetchUserTypeData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetchUserType();
+      const response = await fetchUserTypeList();
       setUserTypeData(response?.userType || []);
     } catch (error) {
       console.error("Error fetching userType data", error);

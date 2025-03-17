@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   fetchPagePermissionData,
   fetchUserControlData,
+  fetchUserTypeList,
   YearList,
 } from "../components/common/UseApi";
 
@@ -56,16 +57,14 @@ const AppProvider = ({ children }) => {
     setIsLoading(true);
     setIsError(false);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // const token = localStorage.getItem("token");
+      // const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const response = await fetchUserTypeList();
 
       // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem(
-        "userTypeRole",
-        JSON.stringify(response.data?.userType)
-      );
+      localStorage.setItem("userTypeRole", JSON.stringify(response?.userType));
     } catch (error) {
       setIsError(true);
     } finally {
