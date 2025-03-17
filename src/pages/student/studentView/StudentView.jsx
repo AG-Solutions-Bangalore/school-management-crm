@@ -258,7 +258,6 @@ const StudentView = () => {
               {/* Left Section with Primary Info */}
               <div className="bg-blue-50 p-4 md:w-1/3">
                 <div className="flex items-center gap-3 mb-3">
-<<<<<<< HEAD
                   {image == null ? (
                     <img
                       src={`${StudentNoImageUrl}`}
@@ -275,16 +274,6 @@ const StudentView = () => {
                     />
                   )}
 
-=======
-                  <img
-                    src={
-                      `http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`
-                    }
-                    alt={`Student Photo`}
-                    className="w-16 h-16 object-cover rounded-lg border-2 border-blue-500 cursor-pointer"
-                    onClick={() => setIsPhotoDialogOpen(true)}
-                  />
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
                   <h1 className="text-lg font-medium text-blue-900 border-b-2 border-blue-500 pb-1">
                     Student Details
                   </h1>
@@ -483,7 +472,6 @@ const StudentView = () => {
             </div>
           </DialogHeader>
           <DialogBody className="flex justify-center">
-<<<<<<< HEAD
             {image == null ? (
               <img
                 src={`${StudentNoImageUrl}`}
@@ -499,13 +487,6 @@ const StudentView = () => {
                 onClick={() => setIsPhotoDialogOpen(true)}
               />
             )}
-=======
-            <img
-              src={`http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`}
-              alt={`student photo`}
-              className="max-h-96 object-contain"
-            />
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
           </DialogBody>
         </Dialog>
 

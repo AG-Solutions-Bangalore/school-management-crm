@@ -61,7 +61,7 @@ export const MasterHolidayEdit = ({ onClick, className }) => {
 
   return (
     <button onClick={onClick} className={className} title="Edit Holiday">
-      <IconEdit color={theme.palette.primary.icon} />
+      <IconEdit color={theme.palette.primary.icon} className="h-4 w-4 " />
     </button>
   );
 };
@@ -77,7 +77,7 @@ export const MasterHolidayDelete = ({ onClick, className }) => {
 
   return (
     <button onClick={onClick} className={className} title="Delete Holiday">
-      <IconTrash color={theme.palette.error.main} />
+      <IconTrash color={theme.palette.error.main} className="h-4 w-4 " />
     </button>
   );
 };

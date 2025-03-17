@@ -84,7 +84,7 @@ const ForgetPassword = () => {
                 />
               </div>
               <div className="flex justify-center">
-                <button className={`${CreateButton} w-40`} type="submit">
+                <button className={`${CreateButton} w-52`} type="submit">
                   Reset Password
                 </button>
               </div>

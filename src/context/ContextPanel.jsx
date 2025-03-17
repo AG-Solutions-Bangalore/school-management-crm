@@ -62,9 +62,10 @@ const AppProvider = ({ children }) => {
       });
 
       // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem("userTypeRole", JSON.stringify(response.data?.userType));
-
-      
+      localStorage.setItem(
+        "userTypeRole",
+        JSON.stringify(response.data?.userType)
+      );
     } catch (error) {
       setIsError(true);
     } finally {
@@ -104,7 +105,6 @@ const AppProvider = ({ children }) => {
     }
   }, []);
   return (
-<<<<<<< HEAD
     <ContextPanel.Provider
       value={{
         userTypeId,
@@ -113,11 +113,9 @@ const AppProvider = ({ children }) => {
         fetchPagePermission,
         getStaticUsers,
         fetchPermissions,
+        fetchUserType,
       }}
     >
-=======
-    <ContextPanel.Provider value={{ userTypeId, fetchYears ,selectedYear,fetchPagePermission,getStaticUsers,fetchPermissions,fetchUserType}}>
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
       {children}
     </ContextPanel.Provider>
   );

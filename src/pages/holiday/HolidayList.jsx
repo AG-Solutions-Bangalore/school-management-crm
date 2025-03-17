@@ -106,7 +106,7 @@ const HolidayList = () => {
                 }}
                 className="flex items-center space-x-2"
               >
-                <IconEdit className="h-5 w-5 text-blue-500 cursor-pointer" />
+                <IconEdit className="h-4 w-4 text-blue-500 cursor-pointer" />
               </MasterHolidayEdit>
               {/* <div
                 onClick={() => {
