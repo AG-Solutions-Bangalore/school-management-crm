@@ -10,9 +10,9 @@ const Footer = () => {
   const theme = useTheme();
   useEffect(() => {
     const storedYears = localStorage.getItem("years");
-    // if (storedYears) {
-    //   setYears(JSON.parse(storedYears));
-    // }
+    if (storedYears) {
+      setYears(JSON.parse(storedYears));
+    }
 
     const defaultYear = localStorage.getItem("default_year");
     if (defaultYear) {
