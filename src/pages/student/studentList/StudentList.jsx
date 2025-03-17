@@ -18,14 +18,11 @@ import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
-<<<<<<< HEAD
 import {
   fetchStudentList,
   UpdateStudentStatus,
 } from "../../../components/common/UseApi";
-=======
 import { Printer } from "lucide-react";
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -59,26 +56,6 @@ const StudentList = () => {
 
   const columns = useMemo(
     () => [
-<<<<<<< HEAD
-      {
-        accessorKey: "student_image",
-        header: "Photo",
-        size: 100,
-        Cell: ({ row }) => {
-          const imageUrl = row.original.student_photo
-            ? `${StudentImageUrl}/${row.original.student_photo}`
-            : StudentNoImageUrl;
-
-          return (
-            <img
-              src={imageUrl}
-              alt="Student"
-              className="w-12 h-12 rounded-full object-cover border"
-            />
-          );
-        },
-      },
-=======
     
           {
               accessorKey: "student_photo",
@@ -98,7 +75,6 @@ const StudentList = () => {
                 );
               },
             },
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
       {
         accessorKey: "admission_details",

@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   fetchPagePermissionData,
   fetchUserControlData,
+  fetchUserTypeList,
   YearList,
 } from "../components/common/UseApi";
 
@@ -56,15 +57,14 @@ const AppProvider = ({ children }) => {
     setIsLoading(true);
     setIsError(false);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // const token = localStorage.getItem("token");
+      // const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const response = await fetchUserTypeList();
 
       // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem("userTypeRole", JSON.stringify(response.data?.userType));
-
-      
+      localStorage.setItem("userTypeRole", JSON.stringify(response?.userType));
     } catch (error) {
       setIsError(true);
     } finally {
@@ -104,7 +104,6 @@ const AppProvider = ({ children }) => {
     }
   }, []);
   return (
-<<<<<<< HEAD
     <ContextPanel.Provider
       value={{
         userTypeId,
@@ -113,11 +112,9 @@ const AppProvider = ({ children }) => {
         fetchPagePermission,
         getStaticUsers,
         fetchPermissions,
+        fetchUserType,
       }}
     >
-=======
-    <ContextPanel.Provider value={{ userTypeId, fetchYears ,selectedYear,fetchPagePermission,getStaticUsers,fetchPermissions,fetchUserType}}>
->>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
       {children}
     </ContextPanel.Provider>
   );

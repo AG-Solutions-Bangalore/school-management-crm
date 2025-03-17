@@ -7,11 +7,14 @@ import CrmLogo from "../../assets/Companylogo/ppvn-logo.png";
 import { toast } from "sonner";
 import { ContextPanel } from "../../context/ContextPanel";
 import { CreateButton } from "../../components/common/ButttonConfig";
+import { Eye, EyeOff } from "lucide-react";
 const SignIn = () => {
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const {fetchYears ,fetchPagePermission, fetchPermissions,fetchUserType}= useContext(ContextPanel)
+  const { fetchYears, fetchPagePermission, fetchPermissions, fetchUserType } =
+    useContext(ContextPanel);
   const navigate = useNavigate();
   const handleForgetPasswordClick = () => {
     navigate("/forget-password");
@@ -43,13 +46,12 @@ const SignIn = () => {
             res.data.UserInfo.user.user_position
           );
           localStorage.setItem("user_type", res.data.UserInfo.user.user_type);
-  
+
           await fetchPermissions();
           await fetchPagePermission();
           await fetchUserType();
-            await fetchYears(); 
-            navigate("/home");
-        
+          await fetchYears();
+          navigate("/home");
         } else {
           toast.error("Login Failed, Token not received.");
         }
@@ -108,7 +110,7 @@ const SignIn = () => {
                   required
                 />
               </div>
-              <div>
+              {/* <div>
                 <FormLabel required>Password</FormLabel>
                 <input
                   type="password"
@@ -118,8 +120,27 @@ const SignIn = () => {
                   className={inputClass}
                   required
                 />
-              </div>
+              </div> */}
+              <div className="mt-3">
+                <FormLabel required>Password</FormLabel>
 
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={`${inputClass} pr-10`} // Ensure space for the icon
+                    required
+                  />
+                  <span
+                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500 hover:text-gray-700"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </span>
+                </div>
+              </div>
               <div className="flex justify-center ">
                 <button
                   className={CreateButton}

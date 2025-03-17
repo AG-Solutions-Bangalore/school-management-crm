@@ -69,8 +69,8 @@ export const updateHoliday = (id, holidayData) =>
 // Delete Holiday API
 export const deleteHoliday = (deleteId) =>
   apiRequest("DELETE", `/api/panel-delete-holiday-list/${deleteId}`);
-// -------------------------STUDENT-----------------------
-// Fetch Student API
+// -------------------------SUBJECT-----------------------
+// Fetch SUBJECT API
 export const fetchSubjectList = () =>
   apiRequest("GET", `/api/panel-fetch-subject-list`);
 // Fetch class API
@@ -318,12 +318,11 @@ export const ViewPendingFeesReport = (data) =>
 export const ChangePassword = (data) =>
   apiRequest("POST", "/api/panel-change-password", data);
 // --------------------PAGE PERMISSSION----------------------
-
 export const fetchPagePermissionData = () =>
   apiRequest("GET", `/api/panel-fetch-usercontrol-new`);
 export const fetchUserControlData = () =>
   apiRequest("GET", `/api/panel-fetch-usercontrol`);
-export const fetchUserType = () =>
+export const fetchUserTypeList = () =>
   apiRequest("GET", `/api/panel-fetch-usertype`);
 export const fetchUserControlById = (permissionId) =>
   apiRequest("PUT", `/api/panel-update-usercontrol/${permissionId}`);
