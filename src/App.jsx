@@ -54,7 +54,7 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <>
-      {/* <DisableRightClick /> */}
+      <DisableRightClick />
       <QueryClientProvider client={queryClient}>
 
 
