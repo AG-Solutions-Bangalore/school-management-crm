@@ -15,6 +15,10 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import {
+  CreateClassandFees,
+  fetchClassList,
+} from "../../../components/common/UseApi";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -48,12 +52,8 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClasses(response.data?.classes || []);
+      const response = await fetchClassList();
+      setClasses(response?.classes || []);
     } catch (error) {
       console.error("Error fetching classes data", error);
       toast.error("Failed to fetch classes");
@@ -80,26 +80,18 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-student-class`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await CreateClassandFees(formData);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         handleOpen();
-        setFormData({
-          studentClass_admission_no: "",
-          studentClass_class: "",
-          studentClass_van: "No",
-        });
+        // setFormData({
+        //   studentClass_admission_no: "",
+        //   studentClass_class: "",
+        //   studentClass_van: "No",
+        // });
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       console.error("Error creating student class", error);

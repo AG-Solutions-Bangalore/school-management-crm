@@ -17,6 +17,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { toast } from "sonner";
 import ChangePasswordDialog from "./ChangePasswordDialog";
+import { ChangePassword } from "../../components/common/UseApi";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = React.useState(null);
@@ -101,9 +102,10 @@ const Profile = () => {
       username: localStorage.getItem("name"),
     };
     try {
-      await axios.post(`${BASE_URL}/api/panel-change-password`, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // await axios.post(`${BASE_URL}/api/panel-change-password`, data, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const respose = await ChangePassword(data);
       toast.success("Password Updated Successfully!");
 
       handleClose1();
@@ -175,7 +177,6 @@ const Profile = () => {
       </Menu>
       <Logout open={openModal} handleOpen={handleOpenLogout} />
       {/* Profile Dialog */}
-
 
       <ChangePasswordDialog
         setForgotPassword={setForgotPassword}

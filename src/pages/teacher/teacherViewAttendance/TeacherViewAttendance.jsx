@@ -12,6 +12,11 @@ import {
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
 import { TeacherAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  CreateTeacherAttendanceView,
+  DeleteAttendanceView,
+  ViewTeacherAttendance,
+} from "../../../components/common/UseApi";
 
 const TeacherViewAttendance = () => {
   const navigate = useNavigate();
@@ -35,6 +40,45 @@ const TeacherViewAttendance = () => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const form = document.getElementById("addIndiv");
+  //   if (!form || !form.checkValidity()) {
+  //     toast.error("Fill all required fields");
+  //     return;
+  //   }
+
+  //   const data = {
+  //     from_date: attendance?.from_date,
+  //     to_date: attendance?.to_date,
+  //   };
+  //   setLoading1(true);
+  //   try {
+  //     const res = await axios.post(
+  //       `${BASE_URL}/api/panel-fetch-teacher-attendance`,
+  //       data,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+
+  //     console.log("API Response:", res.data);
+
+  //     if (res.data.weekdays && res.data.teacher) {
+  //       setAttendanceData(res.data);
+  //     } else {
+  //       toast.error("Invalid response from server");
+  //     }
+  //   } catch (error) {
+  //     console.error("API Error:", error);
+  //     toast.error("Something went wrong. Please try again.");
+  //   } finally {
+  //     setLoading1(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -49,21 +93,11 @@ const TeacherViewAttendance = () => {
     };
     setLoading1(true);
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/panel-fetch-teacher-attendance`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await ViewTeacherAttendance(data);
+      console.log("API Response:", res);
 
-      console.log("API Response:", res.data);
-
-      if (res.data.weekdays && res.data.teacher) {
-        setAttendanceData(res.data);
-        // toast.success("Attendance data fetched successfully!");
+      if (res.weekdays && res.teacher) {
+        setAttendanceData(res);
       } else {
         toast.error("Invalid response from server");
       }
@@ -74,6 +108,7 @@ const TeacherViewAttendance = () => {
       setLoading1(false);
     }
   };
+
   const toggleAttendance = async (teacher, date) => {
     const isHoliday = attendanceData.weekdays.find(
       (day) => day.date === date.date && day.holiday_for
@@ -89,14 +124,14 @@ const TeacherViewAttendance = () => {
         const attendanceIndex = teacher.attendance_dates.indexOf(date.date);
         const attendanceId = teacher.id[attendanceIndex];
 
-        await axios({
-          url: `${BASE_URL}/api/panel-delete-teacher-attendance/${attendanceId}`,
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
+        // await axios({
+        //   url: `${BASE_URL}/api/panel-delete-teacher-attendance/${attendanceId}`,
+        //   method: "DELETE",
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //   },
+        // });
+        const res = await DeleteAttendanceView(attendanceId);
         toast.success(
           `${teacher.teacher_name} marked present for ${moment(
             date.date
@@ -109,15 +144,15 @@ const TeacherViewAttendance = () => {
         };
         console.log(data);
         // else if the date is P
-        await axios({
-          url: `${BASE_URL}/api/panel-create-teacher-attendance`,
-          method: "POST",
-          data,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
+        // await axios({
+        //   url: `${BASE_URL}/api/panel-create-teacher-attendance`,
+        //   method: "POST",
+        //   data,
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //   },
+        // });
+        const res = await CreateTeacherAttendanceView(data);
         toast.success(
           `${teacher.teacher_name} marked absent for ${moment(date.date).format(
             "DD MMM YYYY"
@@ -181,7 +216,7 @@ const TeacherViewAttendance = () => {
               <span>Teacher Attendance </span>
             </div>
             <IconArrowBack
-              onClick={() => navigate("/attendance-list")}
+              onClick={() => navigate(-1)}
               className="cursor-pointer hover:text-red-600"
             />
           </h2>
@@ -333,13 +368,6 @@ const TeacherViewAttendance = () => {
                                     : ""
                                 }`}
                               >
-                                {/* {teacher.attendance_dates.includes(
-                                  date.date
-                                ) ? (
-                                  <span className="text-red-500">A</span>
-                                ) : (
-                                  <span className="text-green-500">P</span>
-                                )} */}
                                 {isAbsent ? (
                                   <span className="text-red-500">A</span>
                                 ) : (

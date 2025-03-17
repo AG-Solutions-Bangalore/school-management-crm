@@ -1,29 +1,27 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Layout from "../../layout/Layout";
-import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import moment from "moment/moment";
 import {
+  Button,
   Dialog,
-  DialogHeader,
   DialogBody,
   DialogFooter,
-  Button,
+  DialogHeader,
 } from "@material-tailwind/react";
-import { IconTrash } from "@tabler/icons-react";
-import { ContextPanel } from "../../context/ContextPanel";
-import LoaderComponent from "../../components/common/LoaderComponent";
-import CreateHoliday from "./CreateHoliday";
-import EditHoliday from "./EditHoliday";
-import { CreateButton } from "../../components/common/ButttonConfig";
+import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import moment from "moment/moment";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   MasterHolidayCreate,
   MasterHolidayDelete,
   MasterHolidayEdit,
 } from "../../components/buttonIndex/ButtonComponents";
+import { CreateButton } from "../../components/common/ButttonConfig";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import { deleteHoliday, fetchHolidays } from "../../components/common/UseApi";
+import { ContextPanel } from "../../context/ContextPanel";
+import Layout from "../../layout/Layout";
+import CreateHoliday from "./CreateHoliday";
+import EditHoliday from "./EditHoliday";
 
 const HolidayList = () => {
   const [holidayData, setHolidayData] = useState(null);
@@ -36,43 +34,25 @@ const HolidayList = () => {
   const navigate = useNavigate();
   const { selectedYear } = useContext(ContextPanel);
 
-  const fetchHolidayData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-holiday-list/${selectedYear}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setHolidayData(response.data?.holidayList);
-    } catch (error) {
-      console.error("Error fetching holiday List data", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchHolidayData();
-  }, []);
+    const fetchData = async () => {
+      setLoading(true);
+      const holidays = await fetchHolidays(selectedYear);
+      setHolidayData(holidays.holidayList);
+      console.log(holidays.holidayList);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [selectedYear]);
+
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const token = localStorage.getItem("token");
-      await axios.delete(
-        `${BASE_URL}/api/panel-delete-holiday-list/${deleteId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setHolidayData((prev) => prev.filter((item) => item.id !== deleteId));
+      const isDeleted = await deleteHoliday(deleteId);
+      if (isDeleted) {
+        setHolidayData((prev) => prev.filter((item) => item.id !== deleteId));
+      }
     } catch (error) {
       console.error("Error deleting holiday", error);
     } finally {
@@ -80,7 +60,6 @@ const HolidayList = () => {
       setDeleteId(null);
     }
   };
-
   const columns = useMemo(
     () => [
       {
@@ -221,13 +200,14 @@ const HolidayList = () => {
       <CreateHoliday
         setCreateDialogOpen={setCreateDialogOpen}
         createDialogOpen={createDialogOpen}
-        fetchHolidayData={fetchHolidayData}
+        setHolidayData={setHolidayData}
       />
       <EditHoliday
         openEditDialog={openEditDialog}
         setOpenEditDialog={setOpenEditDialog}
-        fetchHolidayData={fetchHolidayData}
+        fetchHolidayData={() => fetchHolidays(selectedYear)}
         editId={editId}
+        setHolidayData={setHolidayData}
       />
     </>
   );

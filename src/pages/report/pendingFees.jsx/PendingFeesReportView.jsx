@@ -21,6 +21,10 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  DownloadStudentPending,
+  ViewPendingFeesReport,
+} from "../../../components/common/UseApi";
 
 const PendingFeesReportView = () => {
   const location = useLocation();
@@ -32,18 +36,10 @@ const PendingFeesReportView = () => {
   useEffect(() => {
     const fetchStudentFees = async () => {
       try {
-        const response = await axios.post(
-          `${BASE_URL}/api/panel-fetch-student-pending-fees-report`,
-          data,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const response = await ViewPendingFeesReport();
 
         if (response.status === 200) {
-          setStudentFess(response.data.student);
+          setStudentFess(response.student);
         }
       } catch (error) {
         toast.error("Error fetching pending fees data");
@@ -54,29 +50,30 @@ const PendingFeesReportView = () => {
     fetchStudentFees();
   }, []);
 
-  const handlePendingFees = (e) => {
+  const handlePendingFees = async (e) => {
     e.preventDefault();
 
-    axios({
-      url: BASE_URL + "/api/panel-download-student-pending-fees-report",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "pendingfees_details.csv");
-        document.body.appendChild(link);
-        link.click();
-        toast.success("Pending Fees Details Downloaded Successfully");
-      })
-      .catch(() => {
-        toast.error("Pending Fees Details is Not Downloaded");
+    try {
+      const response = await DownloadStudentPending(data); // ✅ Ensure API receives data if required
+
+      const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "pending_details.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      toast.success("Pending Details Downloaded Successfully");
+
+      setPendingReport({
+        // ✅ Reset correct fields related to pending fees
+        student_year: "",
+        student_class: "",
       });
+    } catch (error) {
+      toast.error("Pending Details is Not Downloaded");
+      console.error("Download error:", error);
+    }
   };
 
   return (

@@ -7,6 +7,7 @@ import { useReactToPrint } from "react-to-print";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { CreateButton } from "../../components/common/ButttonConfig";
 import { ClassTimeTablePrint } from "../../components/buttonIndex/ButtonComponents";
+import { fetchClassTimetable } from "../../components/common/UseApi";
 
 const Timetable = () => {
   const containerRef = useRef();
@@ -63,23 +64,16 @@ const Timetable = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-student-class-timetable/${selectedYear}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetchClassTimetable(selectedYear);
 
-        const periods = response.data.shool_period.map(
+        const periods = response.shool_period.map(
           (period) => period.school_period
         );
-        const classes = response.data.classes;
+        const classes = response.classes;
 
         setTimetableData({
           classes: classes,
-          teacherAssign: response.data.teacherAssign,
+          teacherAssign: response.teacherAssign,
           periods,
         });
 

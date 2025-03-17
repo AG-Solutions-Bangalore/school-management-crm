@@ -4,6 +4,7 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { fetchWebisteEnquiry } from "../../../components/common/UseApi";
 
 const EnquiryList = () => {
   const [enquiryData, setEnquiryData] = useState(null);
@@ -13,16 +14,9 @@ const EnquiryList = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-website-enquiry-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetchWebisteEnquiry();
 
-      setEnquiryData(response.data?.enquiry);
+      setEnquiryData(response?.enquiry);
     } catch (error) {
       console.error("Error fetching enquiry List data", error);
     } finally {

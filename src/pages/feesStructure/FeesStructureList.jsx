@@ -6,6 +6,7 @@ import Layout from "../../layout/Layout";
 import { ContextPanel } from "../../context/ContextPanel";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { CreateButton } from "../../components/common/ButttonConfig";
+import { fetchFeesStructure } from "../../components/common/UseApi";
 
 const FeesStructureList = () => {
   const [feesStructureData, setFeesStructureData] = useState([]);
@@ -13,30 +14,15 @@ const FeesStructureList = () => {
   const [activeTab, setActiveTab] = useState("basic");
   const { selectedYear } = useContext(ContextPanel);
 
+  const fetchFeesStructureData = async () => {
+    setLoading(true);
+    const fees = await fetchFeesStructure();
+    setFeesStructureData(fees.feeStructure || []);
+    setLoading(false);
+  };
   useEffect(() => {
     fetchFeesStructureData();
   }, []);
-
-  const fetchFeesStructureData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-fee-structure-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setFeesStructureData(response.data?.feeStructure || []);
-    } catch (error) {
-      console.error("Error fetching fee structure data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 ">

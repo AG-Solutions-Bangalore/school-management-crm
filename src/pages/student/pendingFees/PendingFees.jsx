@@ -14,6 +14,7 @@ import {
   StudentFeesCreate,
   StudentFeesEdit,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { StudentPendingClassFees } from "../../../components/common/UseApi";
 
 const PendingFees = () => {
   const [pendingFeesData, setPendingFeesData] = useState(null);
@@ -28,16 +29,8 @@ const PendingFees = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-pending-class-fees/${selectedYear}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setPendingFeesData(response.data?.student);
+      const response = await StudentPendingClassFees(selectedYear);
+      setPendingFeesData(response?.student);
     } catch (error) {
       console.error("Error fetching pending fees List data", error);
     } finally {

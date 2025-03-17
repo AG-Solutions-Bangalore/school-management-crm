@@ -13,6 +13,12 @@ import {
   ReportStudentAll,
   ReportStudentCurrent,
 } from "../../components/buttonIndex/ButtonComponents";
+import {
+  DownloadStudentCurrentDetails,
+  DownloadStudentDetails,
+  fetchClassList,
+  YearList,
+} from "../../components/common/UseApi";
 const status = [
   {
     value: "Active",
@@ -43,17 +49,8 @@ const StudentReport = () => {
   useEffect(() => {
     const fetchYearData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-year-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setYearData(response.data?.year);
+        const response = await YearList();
+        setYearData(response?.year);
       } catch (error) {
         console.error("Error fetching holiday List data", error);
       }
@@ -61,15 +58,8 @@ const StudentReport = () => {
     const fetchClassData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-classes`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setClassList(response.data.classes);
+        const response = await fetchClassList();
+        setClassList(response?.classes);
       } catch (error) {
         console.error("Error fetching teacher data", error);
       }
@@ -78,79 +68,69 @@ const StudentReport = () => {
     fetchYearData();
   }, []);
 
-  const handleAllStudent = (e) => {
+  const handleAllStudent = async (e) => {
     e.preventDefault();
+
     let data = {
       student_year: report.student_year,
       status: report.status,
       student_class: report.student_class,
     };
 
+    try {
+      const response = await DownloadStudentDetails(data);
+
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "allstudent_details.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      toast.success("All Student Details Downloaded Successfully");
+
+      setReport({
+        student_year: "",
+        status: "",
+        student_class: "",
+      });
+    } catch (error) {
+      toast.error("All Student Details is Not Downloaded");
+      console.error("Download error:", error);
+    }
+  };
+  const handleCurrentStudent = async (e) => {
     e.preventDefault();
 
-    axios({
-      url: BASE_URL + "/api/panel-download-student-details-report",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "allstudent_details.csv");
-        document.body.appendChild(link);
-        link.click();
-        toast.success("All Student Details Downloaded Successfully");
-        setReport({
-          student_year: "",
-          status: "",
-          student_class: "",
-        });
-      })
-      .catch((err) => {
-        toast.error("All Student Details is Not Downloaded");
-      });
-  };
-  const handleCurrentStudent = (e) => {
-    e.preventDefault();
     let data = {
       student_year: report.student_year,
       status: report.status,
       student_class: report.student_class,
     };
 
-    e.preventDefault();
-    console.log("Data : ", data);
+    try {
+      const response = await DownloadStudentCurrentDetails(data); // ✅ Pass data correctly
 
-    axios({
-      url: BASE_URL + "/api/panel-download-current-student-details-report",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "currentstudent_details.csv");
-        document.body.appendChild(link);
-        link.click();
-        toast.success("CurrentStudent Details Downloaded Successfully");
-        setReport({
-          student_year: "",
-          status: "",
-          student_class: "",
-        });
-      })
-      .catch((err) => {
-        toast.error("Current Student Details is Not Downloaded");
+      const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "currentstudent_details.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      toast.success("Current Student Details Downloaded Successfully");
+
+      setReport({
+        student_year: "",
+        status: "",
+        student_class: "",
       });
+    } catch (err) {
+      toast.error("Current Student Details is Not Downloaded");
+      console.error("Download error:", err);
+    }
   };
+
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}

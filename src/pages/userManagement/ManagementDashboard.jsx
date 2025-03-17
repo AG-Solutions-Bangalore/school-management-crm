@@ -1,5 +1,5 @@
 import React, { useContext, useState, useMemo, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Checkbox } from "@material-tailwind/react";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -7,6 +7,9 @@ import { ContextPanel } from "../../context/ContextPanel";
 import BASE_URL from "../../base/BaseUrl";
 import Layout from "../../layout/Layout";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import { HeaderColor } from "../../components/common/ButttonConfig";
+import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 
 const StatsCard = ({ title, value, bgColor }) => (
   <div className={`${bgColor} rounded-lg p-2 shadow-sm`}>
@@ -15,7 +18,14 @@ const StatsCard = ({ title, value, bgColor }) => (
   </div>
 );
 
-const PageSection = ({ page, permissions, buttonPermissions, userId, onPagePermissionChange, onButtonPermissionChange }) => {
+const PageSection = ({
+  page,
+  permissions,
+  buttonPermissions,
+  userId,
+  onPagePermissionChange,
+  onButtonPermissionChange,
+}) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -27,15 +37,16 @@ const PageSection = ({ page, permissions, buttonPermissions, userId, onPagePermi
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-semibold">{page}</h3>
           <p className="text-sm text-gray-600">
-            {permissions.find(p => p.page === page)?.url}
+            {permissions.find((p) => p.page === page)?.url}
           </p>
         </div>
         <div className="flex items-center gap-4">
           <Checkbox
             color="blue"
-            checked={permissions.find(p => p.page === page)?.userIds.includes(userId.toString())}
+            checked={permissions
+              .find((p) => p.page === page)
+              ?.userIds.includes(userId.toString())}
             onChange={(e) => onPagePermissionChange(page, e.target.checked)}
-            
             className="h-5 w-5"
           />
           {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -46,8 +57,8 @@ const PageSection = ({ page, permissions, buttonPermissions, userId, onPagePermi
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {buttonPermissions
-              .filter(p => p.pages === page)
-              .map(permission => (
+              .filter((p) => p.pages === page)
+              .map((permission) => (
                 <div
                   key={permission.id}
                   className="flex  items-center justify-between p-1 bg-blue-50 border rounded-lg"
@@ -77,11 +88,12 @@ const ManagementDashboard = () => {
   const { id } = useParams();
   const userId = Number(id);
   const queryClient = useQueryClient();
-  const { getStaticUsers, fetchPagePermission, fetchPermissions } = useContext(ContextPanel);
+  const { getStaticUsers, fetchPagePermission, fetchPermissions } =
+    useContext(ContextPanel);
   const staticUsers = getStaticUsers();
   const [buttonPermissions, setButtonPermissions] = useState([]);
   const [pagePermissions, setPagePermissions] = useState([]);
-
+  const navigate = useNavigate();
   // Fetch button permissions
   const {
     data: buttonControlData,
@@ -91,9 +103,12 @@ const ManagementDashboard = () => {
     queryKey: ["usercontrol"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usercontrol`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-usercontrol`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data.buttonPermissions;
     },
   });
@@ -153,20 +168,21 @@ const ManagementDashboard = () => {
     queryKey: ["usercontrol-pages"],
     queryFn: async () => {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usercontrol-new`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${BASE_URL}/api/panel-fetch-usercontrol-new`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data.pagePermissions;
     },
   });
 
-  
   useEffect(() => {
     if (buttonControlData) {
       setButtonPermissions(buttonControlData);
     }
   }, [buttonControlData]);
-
 
   useEffect(() => {
     if (pageControlData) {
@@ -174,21 +190,36 @@ const ManagementDashboard = () => {
     }
   }, [pageControlData]);
 
-
   const user = staticUsers.find((u) => u.id === userId);
-  const pages = useMemo(() => [...new Set(pagePermissions.map((p) => p.page))], [pagePermissions]);
+  const pages = useMemo(
+    () => [...new Set(pagePermissions.map((p) => p.page))],
+    [pagePermissions]
+  );
 
   // Calculate stats
-  const stats = useMemo(() => ({
-    totalPages: pages.length,
-    totalButtons: buttonPermissions.length,
-    activePages: pagePermissions.filter(p => p.userIds.includes(userId.toString())).length,
-    activeButtons: buttonPermissions.filter(p => p.userIds.includes(userId.toString())).length,
-  }), [pages, buttonPermissions, pagePermissions, userId]);
+  const stats = useMemo(
+    () => ({
+      totalPages: pages.length,
+      totalButtons: buttonPermissions.length,
+      activePages: pagePermissions.filter((p) =>
+        p.userIds.includes(userId.toString())
+      ).length,
+      activeButtons: buttonPermissions.filter((p) =>
+        p.userIds.includes(userId.toString())
+      ).length,
+    }),
+    [pages, buttonPermissions, pagePermissions, userId]
+  );
 
-  const handleButtonPermissionChange = async (button, isChecked, permissionId) => {
+  const handleButtonPermissionChange = async (
+    button,
+    isChecked,
+    permissionId
+  ) => {
     try {
-      const currentPermission = buttonPermissions.find((permission) => permission.id === permissionId);
+      const currentPermission = buttonPermissions.find(
+        (permission) => permission.id === permissionId
+      );
       if (!currentPermission) return;
 
       const newUserIds = isChecked
@@ -221,11 +252,11 @@ const ManagementDashboard = () => {
     }
   };
 
-
   const handlePagePermissionChange = async (page, isChecked) => {
-    
     try {
-      const currentPermission = pagePermissions.find((permission) => permission.page === page);
+      const currentPermission = pagePermissions.find(
+        (permission) => permission.page === page
+      );
       if (!currentPermission) return;
 
       const newUserIds = isChecked
@@ -258,16 +289,25 @@ const ManagementDashboard = () => {
     }
   };
 
-
-  if (!user || isLoadingButtons || isLoadingPages || isErrorPages || isErrorButtons) {
+  if (
+    !user ||
+    isLoadingButtons ||
+    isLoadingPages ||
+    isErrorPages ||
+    isErrorButtons
+  ) {
     return (
       <Layout>
         <div className="container mx-auto p-6">
           <div className="flex items-center justify-center h-64">
             <div className="text-lg">
-              {!user ? "No User Found" : 
-               isLoadingButtons || isLoadingPages ? "Loading..." : 
-               "Error loading user management"}
+              {!user ? (
+                "No User Found"
+              ) : isLoadingButtons || isLoadingPages ? (
+                <LoaderComponent />
+              ) : (
+                "Error loading user management"
+              )}
             </div>
           </div>
         </div>
@@ -281,36 +321,71 @@ const ManagementDashboard = () => {
       2: { label: "Teacher", classes: "bg-red-100 text-red-800" },
       3: { label: "Administration", classes: "bg-green-100 text-green-800" },
     };
-    return types[userTypeId] || { label: "N/A", classes: "bg-gray-100 text-gray-800" };
+    return (
+      types[userTypeId] || {
+        label: "N/A",
+        classes: "bg-gray-100 text-gray-800",
+      }
+    );
   };
   const userType = getUserTypeInfo(user.user_type);
   return (
     <Layout>
-      <div >
+      <div>
+        <div className={HeaderColor}>
+          <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
+            <div className="flex items-center gap-2">
+              <IconInfoCircle className="w-4 h-4" />
+              <span>View Control</span>
+            </div>
+            <IconArrowBack
+              onClick={() => navigate("/userManagement")}
+              className="cursor-pointer hover:text-red-600"
+            />
+          </h2>
+        </div>
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Header */}
           <div className="bg-gray-100 p-6 border-b">
             <div className="flex items-center justify-between mb-6">
               <div className="flex w-full items-center justify-between">
                 <h2 className="text-2xl font-bold uppercase">{user.name}</h2>
-                <span className={`px-3 py-1 rounded-lg text-xs capitalize mt-2 inline-block ${userType.classes}`}>
+                <span
+                  className={`px-3 py-1 rounded-lg text-xs capitalize mt-2 inline-block ${userType.classes}`}
+                >
                   {userType.label}
                 </span>
               </div>
             </div>
-            
+
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <StatsCard title="Total Pages" value={stats.totalPages} bgColor="bg-blue-50" />
-              <StatsCard title="Active Pages" value={stats.activePages} bgColor="bg-green-50" />
-              <StatsCard title="Total Buttons" value={stats.totalButtons} bgColor="bg-purple-50" />
-              <StatsCard title="Active Buttons" value={stats.activeButtons} bgColor="bg-yellow-50" />
+              <StatsCard
+                title="Total Pages"
+                value={stats.totalPages}
+                bgColor="bg-blue-50"
+              />
+              <StatsCard
+                title="Active Pages"
+                value={stats.activePages}
+                bgColor="bg-green-50"
+              />
+              <StatsCard
+                title="Total Buttons"
+                value={stats.totalButtons}
+                bgColor="bg-purple-50"
+              />
+              <StatsCard
+                title="Active Buttons"
+                value={stats.activeButtons}
+                bgColor="bg-yellow-50"
+              />
             </div>
           </div>
 
           {/* Content */}
           <div className="p-6">
-          {pages.map((page) => (
+            {pages.map((page) => (
               <PageSection
                 key={page}
                 page={page}

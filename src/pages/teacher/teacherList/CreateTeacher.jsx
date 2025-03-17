@@ -11,6 +11,10 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  createTeacherList,
+  fetchTeacherUserTypes,
+} from "../../../components/common/UseApi";
 const CreateTeacher = () => {
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
@@ -38,20 +42,8 @@ const CreateTeacher = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const fetchTeacherData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-usertypes`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setTeacherDesignation(response.data.userType);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
+    const response = await fetchTeacherUserTypes();
+    setTeacherDesignation(response.userType);
   };
 
   useEffect(() => {
@@ -120,19 +112,13 @@ const CreateTeacher = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-teacher`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await createTeacherList(data);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         navigate("/teacher-list");
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       toast.error("Error creating teacher record");

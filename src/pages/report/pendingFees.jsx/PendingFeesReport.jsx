@@ -14,6 +14,11 @@ import {
   ReportPendingFeesDownload,
   ReportPendingFeesView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  DownloadStudentPending,
+  fetchClassList,
+  YearList,
+} from "../../../components/common/UseApi";
 const status = [
   {
     value: "Active",
@@ -43,16 +48,9 @@ const PendingFeesReport = () => {
     const fetchYearData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-year-list`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await YearList();
 
-        setYearData(response.data?.year);
+        setYearData(response?.year);
       } catch (error) {
         console.error("Error fetching holiday List data", error);
       }
@@ -60,15 +58,8 @@ const PendingFeesReport = () => {
     const fetchClassData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-classes`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setClassList(response.data.classes);
+        const response = await fetchClassList();
+        setClassList(response.classes);
       } catch (error) {
         console.error("Error fetching teacher data", error);
       }
@@ -77,46 +68,42 @@ const PendingFeesReport = () => {
     fetchYearData();
   }, []);
 
-  const handlePendingFees = (e) => {
+  const handlePendingFees = async (e) => {
+    e.preventDefault(); 
+
     if (!pendingreport.student_year) {
-      // toast.warning("Year is Required");
+      toast.warning("Year is Required");
       return;
     }
 
-    e.preventDefault();
     let data = {
       student_year: pendingreport.student_year,
       student_class: pendingreport.student_class,
     };
 
-    e.preventDefault();
+    try {
+      const response = await DownloadStudentPending(data); // ✅ Ensure API receives data if required
 
-    axios({
-      url: BASE_URL + "/api/panel-download-student-pending-fees-report",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", "pending_details.csv");
-        document.body.appendChild(link);
-        link.click();
-        toast.success("Pending Details Downloaded Successfully");
-        setPendingReport({
-          student_year: "",
-          status: "",
-          student_class: "",
-        });
-      })
-      .catch((err) => {
-        toast.error("Pending Details is Not Downloaded");
+      const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "pending_details.csv");
+      document.body.appendChild(link);
+      link.click();
+
+      toast.success("Pending Details Downloaded Successfully");
+
+      setPendingReport({
+        // ✅ Reset correct fields related to pending fees
+        student_year: "",
+        student_class: "",
       });
+    } catch (error) {
+      toast.error("Pending Details is Not Downloaded");
+      console.error("Download error:", error);
+    }
   };
+
   const handleNavigate = () => {
     if (!pendingreport.student_year) {
       // toast.warning("Year is Required");

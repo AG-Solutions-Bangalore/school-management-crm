@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  IconUser,
-  IconSchool,
-} from "@tabler/icons-react";
+import { IconUser, IconSchool } from "@tabler/icons-react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Layout from "../../../layout/Layout";
@@ -14,6 +11,7 @@ import { Phone } from "lucide-react";
 import { IconArrowBack } from "@tabler/icons-react";
 import TeacherSubList from "./TeacherSubList";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { TeaacherListView } from "../../../components/common/UseApi";
 
 const TeacherView = () => {
   const { id } = useParams();
@@ -25,23 +23,12 @@ const TeacherView = () => {
   const navigate = useNavigate();
 
   const fetchStudentData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-view/${selectedYear}/${decryptedId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setTeacherData(response.data);
-    } catch (error) {
-      console.error("Error fetching student data", error);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    const response = await TeaacherListView(selectedYear, decryptedId);
+
+    setTeacherData(response);
+
+    setLoading(false);
   };
 
   useEffect(() => {

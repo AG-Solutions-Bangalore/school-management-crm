@@ -13,6 +13,13 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import {
+  EditClassAndFees,
+  StudentAttendanceById,
+  StudentClassAndFessById,
+  UpdateStudentAttendanceById,
+  UpdateStudentVanFees,
+} from "../../../components/common/UseApi";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -43,19 +50,12 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-class-by-id/${classId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data) {
+      const response = await StudentClassAndFessById(classId);
+      if (response) {
         setFormData({
-          studentClass_van: response?.data.studentClass.studentClass_van || "",
+          studentClass_van: response?.studentClass.studentClass_van || "",
           studentClass_van_amount:
-            response?.data.studentClass.studentClass_van_amount || 0,
+            response?.studentClass.studentClass_van_amount || 0,
         });
       }
     } catch (error) {
@@ -88,21 +88,13 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
             : formData.studentClass_van_amount,
       };
 
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student-class/${classId}`,
-        updatedFormData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await UpdateStudentVanFees(classId, updatedFormData);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg || "Class updated successfully");
+      if (response.code === 200) {
+        toast.success(response.msg || "Class updated successfully");
         handleOpen();
       } else {
-        toast.error(response.data.msg || "Failed to update class");
+        toast.error(response.msg || "Failed to update class");
       }
     } catch (error) {
       console.error("Error updating class", error);
@@ -157,6 +149,7 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
         </DialogContent>
         <DialogActions>
           <button
+            type="button"
             onClick={handleOpen}
             className={BackButton}
             disabled={loading}
@@ -262,21 +255,12 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
 
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student-class-fees/${feesId}`,
-        formattedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.code === 200) {
-        toast.success(response.data.msg || "Fees updated successfully");
+      const response = await EditClassAndFees(feesId, formattedData);
+      if (response.code === 200) {
+        toast.success(response.msg || "Fees updated successfully");
         handleOpen();
       } else {
-        toast.error(response.data.msg || "Failed to update fees");
+        toast.error(response.msg || "Failed to update fees");
       }
     } catch (error) {
       console.error("Error updating fees", error);
@@ -360,6 +344,7 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
         </DialogContent>
         <DialogActions>
           <button
+            type="button"
             onClick={handleOpen}
             className={BackButton}
             disabled={loading}
@@ -395,20 +380,21 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${attendenceId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data) {
+      // const response = await axios.get(
+      //   `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${attendenceId}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+      const response = await StudentAttendanceById(attendenceId);
+      if (response) {
         setFormData({
           studentAttendance_class:
-            response?.data.studentClassAttendance.studentAttendance_class || "",
+            response?.studentClassAttendance.studentAttendance_class || "",
           studentAttendance_date:
-            response?.data.studentClassAttendance.studentAttendance_date || "",
+            response?.studentClassAttendance.studentAttendance_date || "",
         });
       }
     } catch (error) {
@@ -440,21 +426,16 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
       setLoading(true);
       const token = localStorage.getItem("token");
 
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student-attendance/${attendenceId}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await UpdateStudentAttendanceById(
+        attendenceId,
+        formData
       );
 
       if (response.data.code === 200) {
-        toast.success(response.data.msg || "Attendece updated successfully");
+        toast.success(response.msg || "Attendece updated successfully");
         handleOpen();
       } else {
-        toast.error(response.data.msg || "Failed to update Attendece");
+        toast.error(response.msg || "Failed to update Attendece");
       }
     } catch (error) {
       console.error("Error updating Attendence", error);
@@ -499,6 +480,7 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
         </DialogContent>
         <DialogActions>
           <button
+            type="button"
             onClick={handleOpen}
             className={BackButton}
             disabled={loading}

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Layout from "../../../layout/Layout";
 import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
@@ -17,6 +17,11 @@ import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  CurrentStudentListByYear,
+  UpdateStudentStatus,
+} from "../../../components/common/UseApi";
+import { ContextPanel } from "../../../context/ContextPanel";
 
 const CurrentStudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -24,6 +29,7 @@ const CurrentStudentList = () => {
   const [loading, setLoading] = useState(false);
   const [activeClass, setActiveClass] = useState("ALL");
   const navigate = useNavigate();
+  const { selectedYear } = useContext(ContextPanel);
 
   const classList = [
     "ALL",
@@ -45,25 +51,22 @@ const CurrentStudentList = () => {
   const fetchStudentData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-current-student-list/2024-25`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      console.log("Fetching data for year:", selectedYear);
 
-      setStudentData(response.data?.student);
-      setFilteredStudentData(response.data?.student);
+      const response = await CurrentStudentListByYear(selectedYear);
+
+      if (response?.student) {
+        setStudentData(response.student);
+        setFilteredStudentData(response.student);
+      } else {
+        console.warn("No student data found in response.");
+      }
     } catch (error) {
-      console.error("Error fetching student List data", error);
+      console.error("Error fetching student data:", error);
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchStudentData();
   }, []);
@@ -84,20 +87,12 @@ const CurrentStudentList = () => {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student-status/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      const response = await UpdateStudentStatus(id);
+      if (response.code === 200) {
+        toast.success(response.msg);
         fetchStudentData();
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       console.error("Error updating student status", error);

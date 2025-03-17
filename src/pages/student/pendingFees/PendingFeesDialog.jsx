@@ -16,6 +16,10 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import {
+  CreateStudentPendingClassFees,
+  PaymentType,
+} from "../../../components/common/UseApi";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -69,14 +73,9 @@ export const PendingFeesDialog = ({
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const paymentTypeResponse = await axios.get(
-        `${BASE_URL}/api/panel-fetch-paymentType`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const paymentTypeResponse = await PaymentType();
 
-      setPaymentTypes(paymentTypeResponse.data?.paymentType || []);
+      setPaymentTypes(paymentTypeResponse?.paymentType || []);
     } catch (error) {
       console.error("Error fetching payment types", error);
       toast.error("Failed to fetch payment types");
@@ -102,24 +101,15 @@ export const PendingFeesDialog = ({
     e.preventDefault();
     try {
       setLoadingSumbit(true);
-      const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
 
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-student-class-fees`,
-        formattedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await CreateStudentPendingClassFees(formattedData);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         onSuccess(); // Refresh the data
         handleClose();
         setFormData({
@@ -132,7 +122,7 @@ export const PendingFeesDialog = ({
           studentFees_paid_date: getTodayDate(),
         });
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       console.error("Error creating student fees", error);
@@ -226,12 +216,12 @@ export const PendingFeesDialog = ({
           </div>
         </DialogContent>
         <DialogActions>
-          <button onClick={handleClose} className={BackButton}>
+          <button onClick={handleClose} className={BackButton} type="button">
             Cancel
           </button>
           <button
             type="submit"
-            className={`${CreateButton} w-40`}
+            className={`${CreateButton} w-48`}
             disabled={loadingSumbit}
           >
             {loadingSumbit ? "Adding..." : "Add Pending Fees"}

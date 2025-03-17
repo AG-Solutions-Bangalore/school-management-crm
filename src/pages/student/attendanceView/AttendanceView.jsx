@@ -12,6 +12,12 @@ import {
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
 import { StudentAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  CreateStudentAttendance,
+  DeleteStudentAttendanceLisyById,
+  fetchClassList,
+  FetchStudentAttendance,
+} from "../../../components/common/UseApi";
 
 const AttendanceView = () => {
   const navigate = useNavigate();
@@ -38,13 +44,8 @@ const AttendanceView = () => {
 
   const fetchClassData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClassList(response.data.classes);
+      const response = await fetchClassList();
+      setClassList(response.classes);
     } catch (error) {
       console.error("Error fetching classes data", error);
     }
@@ -70,20 +71,10 @@ const AttendanceView = () => {
     };
 
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/panel-fetch-student-attendance`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await FetchStudentAttendance(data);
 
-      console.log("API Response:", res.data);
-
-      if (res.data.weekdays && res.data.student) {
-        setAttendanceData(res.data);
+      if (res.weekdays && res.student) {
+        setAttendanceData(res);
         if (showToast) {
           toast.success("Attendance data fetched successfully!");
         }
@@ -115,14 +106,14 @@ const AttendanceView = () => {
         const attendanceIndex = student.attendance_dates.indexOf(date.date);
         const attendanceId = student.id[attendanceIndex];
 
-        await axios({
-          url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceId}`,
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
+        // await axios({
+        //   url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceId}`,
+        //   method: "DELETE",
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //   },
+        // });
+        const respose = await DeleteStudentAttendanceLisyById(attendanceId);
         toast.success(
           `${student.student_name} marked present for ${moment(
             date.date
@@ -135,14 +126,15 @@ const AttendanceView = () => {
           studentAttendance_admission_no: student.student_admission_no,
         };
         // else if the date is P
-        await axios({
-          url: `${BASE_URL}/api/panel-create-student-attendance`,
-          method: "POST",
-          data,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        // await axios({
+        //   url: `${BASE_URL}/api/panel-create-student-attendance`,
+        //   method: "POST",
+        //   data,
+        //   headers: {
+        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //   },
+        // });
+        const res = await CreateStudentAttendance(data);
 
         toast.success(
           `${student.student_name} marked absent for ${moment(date.date).format(

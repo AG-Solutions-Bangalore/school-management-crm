@@ -5,6 +5,7 @@ import BASE_URL from "../../base/BaseUrl";
 import { ContextPanel } from "../../context/ContextPanel";
 import ReactApexChart from "react-apexcharts";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { fetchDashboard } from "../../components/common/UseApi";
 
 const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
   <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
@@ -42,23 +43,9 @@ const Home = () => {
           throw new Error("Authentication token not found");
         }
 
-        const response = await fetch(
-          `${BASE_URL}/api/panel-fetch-dashboard/${selectedYear}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetchDashboard(selectedYear);
 
-        if (!response.ok) {
-          throw new Error(`Server responded with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setDashboardData(data);
+        setDashboardData(response);
       } catch (err) {
         console.error("Dashboard data fetch error:", err);
         setErrorMessage(err.message || "Failed to fetch dashboard data");
@@ -129,7 +116,7 @@ const Home = () => {
     {
       name: "Total Students",
       data: chartData.map((item) => item.total_count),
-      color: "#2A9D8F", 
+      color: "#2A9D8F",
     },
   ];
 

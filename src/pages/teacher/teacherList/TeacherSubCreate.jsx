@@ -11,6 +11,7 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import { createTeacherSubAssign } from "../../../components/common/UseApi";
 const TeacherSubCreate = ({
   openDialog,
   setOpenDialog,
@@ -152,20 +153,14 @@ const TeacherSubCreate = ({
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-teacher-subject-assign`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await createTeacherSubAssign(data);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         handleClose();
         fetchStudentData();
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       toast.error("Error creating teacher subjecrr assign record");
