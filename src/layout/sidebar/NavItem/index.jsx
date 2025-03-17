@@ -25,8 +25,6 @@ const NavItem = memo(
     const navigate = useNavigate();
     const isExpanded = currentOpenItem === item?.id;
 
-    console.log(!isExpanded ? item.id : "", "id");
-
     const handleToggle = () => {
       if (!isExpanded && item.id === "dashboard") {
         setCurrentOpenItem(!isExpanded ? item?.id : "");

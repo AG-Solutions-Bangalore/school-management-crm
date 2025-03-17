@@ -52,6 +52,25 @@ const AppProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+  const fetchUserType = async () => {
+    setIsLoading(true);
+    setIsError(false);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Store the entire `usercontrol` array in localStorage
+      localStorage.setItem("userTypeRole", JSON.stringify(response.data?.userType));
+
+      
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const getStaticUsers = () => {
     try {
       const users = localStorage.getItem("allUsers");
@@ -85,6 +104,7 @@ const AppProvider = ({ children }) => {
     }
   }, []);
   return (
+<<<<<<< HEAD
     <ContextPanel.Provider
       value={{
         userTypeId,
@@ -95,6 +115,9 @@ const AppProvider = ({ children }) => {
         fetchPermissions,
       }}
     >
+=======
+    <ContextPanel.Provider value={{ userTypeId, fetchYears ,selectedYear,fetchPagePermission,getStaticUsers,fetchPermissions,fetchUserType}}>
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
       {children}
     </ContextPanel.Provider>
   );

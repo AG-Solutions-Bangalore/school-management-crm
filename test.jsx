@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Checkbox } from "@material-tailwind/react";
@@ -416,3 +417,5 @@ const ManagementDashboard = () => {
 };
 
 export default ManagementDashboard;
+=======
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2

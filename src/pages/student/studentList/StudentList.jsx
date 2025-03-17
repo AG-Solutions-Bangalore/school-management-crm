@@ -18,10 +18,14 @@ import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+<<<<<<< HEAD
 import {
   fetchStudentList,
   UpdateStudentStatus,
 } from "../../../components/common/UseApi";
+=======
+import { Printer } from "lucide-react";
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -55,6 +59,7 @@ const StudentList = () => {
 
   const columns = useMemo(
     () => [
+<<<<<<< HEAD
       {
         accessorKey: "student_image",
         header: "Photo",
@@ -73,6 +78,27 @@ const StudentList = () => {
           );
         },
       },
+=======
+    
+          {
+              accessorKey: "student_photo",
+              header: "Photo",
+              size: 100,
+              Cell: ({ row }) => {
+                const imageUrl = row.original.student_photo
+                  ? `${StudentImageUrl}/${row.original.student_photo}`
+                  : StudentNoImageUrl;
+      
+                return (
+                  <img
+                    src={imageUrl}
+                    alt="Student"
+                    className="w-12 h-12 rounded-full object-cover border"
+                  />
+                );
+              },
+            },
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
       {
         accessorKey: "admission_details",
@@ -86,9 +112,9 @@ const StudentList = () => {
               {row.original.student_admission_no}
             </span>
             <span className="text-black text-xs">
-              {moment(row.original.student_admission_date).format(
-                "DD-MMM-YYYY"
-              )}
+              {row.original.student_admission_date ? (moment(row.original.student_admission_date).format(
+                "DD-MM-YYYY"
+              )):""}
             </span>
           </div>
         ),
@@ -151,6 +177,19 @@ const StudentList = () => {
 
           return (
             <div className="flex gap-2">
+                 <div
+                onClick={() => {
+
+                  navigate(
+                    `/student-print/${id
+                    }`
+                  );
+                }}
+                className="flex items-center space-x-2"
+                title="View"
+              >
+                <Printer className="h-4 w-4 text-indigo-600 cursor-pointer" />
+              </div>
               {/* <div
                 onClick={() => {
                   const encryptedId = encryptId(id);
@@ -195,7 +234,7 @@ const StudentList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></StudentAllStudentEdit>
+              />
               <StudentAllStudentView
                 onClick={() => {
                   const encryptedId = encryptId(id);
@@ -208,7 +247,7 @@ const StudentList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></StudentAllStudentView>
+              />
             </div>
           );
         },
@@ -249,7 +288,7 @@ const StudentList = () => {
               <StudentAllStudentCreate
                 onClick={() => navigate("/student-list/createStudent")}
                 className={CreateButton}
-              ></StudentAllStudentCreate>
+              />
             </div>
           </div>
         </div>

@@ -132,9 +132,9 @@ const CurrentStudentList = () => {
               {row.original.student_admission_no}
             </span>
             <span className="text-black text-xs">
-              {moment(row.original.student_admission_date).format(
-                "DD-MMM-YYYY"
-              )}
+             {row.original.student_admission_date ? (moment(row.original.student_admission_date).format(
+                            "DD-MM-YYYY"
+                          )):""}
             </span>
           </div>
         ),

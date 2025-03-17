@@ -7,7 +7,7 @@ import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
 import { toast } from "sonner";
-import { Eye } from "lucide-react";
+import { Eye, Printer } from "lucide-react";
 import { encryptId } from "../../../components/common/EncryptionDecryption";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import { CreateButton } from "../../../components/common/ButttonConfig";
@@ -155,22 +155,20 @@ const TeacherList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></TeacherTeacherListEdit>
-              {/* <div
+             />
+              <div
                 onClick={() => {
-                  const encryptedId = encryptId(id);
 
                   navigate(
-                    `/teacher-list/viewTeacher/${encodeURIComponent(
-                      encryptedId
-                    )}`
+                    `/teacher-print/${id
+                    }`
                   );
                 }}
                 className="flex items-center space-x-2"
                 title="View"
               >
-                <Eye className="h-5 w-5 text-blue-500 cursor-pointer" />
-              </div> */}
+               <Printer className="h-4 w-4 text-indigo-600 cursor-pointer" />
+              </div>
               <TeacherTeacherListView
                 onClick={() => {
                   const encryptedId = encryptId(id);
@@ -182,7 +180,7 @@ const TeacherList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-              ></TeacherTeacherListView>
+              />
             </div>
           );
         },
@@ -223,7 +221,7 @@ const TeacherList = () => {
               <TeacherTeacherListCreate
                 onClick={() => navigate("/teacher-list/createTeacher")}
                 className={CreateButton}
-              ></TeacherTeacherListCreate>
+              />
             </div>
           </div>
         </div>

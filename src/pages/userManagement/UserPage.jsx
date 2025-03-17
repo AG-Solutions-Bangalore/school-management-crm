@@ -15,6 +15,8 @@ import Layout from "../../layout/Layout";
 
 const UserPage = () => {
   const { getStaticUsers } = useContext(ContextPanel);
+  const userTypeRoles = JSON.parse(localStorage.getItem("userTypeRole")) || [];
+
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -113,11 +115,15 @@ const UserPage = () => {
                 </MenuItem>
               </MenuList>
             </Menu>
+<<<<<<< HEAD
             <Button
               variant="outlined"
               onClick={() => navigate("/page-management")}
               className="flex items-center gap-2"
             >
+=======
+            {/* <Button variant="outlined" onClick={()=>navigate('/page-management')} className="flex items-center gap-2">
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
               + Page
             </Button>
             <Button
@@ -126,7 +132,7 @@ const UserPage = () => {
               className="flex items-center gap-2"
             >
               + Button
-            </Button>
+            </Button> */}
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full">
@@ -137,6 +143,10 @@ const UserPage = () => {
                   </th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                     Role
+                  </th>
+              
+                  <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
+                    Position
                   </th>
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                     Actions
@@ -160,9 +170,12 @@ const UserPage = () => {
                             ? "bg-blue-100 text-blue-800"
                             : user.user_type === 3
                             ? "bg-green-100 text-green-800"
+                            : user.user_type === 4
+                            ? "bg-indigo-100 text-indigo-800"
                             : "bg-gray-100 text-gray-800"
                         } capitalize`}
                       >
+<<<<<<< HEAD
                         {user.user_type === 3
                           ? "Administration"
                           : user.user_type === 1
@@ -170,6 +183,15 @@ const UserPage = () => {
                           : user.user_type === 2
                           ? "Teacher"
                           : "N/A"}
+=======
+                        {userTypeRoles.find((role) => role.user_type === user.user_type)?.user_role || "N/A"}
+                      </span>
+                    </td>
+              
+                    <td className="py-3 px-4">
+                      <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                        {user.user_position}
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
                       </span>
                     </td>
                     <td className="py-3 px-4">
