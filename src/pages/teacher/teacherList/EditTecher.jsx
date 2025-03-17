@@ -11,6 +11,11 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  fetchTeacherById,
+  fetchTeacherUserTypes,
+  updateTeacher,
+} from "../../../components/common/UseApi";
 const status = [
   {
     value: "Active",
@@ -54,38 +59,30 @@ const EditTeacher = () => {
 
   const fetchTeacherDataByid = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-by-id/${decryptedId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data && response.data.teacher) {
+      const response = await fetchTeacherById(decryptedId);
+      console.log(response);
+
+      if (response && response.teacher) {
         setTeacher({
-          teacher_title: response.data.teacher.teacher_title || "",
-          teacher_name: response.data.teacher.teacher_name || "",
-          teacher_designation: response.data.teacher.teacher_designation || "",
-          teacher_qualification:
-            response.data.teacher.teacher_qualification || "",
-          teacher_dob: response.data.teacher.teacher_dob || "",
-          teacher_doj: response.data.teacher.teacher_doj || "",
-          teacher_adhar_no: response.data.teacher.teacher_adhar_no || "",
-          teacher_pan_no: response.data.teacher.teacher_pan_no || "",
-          teacher_mobile: response.data.teacher.teacher_mobile || "",
-          teacher_email_id: response.data.teacher.teacher_email_id || "",
-          teacher_address: response.data.teacher.teacher_address || "",
-          teacher_bank_name: response.data.teacher.teacher_bank_name || "",
-          teacher_acct_no: response.data.teacher.teacher_acct_no || "",
-          teacher_ifsc: response.data.teacher.teacher_ifsc || "",
-          teacher_branch: response.data.teacher.teacher_branch || "",
-          teacher_pf_no: response.data.teacher.teacher_pf_no || "",
-          teacher_uan_no: response.data.teacher.teacher_uan_no || "",
-          teacher_emergency_no:
-            response.data.teacher.teacher_emergency_no || "",
-          teacher_status: response.data.teacher.teacher_status || "",
+          teacher_title: response.teacher.teacher_title || "",
+          teacher_name: response.teacher.teacher_name || "",
+          teacher_designation: response.teacher.teacher_designation || "",
+          teacher_qualification: response.teacher.teacher_qualification || "",
+          teacher_dob: response.teacher.teacher_dob || "",
+          teacher_doj: response.teacher.teacher_doj || "",
+          teacher_adhar_no: response.teacher.teacher_adhar_no || "",
+          teacher_pan_no: response.teacher.teacher_pan_no || "",
+          teacher_mobile: response.teacher.teacher_mobile || "",
+          teacher_email_id: response.teacher.teacher_email_id || "",
+          teacher_address: response.teacher_address || "",
+          teacher_bank_name: response.teacher.teacher_bank_name || "",
+          teacher_acct_no: response.teacher.teacher_acct_no || "",
+          teacher_ifsc: response.teacher.teacher_ifsc || "",
+          teacher_branch: response.teacher.teacher_branch || "",
+          teacher_pf_no: response.teacher.teacher_pf_no || "",
+          teacher_uan_no: response.teacher.teacher_uan_no || "",
+          teacher_emergency_no: response.teacher.teacher_emergency_no || "",
+          teacher_status: response.teacher.teacher_status || "",
         });
       }
     } catch (error) {
@@ -93,20 +90,8 @@ const EditTeacher = () => {
     }
   };
   const fetchTeacherData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-usertypes`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setTeacherDesignation(response.data.userType);
-    } catch (error) {
-      console.error("Error fetching teacher data", error);
-    }
+    const response = await fetchTeacherUserTypes();
+    setTeacherDesignation(response.userType);
   };
 
   useEffect(() => {
@@ -176,19 +161,13 @@ const EditTeacher = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-teacher/${decryptedId}`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await updateTeacher(decryptedId, data);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         navigate("/teacher-list");
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       toast.error("Error creating teacher record");

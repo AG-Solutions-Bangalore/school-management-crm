@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
+import { CreateTeacherAttendanceList } from "../../../components/common/UseApi";
 const CreateTeacherAttendance = ({
   openCreateDialog,
   setOpenCreateDialog,
@@ -68,20 +69,12 @@ const CreateTeacherAttendance = ({
     setIsButtonDisabled(true);
 
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/panel-create-teacher-attendance`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const res = await CreateTeacherAttendanceList(data);
 
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
+      if (res.code === 200) {
+        toast.success(res.msg);
+      } else if (res.code === 400) {
+        toast.error(res.msg);
       }
       setOpenCreateDialog(false);
       fetchTeacherData();

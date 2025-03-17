@@ -1,33 +1,31 @@
-import React, { useEffect, useRef, useState } from "react";
-import Layout from "../../layout/Layout";
-import {
-  IconBook,
-  IconPlus,
-  IconX,
-  IconFilter,
-  IconSearch,
-  IconSchool,
-  IconAdjustments,
-  IconChevronDown,
-  IconChevronUp,
-  IconPresentationAnalytics,
-} from "@tabler/icons-react";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
-  Slide,
-  IconButton,
-  CircularProgress,
+  IconButton
 } from "@mui/material";
-import LoaderComponent from "../../components/common/LoaderComponent";
+import {
+  IconBook,
+  IconFilter,
+  IconPlus,
+  IconSearch,
+  IconX
+} from "@tabler/icons-react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { MasterSubjectCreate } from "../../components/buttonIndex/ButtonComponents";
 import {
   BackButton,
   CreateButton,
 } from "../../components/common/ButttonConfig";
-import { MasterSubjectCreate } from "../../components/buttonIndex/ButtonComponents";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import {
+  createSubject,
+  fetchClassList,
+  fetchStudentList,
+  fetchSubjectList,
+  updateSubject
+} from "../../components/common/UseApi";
+import Layout from "../../layout/Layout";
 
 const SubjectList = () => {
   const [subjectData, setSubjectData] = useState(null);
@@ -46,48 +44,32 @@ const SubjectList = () => {
     class_subject: "",
     subject: "",
   });
-
-  const fetchSubjectData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-subject-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubjectData(response.data?.subject);
-    } catch (error) {
-      console.error("Error fetching subject List data", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchClasses = async () => {
-    try {
-      setLoadingClass(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClasses(response.data?.classes);
-    } catch (error) {
-      console.error("Error fetching classes data", error);
-    } finally {
-      setLoadingClass(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchSubjectData = async () => {
+      setLoading(true);
+      const subjectlist = await fetchSubjectList();
+      setSubjectData(subjectlist.subject);
+      setLoading(false);
+    };
+
     fetchSubjectData();
   }, []);
 
+  const fetchClassData = async () => {
+    setLoadingClass(true);
+    const classslist = await fetchClassList();
+    setClasses(classslist.classes);
+    setLoadingClass(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+    fetchClassData();
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
   const onInputChange = (e) => {
     setSubject({
       ...subject,
@@ -97,33 +79,32 @@ const SubjectList = () => {
 
   const toggleStatus = async (id, currentStatus) => {
     try {
-      const token = localStorage.getItem("token");
-      const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
-      const res = await axios.put(
-        `${BASE_URL}/api/panel-update-subject-status/${id}`,
-        { status: newStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const status = currentStatus === "Active" ? "Inactive" : "Active";
 
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
+      const res = await updateSubject(id, status);
+      console.log(res);
+      if (res.code === 200) {
+        toast.success(res.msg);
+
         setSubjectData((prev) =>
           prev.map((item) =>
-            item.id === id ? { ...item, subject_status: newStatus } : item
+            item.id === id ? { ...item, subject_status: status } : item
           )
         );
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
+      } else {
+        toast.error(res?.data?.msg || "Unexpected server response");
       }
     } catch (error) {
-      toast.error("Failed to update status. Please try again.");
+      console.error("Update Error:", error.response?.data || error.message);
+      toast.error(
+        error.res?.msg || "Failed to update status. Please try again."
+      );
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const form = document.getElementById("addSubjectForm");
     if (!form.checkValidity()) {
       toast.error("Please fill all required fields");
@@ -137,41 +118,33 @@ const SubjectList = () => {
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: BASE_URL + "/api/panel-create-subject",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == 200) {
-        toast.success(res.data.msg);
+
+    try {
+      const response = await createSubject(data);
+
+      if (response && response.code === 200) {
+        toast.success(response.msg);
         setOpenDialog(false);
-        fetchSubjectData();
+        const subjectlist = await fetchStudentList();
+        setSubjectData(subjectlist.subject);
         setSubject({
           class_subject: "",
           subject: "",
         });
-        setIsButtonDisabled(false);
-      } else if (res.data.code == 400) {
-        toast.error(res.data.msg);
+      } else {
+        throw new Error(response?.msg || "Unexpected response from server");
       }
-      setSubject({
-        class_subject: "",
-        subject: "",
-      });
-    });
-  };
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-    fetchClasses();
+    } catch (error) {
+      console.error("API Error:", error);
+
+      toast.error(
+        error.message || "Failed to create subject. Please try again."
+      );
+    } finally {
+      setIsButtonDisabled(false);
+    }
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-  // Group subjects by class --sajid /27 feb
   const groupedSubjects = React.useMemo(() => {
     if (!subjectData) return {};
 
@@ -337,13 +310,13 @@ const SubjectList = () => {
                     : "Inactive"}
                 </button>
 
-                {/* <button
+                <button
                   ref={buttonRef}
                   onClick={handleOpenDialog}
                   className={CreateButton}
                 >
                   <IconPlus className="w-3.5 h-3.5" /> Subject
-                </button> */}
+                </button>
                 <MasterSubjectCreate
                   ref={buttonRef}
                   onClick={handleOpenDialog}
@@ -356,71 +329,6 @@ const SubjectList = () => {
           </div>
 
           <div className="max-w-screen-2xl mx-auto px-4 py-3">
-            {/* {selectedClass === "all" && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-4 overflow-hidden">
-                <div 
-                  className="flex justify-between items-center p-3 border-b border-gray-100 cursor-pointer"
-                  onClick={() => setShowStats(!showStats)}
-                >
-                  <div className="flex items-center gap-2">
-                    <IconPresentationAnalytics className="text-indigo-500 w-4 h-4" />
-                    <h3 className="font-medium text-sm text-gray-800">Subject Overview</h3>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="hidden sm:flex items-center gap-2 text-xs text-gray-900">
-                      <span>Total: <strong>{totalStats.total}</strong></span>
-                      <span className="h-3 w-px bg-gray-200"></span>
-                      <span className="text-green-600">Active: <strong>{totalStats.active}</strong></span>
-                      <span className="h-3 w-px bg-gray-200"></span>
-                      <span className="text-gray-900">Inactive: <strong>{totalStats.inactive}</strong></span>
-                    </div>
-                    {showStats ? (
-                      <IconChevronUp className="w-4 h-4 text-gray-900" />
-                    ) : (
-                      <IconChevronDown className="w-4 h-4 text-gray-900" />
-                    )}
-                  </div>
-                </div>
-                
-                {showStats && (
-                  <div className="p-3 grid grid-cols-2 overflow-x-auto">
-                    <div className="flex gap-2 pb-1">
-                      {classStats.map(stat => (
-                        <div 
-                          key={stat.name}
-                          className={`min-w-[120px] p-2 rounded-lg border transition-all cursor-pointer ${
-                            selectedClass === stat.name 
-                              ? "bg-indigo-50 border-indigo-200" 
-                              : "bg-white border-gray-200 hover:border-indigo-200"
-                          }`}
-                          onClick={() => setSelectedClass(stat.name)}
-                        >
-                          <div className="flex justify-between items-center mb-1">
-                            <div className="font-medium text-xs">
-                              {stat.name}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {stat.total}
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-1 mt-1">
-                            <div className="h-1.5 bg-green-200 rounded-full" style={{ width: `${(stat.active/stat.total)*100}%` }}></div>
-                            <div className="h-1.5 bg-gray-200 rounded-full" style={{ width: `${(stat.inactive/stat.total)*100}%` }}></div>
-                          </div>
-                          
-                          <div className="flex justify-between mt-1">
-                            <span className="text-[10px] text-green-600">{stat.active}</span>
-                            <span className="text-[10px] text-gray-500">{stat.inactive}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )} */}
-
             <div className="mb-4 overflow-x-auto">
               <div className="flex gap-1.5 min-w-max">
                 <button

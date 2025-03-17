@@ -17,6 +17,14 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import {
+  CreateStudentPendingClassFees,
+  fetchClassList,
+  fetchStudentsByYear,
+  PaymentType,
+  StudentPendingClassFeesCreate,
+  YearList,
+} from "../../../components/common/UseApi";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -75,23 +83,25 @@ export const AddFees = ({ open, handleOpen }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const [yearResponse, classesResponse, paymentTypeResponse] =
         await Promise.all([
-          axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
+          YearList(),
+          fetchClassList(),
+          PaymentType(),
+          // axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
+          //   headers: { Authorization: `Bearer ${token}` },
+          // }),
+          // axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
+          //   headers: { Authorization: `Bearer ${token}` },
+          // }),
+          // axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
+          //   headers: { Authorization: `Bearer ${token}` },
+          // }),
         ]);
 
-      setYears(yearResponse.data?.year || []);
-      setClasses(classesResponse.data?.classes || []);
-      setPaymentTypes(paymentTypeResponse.data?.paymentType || []);
+      setYears(yearResponse?.year || []);
+      setClasses(classesResponse?.classes || []);
+      setPaymentTypes(paymentTypeResponse?.paymentType || []);
     } catch (error) {
       console.error("Error fetching data", error);
       toast.error("Failed to fetch required data");
@@ -104,13 +114,8 @@ export const AddFees = ({ open, handleOpen }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student/${selectedYear}/${selectedClass}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setStudents(response.data?.student || []);
+      const response = await fetchStudentsByYear(selectedYear, selectedClass);
+      setStudents(response?.student || []);
     } catch (error) {
       console.error("Error fetching students", error);
       toast.error("Failed to fetch students");
@@ -133,25 +138,15 @@ export const AddFees = ({ open, handleOpen }) => {
         setPendingFeesData(null);
         return;
       }
+      const data = {
+        studentFees_year: formData.studentFees_year,
+        studentFees_class: formData.studentFees_class,
+        studentFees_admission_no: formData.studentFees_admission_no,
+      };
+      const response = await StudentPendingClassFeesCreate(data);
 
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-fetch-student-pending-class-fees-for-create`,
-        {
-          studentFees_year: formData.studentFees_year,
-          studentFees_class: formData.studentFees_class,
-          studentFees_admission_no: formData.studentFees_admission_no,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (
-        response.data &&
-        response.data.student &&
-        response.data.student.length > 0
-      ) {
-        setPendingFeesData(response.data.student[0]);
+      if (response && response.student && response.student.length > 0) {
+        setPendingFeesData(response.student[0]);
       } else {
         setPendingFeesData(null);
       }
@@ -198,18 +193,10 @@ export const AddFees = ({ open, handleOpen }) => {
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
       console.log("data", formattedData);
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-student-class-fees`,
-        formattedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await CreateStudentPendingClassFees(formattedData);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
 
         handleOpen();
         setFormData({
@@ -222,7 +209,7 @@ export const AddFees = ({ open, handleOpen }) => {
           studentFees_paid_date: getTodayDate(),
         });
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       console.error("Error creating student fees", error);
@@ -413,7 +400,7 @@ export const AddFees = ({ open, handleOpen }) => {
           </div>
         </DialogContent>
         <DialogActions>
-          <button onClick={handleOpen} className={BackButton}>
+          <button onClick={handleOpen} className={BackButton} type="button">
             Cancel
           </button>
 

@@ -10,6 +10,13 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  CreateStudentList,
+  fetchClassList,
+  fetchSubjectList,
+  StudentAdmissionDate,
+  YearList,
+} from "../../../components/common/UseApi";
 const Gender = [
   {
     value: "Male",
@@ -66,16 +73,8 @@ const CreateStudent = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const fetchYearData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-year-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setYear(response.data.year);
+      const response = await YearList();
+      setYear(response.year);
     } catch (error) {
       console.error("Error fetching teacher data", error);
     }
@@ -83,16 +82,9 @@ const CreateStudent = () => {
   const fetchAdmissionData = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-admission-no/${student.student_year}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setAdmission(response.data.admissionNo);
+      const data = student.student_year;
+      const response = await StudentAdmissionDate(data);
+      setAdmission(response.admissionNo);
     } catch (error) {
       console.error("Error fetching teacher data", error);
     }
@@ -100,29 +92,16 @@ const CreateStudent = () => {
 
   const fetchClassData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setClassList(response.data.classes);
+      const response = await fetchClassList();
+      setClassList(response.classes);
     } catch (error) {
       console.error("Error fetching teacher data", error);
     }
   };
   const fetchSubjectData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-subject-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setSubject(response.data.subject);
+      const response = await fetchSubjectList();
+      setSubject(response.subject);
     } catch (error) {
       console.error("Error fetching teacher data", error);
     }
@@ -256,19 +235,20 @@ const CreateStudent = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-student`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      // const response = await axios.post(
+      //   `${BASE_URL}/api/panel-create-student`,
+      //   formData,
+      //   {
+      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      //   }
+      // );
+      const response = await CreateStudentList(formData);
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response.code === 200) {
+        toast.success(response.msg);
         navigate("/student-list");
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       toast.error("Error creating teacher record");

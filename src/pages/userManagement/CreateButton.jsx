@@ -10,6 +10,8 @@ import { ContextPanel } from "../../context/ContextPanel";
 import BASE_URL from "../../base/BaseUrl";
 import Layout from "../../layout/Layout";
 import ButtonComponents from "../../components/buttonIndex/ButtonComponents";
+import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import { HeaderColor } from "../../components/common/ButttonConfig";
 const CreateButton = () => {
   const [selectedPage, setSelectedPage] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
@@ -186,9 +188,19 @@ const CreateButton = () => {
   return (
     <Layout>
       <div className="p-6">
+        <div className={HeaderColor}>
+          <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
+            <div className="flex items-center gap-2">
+              <IconInfoCircle className="w-4 h-4" />
+              <span>Create Button Control</span>
+            </div>
+            <IconArrowBack
+              onClick={() => navigate("/userManagement")}
+              className="cursor-pointer hover:text-red-600"
+            />
+          </h2>
+        </div>
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-semibold mb-6">Create Button Control</h2>
-
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useCallback, useState } from "react";
 import { ExternalLink, Search, Filter } from "lucide-react";
 
-
 import {
   Button,
   Input,
@@ -19,14 +18,14 @@ const UserPage = () => {
   const userTypeRoles = JSON.parse(localStorage.getItem("userTypeRole")) || [];
 
   const [users, setUsers] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     userType: "all",
-    status: "all",  
+    status: "all",
   });
-  
+
   const loadUsers = useCallback(async () => {
     try {
       const loadedUsers = getStaticUsers();
@@ -66,9 +65,10 @@ const UserPage = () => {
   }, [applyFilters, searchTerm, filters]);
 
   const handleOpenDashboard = (userId) => {
-    window.open(`/management-dashboard/${userId}`, "_blank");
+    // window.open(`/management-dashboard/${userId}`, "_blank");
+    navigate(`/management-dashboard/${userId}`);
   };
- 
+
   return (
     <Layout>
       <div className=" ">
@@ -107,7 +107,7 @@ const UserPage = () => {
                 >
                   Student
                 </MenuItem>
-               
+
                 <MenuItem
                   onClick={() => setFilters({ ...filters, userType: 3 })}
                 >
@@ -115,10 +115,22 @@ const UserPage = () => {
                 </MenuItem>
               </MenuList>
             </Menu>
+<<<<<<< HEAD
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/page-management")}
+              className="flex items-center gap-2"
+            >
+=======
             {/* <Button variant="outlined" onClick={()=>navigate('/page-management')} className="flex items-center gap-2">
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
               + Page
             </Button>
-            <Button variant="outlined" onClick={()=>navigate('/button-management')} className="flex items-center gap-2">
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/button-management")}
+              className="flex items-center gap-2"
+            >
               + Button
             </Button> */}
           </div>
@@ -163,6 +175,15 @@ const UserPage = () => {
                             : "bg-gray-100 text-gray-800"
                         } capitalize`}
                       >
+<<<<<<< HEAD
+                        {user.user_type === 3
+                          ? "Administration"
+                          : user.user_type === 1
+                          ? "Student"
+                          : user.user_type === 2
+                          ? "Teacher"
+                          : "N/A"}
+=======
                         {userTypeRoles.find((role) => role.user_type === user.user_type)?.user_role || "N/A"}
                       </span>
                     </td>
@@ -170,6 +191,7 @@ const UserPage = () => {
                     <td className="py-3 px-4">
                       <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                         {user.user_position}
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
                       </span>
                     </td>
                     <td className="py-3 px-4">

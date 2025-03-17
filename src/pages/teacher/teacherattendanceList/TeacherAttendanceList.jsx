@@ -1,32 +1,29 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  FormLabel,
-  IconButton,
-  Slide,
-} from "@mui/material";
+import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Layout from "../../../layout/Layout";
 
 import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import { Edit } from "lucide-react";
 import moment from "moment";
 import { toast } from "sonner";
-import { ContextPanel } from "../../../context/ContextPanel";
-import { Trash } from "lucide-react";
-import CreateAttendance from "../../student/attendanceList/CreateAttendance";
-import CreateTeacherAttendance from "./CreateAttendance";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { CreateButton } from "../../../components/common/ButttonConfig";
+import BASE_URL from "../../../base/BaseUrl";
 import {
   TeacherAttendanceListCreate,
   TeacherAttendanceListDelete,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  DeleteTeacherAttendanceList,
+  TeaacherAttendanceList,
+  TeacherAttendanceyId,
+  UpdateTeacherAttendanceList,
+} from "../../../components/common/UseApi";
+import { ContextPanel } from "../../../context/ContextPanel";
+import CreateTeacherAttendance from "./CreateAttendance";
 
 const TeacherAttendanceList = () => {
   const [teacherAttendanceData, setTeacherAttendanceData] = useState(null);
@@ -42,23 +39,13 @@ const TeacherAttendanceList = () => {
   });
 
   const fetchTeacherData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-attendance-list/${selectedYear}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setTeacherAttendanceData(response.data?.teacherAttendance);
-    } catch (error) {
-      console.error("Error fetching student List data", error);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+
+    const response = await TeaacherAttendanceList(selectedYear);
+
+    setTeacherAttendanceData(response?.teacherAttendance);
+
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -70,27 +57,19 @@ const TeacherAttendanceList = () => {
       if (!attendanceid) return;
 
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-teacher-attendance-by-id/${attendanceid}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await TeacherAttendanceyId(attendanceid);
 
         setAttendance({
           teacherAttendance_date:
-            response.data.teacherAttendance.teacherAttendance_date || "",
+            response.teacherAttendance?.teacherAttendance_date || "",
         });
       } catch (error) {
-        console.error("Error fetching teacherAttendance data", error);
+        console.error("Error fetching attendance data:", error);
       }
     };
 
     fetchAttendanceDataId();
-  }, [attendanceid]);
+  }, [attendanceid, openDialog, openDeleteDialog]);
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -114,50 +93,36 @@ const TeacherAttendanceList = () => {
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: `${BASE_URL}/api/panel-update-teacher-attendance/${attendanceid}`,
-      method: "PUT",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
-        setOpenDialog(false);
-        fetchTeacherData();
-        setAttendance({
-          teacherAttendance_date: "",
-        });
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
-      }
+
+    const response = await UpdateTeacherAttendanceList(attendanceid, data);
+
+    if (response.code === 200) {
+      toast.success(response.msg);
+      setOpenDialog(false);
+      fetchTeacherData();
+      setAttendance({
+        teacherAttendance_date: "",
+      });
       setIsButtonDisabled(false);
-    });
+    } else if (response.code === 400) {
+      toast.error(response.msg);
+    }
   };
   const handleDelete = async (e) => {
     e.preventDefault();
 
     setIsButtonDisabled(true);
-    axios({
-      url: `${BASE_URL}/api/panel-delete-teacher-attendance/${attendanceid}`,
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
-        setOpenDeleteDialog(false);
-        fetchTeacherData();
-        setAttendance({
-          teacherAttendance_date: "",
-        });
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
-      }
-      setIsButtonDisabled(false);
-    });
+
+    const response = await DeleteTeacherAttendanceList(attendanceid);
+
+    if (response.code === 200) {
+      toast.success(response.msg);
+      setOpenDeleteDialog(false);
+      fetchTeacherData();
+    } else if (response.code === 400) {
+      toast.error(response.msg);
+    }
+    setIsButtonDisabled(false);
   };
 
   const columns = useMemo(
@@ -193,6 +158,16 @@ const TeacherAttendanceList = () => {
 
           return (
             <div className="flex gap-2">
+              {/* <div
+                onClick={() => {
+                  setAttendanceId(id);
+                  setOpenDialog(true);
+                }}
+                className="flex items-center space-x-2"
+                title="Edit"
+              >
+                <Edit className="h-5 w-5 text-blue-500 cursor-pointer" />
+              </div> */}
               {/* <div
                 onClick={() => {
                   setAttendanceId(id);
@@ -249,6 +224,7 @@ const TeacherAttendanceList = () => {
               </h1>
               <TeacherAttendanceListCreate
                 onClick={() => navigate("/teacher-viewAttendance")}
+                // onClick={() => setOpenCreateDialog(true)}
                 className={CreateButton}
               ></TeacherAttendanceListCreate>
             </div>

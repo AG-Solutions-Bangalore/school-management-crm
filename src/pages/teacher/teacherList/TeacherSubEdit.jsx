@@ -11,6 +11,7 @@ import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
+import { TeacherSubAssign } from "../../../components/common/UseApi";
 const status = [
   {
     value: "Active",
@@ -111,20 +112,13 @@ const TeacherSubEdit = ({
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-teacher-subject-assign/${selectedTeacherSubId}`,
-        data,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      const response = await TeacherSubAssign(selectedTeacherSubId, data);
+      if (response.code === 200) {
+        toast.success(response.msg);
         handleClose();
         fetchStudentData();
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       toast.error("Error creating teacher subjecrr assign record");

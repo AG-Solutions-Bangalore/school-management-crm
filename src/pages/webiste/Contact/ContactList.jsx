@@ -4,6 +4,7 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import axios from "axios";
 import BASE_URL from "../../../base/BaseUrl";
 import LoaderComponent from "../../../components/common/LoaderComponent";
+import { fetchWebisteContract } from "../../../components/common/UseApi";
 
 const ContactList = () => {
   const [contactData, setContactData] = useState(null);
@@ -13,16 +14,8 @@ const ContactList = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-website-contact-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setContactData(response.data?.contact);
+      const response = await fetchWebisteContract();
+      setContactData(response?.contact);
     } catch (error) {
       console.error("Error fetching contact List data", error);
     } finally {
@@ -73,7 +66,6 @@ const ContactList = () => {
     mantineTableContainerProps: { sx: { maxHeight: "400px" } },
 
     initialState: { columnVisibility: { address: false } },
- 
   });
   return (
     <Layout>

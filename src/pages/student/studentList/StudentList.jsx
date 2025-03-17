@@ -18,7 +18,14 @@ import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+<<<<<<< HEAD
+import {
+  fetchStudentList,
+  UpdateStudentStatus,
+} from "../../../components/common/UseApi";
+=======
 import { Printer } from "lucide-react";
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -26,24 +33,10 @@ const StudentList = () => {
   const navigate = useNavigate();
 
   const fetchStudentData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setStudentData(response.data?.student);
-    } catch (error) {
-      console.error("Error fetching student List data", error);
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    const response = await fetchStudentList();
+    setStudentData(response?.student);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -52,22 +45,12 @@ const StudentList = () => {
 
   const toggleStatus = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-student-status/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      const response = await UpdateStudentStatus(id);
+      if (response.code === 200) {
+        toast.success(response.msg);
         fetchStudentData();
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
       console.error("Error updating student status", error);
@@ -76,6 +59,26 @@ const StudentList = () => {
 
   const columns = useMemo(
     () => [
+<<<<<<< HEAD
+      {
+        accessorKey: "student_image",
+        header: "Photo",
+        size: 100,
+        Cell: ({ row }) => {
+          const imageUrl = row.original.student_photo
+            ? `${StudentImageUrl}/${row.original.student_photo}`
+            : StudentNoImageUrl;
+
+          return (
+            <img
+              src={imageUrl}
+              alt="Student"
+              className="w-12 h-12 rounded-full object-cover border"
+            />
+          );
+        },
+      },
+=======
     
           {
               accessorKey: "student_photo",
@@ -95,9 +98,10 @@ const StudentList = () => {
                 );
               },
             },
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
 
       {
-        accessorKey: "combined",
+        accessorKey: "admission_details",
         header: "Admission No/Date",
         size: 150,
         accessorFn: (row) =>
@@ -123,7 +127,7 @@ const StudentList = () => {
       },
 
       {
-        accessorKey: "combined",
+        accessorKey: "student_dob",
         header: "Gender /DOB",
         size: 150,
         accessorFn: (row) => `${row.student_gender} - ${row.student_dob}`,

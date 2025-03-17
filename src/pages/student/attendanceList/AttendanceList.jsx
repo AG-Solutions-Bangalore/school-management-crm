@@ -28,6 +28,12 @@ import {
   StudentAttendanceListCreate,
   StudentAttendanceListDelete,
 } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  DeleteStudentAttendanceLisyById,
+  StudentAttendanceLisyById,
+  StudentAttendanceLisyByYear,
+  UpdateStudentAttendanceLisyById,
+} from "../../../components/common/UseApi";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -46,15 +52,8 @@ const AttendanceList = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-attendance-list/${selectedYear}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setAttendanceData(response.data?.studentClassAttendance);
+      const response = await StudentAttendanceLisyByYear(selectedYear);
+      setAttendanceData(response?.studentClassAttendance);
     } catch (error) {
       console.error("Error fetching student List data", error);
     } finally {
@@ -71,18 +70,11 @@ const AttendanceList = () => {
 
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${attendanceid}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await StudentAttendanceLisyById(attendanceid);
 
         setAttendance({
           studentAttendance_date:
-            response.data.studentClassAttendance.studentAttendance_date || "",
+            response.studentClassAttendance.studentAttendance_date || "",
         });
       } catch (error) {
         console.error("Error fetching studentClassAttendance data", error);
@@ -114,50 +106,52 @@ const AttendanceList = () => {
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: `${BASE_URL}/api/panel-update-student-attendance/${attendanceid}`,
-      method: "PUT",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
+    try {
+      const response = await UpdateStudentAttendanceLisyById(
+        attendanceid,
+        data
+      );
+      console.log(response);
+      if (response?.code === 200) {
+        toast.success(response?.msg);
         setOpenDialog(false);
         fetchStudentData();
         setAttendance({
           studentAttendance_date: "",
         });
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
+      } else if (response?.code === 400) {
+        toast.error(response?.msg);
       }
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+      toast.error("Something went wrong! Please try again.");
+    } finally {
       setIsButtonDisabled(false);
-    });
+    }
   };
+
   const handleDelete = async (e) => {
     e.preventDefault();
 
     setIsButtonDisabled(true);
-    axios({
-      url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceid}`,
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code === 200) {
-        toast.success(res.data.msg);
+    try {
+      const response = await DeleteStudentAttendanceLisyById(attendanceid);
+      if (response?.code == 200) {
+        toast.success(response?.msg);
         setOpenDeleteDialog(false);
         fetchStudentData();
         setAttendance({
           studentAttendance_date: "",
         });
-      } else if (res.data.code === 400) {
-        toast.error(res.data.msg);
+      } else if (response?.code === 400) {
+        toast.error(response?.msg);
       }
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+      toast.error("Something went wrong! Please try again.");
+    } finally {
       setIsButtonDisabled(false);
-    });
+    }
   };
 
   const columns = useMemo(

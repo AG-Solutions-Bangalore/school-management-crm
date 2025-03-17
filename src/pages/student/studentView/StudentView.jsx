@@ -1,41 +1,45 @@
-import React, { useEffect, useMemo, useState } from "react";
 import {
-  IconEdit,
-  IconPlus,
-  IconUser,
-  IconCalendar,
-  IconSchool,
-  IconDownload,
-} from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import moment from "moment";
-import Layout from "../../../layout/Layout";
-import BASE_URL from "../../../base/BaseUrl";
-import {
-  Button,
   Card,
   CardBody,
-  CardHeader,
   Dialog,
-  DialogHeader,
   DialogBody,
+  DialogHeader,
 } from "@material-tailwind/react";
-import StudentDetailsView from "./StudentDetailsView";
+import {
+  IconArrowBack,
+  IconCalendar,
+  IconDownload,
+  IconEdit,
+  IconInfoCircle,
+  IconPlus,
+  IconSchool,
+  IconUser,
+} from "@tabler/icons-react";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import moment from "moment";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { StudentImageUrl, StudentNoImageUrl } from "../../../base/BaseUrl";
+import {
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { ViewStudentById } from "../../../components/common/UseApi";
+import { ContextPanel } from "../../../context/ContextPanel";
+import Layout from "../../../layout/Layout";
 import { AddClassDialog, AddFeesDialog } from "./ClassAndFeesDialog";
 import {
   EditAttendenceDialog,
   EditClassDialog,
   EditFeesDialog,
 } from "./EditClassAndFeesDialog";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { CreateButton } from "../../../components/common/ButttonConfig";
+import StudentDetailsView from "./StudentDetailsView";
 
 const StudentView = () => {
   const { id } = useParams();
   const decryptedId = decryptId(id);
-
+  const navigate = useNavigate();
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isClassDialogOpen, setIsClassDialogOpen] = useState(false);
@@ -51,20 +55,15 @@ const StudentView = () => {
   //photo and adhar dialog
   const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false);
   const [isAadharDialogOpen, setIsAadharDialogOpen] = useState(false);
+  const { selectedYear } = useContext(ContextPanel);
 
   const fetchStudentData = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-view/2024-25/${decryptedId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setStudentData(response.data);
+
+      const response = await ViewStudentById(selectedYear, decryptedId);
+      setStudentData(response);
     } catch (error) {
       console.error("Error fetching student data", error);
     } finally {
@@ -74,7 +73,7 @@ const StudentView = () => {
 
   useEffect(() => {
     fetchStudentData();
-  }, [id]);
+  }, [decryptedId, selectedYear]);
 
   const studentClassColumns = useMemo(
     () => [
@@ -217,11 +216,12 @@ const StudentView = () => {
   };
 
   const studentClassLength = studentData?.studentClass?.length || 0;
-
+  const image = studentData?.student?.student_photo;
+  const adhar = studentData?.student?.student_adhar_copy;
   const handleDownload = async () => {
     // const imageUrl = "https://bhsppvn.site/public/assets/student/1_Moorthy_A.jpg";
 
-    const proxyUrl = "/api/public/assets/student/1_Moorthy_A.jpg";
+    const proxyUrl = `/api/public/assets/student/${image}`;
 
     const response = await fetch(proxyUrl);
     const blob = await response.blob();
@@ -240,12 +240,42 @@ const StudentView = () => {
   return (
     <Layout>
       <div className="max-w-screen p-2">
+        <div className={HeaderColor}>
+          <h2 className="px-5 text-black text-lg flex justify-between items-center rounded-xl p-2">
+            <div className="flex items-center gap-2">
+              <IconInfoCircle className="w-4 h-4" />
+              <span>Student Details</span>
+            </div>
+            <IconArrowBack
+              onClick={() => navigate("/student-list")}
+              className="cursor-pointer hover:text-red-600"
+            />
+          </h2>
+        </div>
         <Card className="mb-2 overflow-hidden">
           <CardBody className="p-0">
             <div className="flex flex-col md:flex-row">
               {/* Left Section with Primary Info */}
               <div className="bg-blue-50 p-4 md:w-1/3">
                 <div className="flex items-center gap-3 mb-3">
+<<<<<<< HEAD
+                  {image == null ? (
+                    <img
+                      src={`${StudentNoImageUrl}`}
+                      alt={`Student Photo`}
+                      className="w-16 h-16 object-cover rounded-lg border-2 border-blue-500 cursor-pointer"
+                      onClick={() => setIsPhotoDialogOpen(true)}
+                    />
+                  ) : (
+                    <img
+                      src={`${StudentImageUrl}/${image}`}
+                      alt={`Student Photo`}
+                      className="w-16 h-16 object-cover rounded-lg border-2 border-blue-500 cursor-pointer"
+                      onClick={() => setIsPhotoDialogOpen(true)}
+                    />
+                  )}
+
+=======
                   <img
                     src={
                       `http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`
@@ -254,6 +284,7 @@ const StudentView = () => {
                     className="w-16 h-16 object-cover rounded-lg border-2 border-blue-500 cursor-pointer"
                     onClick={() => setIsPhotoDialogOpen(true)}
                   />
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
                   <h1 className="text-lg font-medium text-blue-900 border-b-2 border-blue-500 pb-1">
                     Student Details
                   </h1>
@@ -452,11 +483,29 @@ const StudentView = () => {
             </div>
           </DialogHeader>
           <DialogBody className="flex justify-center">
+<<<<<<< HEAD
+            {image == null ? (
+              <img
+                src={`${StudentNoImageUrl}`}
+                alt={`Student Photo`}
+                className="max-h-96 object-contain"
+                onClick={() => setIsPhotoDialogOpen(true)}
+              />
+            ) : (
+              <img
+                src={`${StudentImageUrl}/${image}`}
+                alt={`Student Photo`}
+                className="max-h-96 object-contain"
+                onClick={() => setIsPhotoDialogOpen(true)}
+              />
+            )}
+=======
             <img
               src={`http://bhsppvn.site/public/assets/student/${studentData?.student.student_photo}`}
               alt={`student photo`}
               className="max-h-96 object-contain"
             />
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
           </DialogBody>
         </Dialog>
 
@@ -484,11 +533,21 @@ const StudentView = () => {
             </div>
           </DialogHeader>
           <DialogBody className="flex justify-center">
-            <img
-              src="https://bhsppvn.site/public/assets/student/1_Moorthy_A.jpg"
-              alt="Aadhar Card"
-              className="max-h-96 object-contain"
-            />
+            {adhar == null ? (
+              <img
+                src={`${StudentNoImageUrl}`}
+                alt="Aadhar Card"
+                className="max-h-96 object-contain"
+                onClick={() => setIsPhotoDialogOpen(true)}
+              />
+            ) : (
+              <img
+                src={`${StudentImageUrl}/${adhar}`}
+                alt="Aadhar Card"
+                className="max-h-96 object-contain"
+                onClick={() => setIsPhotoDialogOpen(true)}
+              />
+            )}
           </DialogBody>
         </Dialog>
       </div>

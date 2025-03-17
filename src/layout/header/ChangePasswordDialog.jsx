@@ -96,7 +96,7 @@ const ChangePasswordDialog = ({
             <button
               onClick={onChangePassword}
               type="button"
-              className={`${CreateButton} w-40`}
+              className={`${CreateButton} w-48`}
             >
               Change Password
             </button>

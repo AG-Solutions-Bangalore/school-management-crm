@@ -16,30 +16,22 @@ import {
   TeacherTeacherListEdit,
   TeacherTeacherListView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import {
+  fetchTeacherList,
+  updateTeacherStatus,
+} from "../../../components/common/UseApi";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchTeacherData = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-teacher-list`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    setLoading(true);
+    const teachers = await fetchTeacherList();
 
-      setTeacherData(response.data?.teacher);
-    } catch (error) {
-      console.error("Error fetching teacher List data", error);
-    } finally {
-      setLoading(false);
-    }
+    setTeacherData(teachers?.teacher);
+
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,28 +39,28 @@ const TeacherList = () => {
   }, []);
   const toggleStatus = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+      const response = await updateTeacherStatus(id);
+      console.log(response);
+      if (response?.code === 200) {
+        toast.success(response.msg);
 
-      const response = await axios.put(
-        `${BASE_URL}/api/panel-update-teacher-status/${id}`,
-        {}, // Empty body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
-        fetchTeacherData();
+        // Fetch updated teacher list
+        const teachers = await fetchTeacherList();
+        setTeacherData(teachers?.teacher);
       } else {
-        toast.error(response.data.msg);
+        toast.error(response?.msg || "Failed to update status");
       }
     } catch (error) {
-      console.error("Error updating student status", error);
+      console.error(
+        "Error updating teacher status:",
+        error.response || error.message
+      );
+      toast.error(
+        error.response?.msg || "Failed to update status. Please try again."
+      );
     }
   };
+
   const columns = useMemo(
     () => [
       {

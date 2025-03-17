@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "../../layout/Layout";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
@@ -11,35 +11,38 @@ import {
   BackButton,
   CreateButton,
 } from "../../components/common/ButttonConfig";
+import {
+  fetchHolidayById,
+  fetchHolidays,
+  updateHoliday,
+} from "../../components/common/UseApi";
+import { ContextPanel } from "../../context/ContextPanel";
 const EditHoliday = ({
   openEditDialog,
   setOpenEditDialog,
   editId,
   fetchHolidayData,
+  setHolidayData,
 }) => {
   const id = editId;
 
   const navigate = useNavigate();
+  const { selectedYear } = useContext(ContextPanel);
+
   const [holiday, setHoliday] = useState({
     holiday_for: "",
     holiday_date: "",
   });
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const fetchEditHolidayData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-holiday-list-by-id/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setHoliday(response.data?.holidayList);
+      const data = await fetchHolidayById(id);
+      if (data) {
+        setHoliday(data.holidayList);
+      }
     } catch (error) {
       console.error("Error fetching holiday edit data", error);
     } finally {
@@ -71,35 +74,28 @@ const EditHoliday = ({
     if (!form.checkValidity()) {
       toast.error("Fill all required");
       setIsButtonDisabled(false);
-
       return;
     }
+
     const data = {
       holiday_date: holiday.holiday_date,
       holiday_for: holiday.holiday_for,
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: BASE_URL + `/api/panel-update-holiday-list/${id}`,
-      method: "PUT",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == 200) {
-        toast.success(res.data.msg);
-        handleClose();
-        fetchHolidayData();
-        setIsButtonDisabled(false);
-      } else if (res.data.code == 400) {
-        toast.error(res.data.msg);
-      }
-      navigate("/holiday-list");
-    });
-  };
+    const response = await updateHoliday(id, data);
 
+    if (response.code === 200) {
+      toast.success(response.msg);
+      handleClose();
+      await fetchHolidays(selectedYear).then((holidays) => {
+        setHolidayData(holidays.holidayList);
+      });
+      setIsButtonDisabled(false);
+    } else if (response.code === 400) {
+      toast.error(response.msg);
+    }
+  };
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}

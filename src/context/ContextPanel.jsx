@@ -1,6 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import BASE_URL from "../base/BaseUrl";
 import axios from "axios";
+import {
+  fetchPagePermissionData,
+  fetchUserControlData,
+  YearList,
+} from "../components/common/UseApi";
 
 export const ContextPanel = createContext();
 
@@ -16,34 +21,31 @@ const AppProvider = ({ children }) => {
     setIsError(false);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usercontrol-new`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-     
+      const response = await fetchPagePermissionData();
       // array in local storage
-      localStorage.setItem("pageControl", JSON.stringify(response.data?.pagePermissions));
-
-      
+      localStorage.setItem(
+        "pageControl",
+        JSON.stringify(response?.pagePermissions)
+      );
     } catch (error) {
       setIsError(true);
     } finally {
       setIsLoading(false);
     }
   };
- 
+
   const fetchPermissions = async () => {
     setIsLoading(true);
     setIsError(false);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usercontrol`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetchUserControlData();
 
       // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem("buttonControl", JSON.stringify(response.data?.buttonPermissions));
-
-      
+      localStorage.setItem(
+        "buttonControl",
+        JSON.stringify(response?.buttonPermissions)
+      );
     } catch (error) {
       setIsError(true);
     } finally {
@@ -84,14 +86,8 @@ const AppProvider = ({ children }) => {
     setIsError(false);
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-year-list`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      localStorage.setItem("years", JSON.stringify(response.data.year));
-      
+      const response = await YearList();
+      localStorage.setItem("years", JSON.stringify(response?.year));
     } catch (err) {
       setIsError(true);
     } finally {
@@ -99,16 +95,29 @@ const AppProvider = ({ children }) => {
     }
   };
 
-  useEffect(()=>{
-    if(token){
-      fetchYears()
-      getStaticUsers()
-      fetchPagePermission()
+  useEffect(() => {
+    if (token) {
+      fetchYears();
+      getStaticUsers();
+      fetchPagePermission();
       fetchPermissions();
     }
-  },[])
+  }, []);
   return (
+<<<<<<< HEAD
+    <ContextPanel.Provider
+      value={{
+        userTypeId,
+        fetchYears,
+        selectedYear,
+        fetchPagePermission,
+        getStaticUsers,
+        fetchPermissions,
+      }}
+    >
+=======
     <ContextPanel.Provider value={{ userTypeId, fetchYears ,selectedYear,fetchPagePermission,getStaticUsers,fetchPermissions,fetchUserType}}>
+>>>>>>> 56eec02cb1faefed43ada6f975e33bfe8dd54fe2
       {children}
     </ContextPanel.Provider>
   );

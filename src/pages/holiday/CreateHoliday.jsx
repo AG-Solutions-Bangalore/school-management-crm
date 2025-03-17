@@ -1,20 +1,19 @@
-import React, { useState } from "react";
-import Layout from "../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
-import { IconArrowBack, IconInfoCircle, IconX } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../base/BaseUrl";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
+import { IconX } from "@tabler/icons-react";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
 } from "../../components/common/ButttonConfig";
+import { createHoliday, fetchHolidays } from "../../components/common/UseApi";
+import { ContextPanel } from "../../context/ContextPanel";
 
 const CreateHoliday = ({
   setCreateDialogOpen,
   createDialogOpen,
-  fetchHolidayData,
+  setHolidayData,
 }) => {
   const navigate = useNavigate();
   const [holiday, setHoliday] = useState({
@@ -22,6 +21,7 @@ const CreateHoliday = ({
     holiday_date: "",
   });
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const { selectedYear } = useContext(ContextPanel);
 
   const onInputChange = (e) => {
     setHoliday({
@@ -30,47 +30,84 @@ const CreateHoliday = ({
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const form = document.getElementById("addIndiv");
+  //   if (!form.checkValidity()) {
+  //     toast.error("Fill all required");
+  //     setIsButtonDisabled(false);
+
+  //     return;
+  //   }
+  //   const data = {
+  //     holiday_date: holiday.holiday_date,
+  //     holiday_for: holiday.holiday_for,
+  //   };
+
+  //   setIsButtonDisabled(true);
+  //   axios({
+  //     url: BASE_URL + "/api/panel-create-holiday-list",
+  //     method: "POST",
+  //     data,
+  //     headers: {
+  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //     },
+  //   }).then((res) => {
+  //     if (res.data.code == 200) {
+  //       toast.success(res.data.msg);
+  //       setCreateDialogOpen(false);
+  //       fetchHolidayData();
+  //       setHoliday({
+  //         holiday_date: "",
+  //         holiday_for: "",
+  //       });
+  //     } else if (res.data.code == 400) {
+  //       toast.error(res.data.msg);
+  //     }
+  //     setHoliday({
+  //       holiday_date: "",
+  //       holiday_for: "",
+  //     });
+  //   });
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const form = document.getElementById("addIndiv");
     if (!form.checkValidity()) {
-      toast.error("Fill all required");
+      toast.error("Fill all required fields");
       setIsButtonDisabled(false);
-
       return;
     }
+
     const data = {
       holiday_date: holiday.holiday_date,
       holiday_for: holiday.holiday_for,
     };
 
     setIsButtonDisabled(true);
-    axios({
-      url: BASE_URL + "/api/panel-create-holiday-list",
-      method: "POST",
-      data,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }).then((res) => {
-      if (res.data.code == 200) {
-        toast.success(res.data.msg);
+
+    try {
+      const response = await createHoliday(data);
+
+      if (response.code === 200) {
+        toast.success(response.msg);
         setCreateDialogOpen(false);
-        fetchHolidayData();
-        setHoliday({
-          holiday_date: "",
-          holiday_for: "",
-        });
-      } else if (res.data.code == 400) {
-        toast.error(res.data.msg);
+        const updatedHolidays = await fetchHolidays(selectedYear);
+        setHolidayData(updatedHolidays.holidayList);
+      } else {
+        toast.error(response.msg);
       }
+    } catch (error) {
+      toast.error("Failed to create holiday");
+    } finally {
       setHoliday({
         holiday_date: "",
         holiday_for: "",
       });
-    });
+      setIsButtonDisabled(false);
+    }
   };
-
   const FormLabel = ({ children, required }) => (
     <label className="block text-sm font-semibold text-black mb-1 ">
       {children}

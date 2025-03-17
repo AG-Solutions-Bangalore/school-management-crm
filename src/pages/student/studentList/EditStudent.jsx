@@ -11,6 +11,10 @@ import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import {
+  StudentById,
+  UpdateStudentByid,
+} from "../../../components/common/UseApi";
 const status = [
   {
     value: "Active",
@@ -54,42 +58,40 @@ const EditStudent = () => {
 
   const fetchTeacherDataByid = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-by-id/${decryptedId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data && response.data.student) {
+      // const token = localStorage.getItem("token");
+      // const response = await axios.get(
+      //   `${BASE_URL}/api/panel-fetch-student-by-id/${decryptedId}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // );
+
+      const response = await StudentById(decryptedId);
+      if (response && response.student) {
         setStudent({
-          student_stats_no: response.data.student.student_stats_no || "",
-          student_dob: response.data.student.student_dob || "",
-          student_adhar_no: response.data.student.student_adhar_no || "",
-          student_primary_no: response.data.student.student_primary_no || "",
-          student_father_name: response.data.student.student_father_name || "",
-          student_father_mobile:
-            response.data.student.student_father_mobile || "",
-          student_father_pan_no:
-            response.data.student.student_father_pan_no || "",
+          student_stats_no: response.student.student_stats_no || "",
+          student_dob: response.student.student_dob || "",
+          student_adhar_no: response.student.student_adhar_no || "",
+          student_primary_no: response.student.student_primary_no || "",
+          student_father_name: response.student.student_father_name || "",
+          student_father_mobile: response.student.student_father_mobile || "",
+          student_father_pan_no: response.student.student_father_pan_no || "",
           student_father_adhar_no:
-            response.data.student.student_father_adhar_no || "",
-          student_mother_name: response.data.student.student_mother_name || "",
-          student_mother_mobile:
-            response.data.student.student_mother_mobile || "",
-          student_mother_pan_no:
-            response.data.student.student_mother_pan_no || "",
+            response.student.student_father_adhar_no || "",
+          student_mother_name: response.student.student_mother_name || "",
+          student_mother_mobile: response.student.student_mother_mobile || "",
+          student_mother_pan_no: response.student.student_mother_pan_no || "",
           student_mother_adhar_no:
-            response.data.student.student_mother_adhar_no || "",
-          student_category: response.data.student.student_category || "",
-          student_caste: response.data.student.student_caste || "",
-          student_cc_no: response.data.student.student_cc_no || "",
-          student_address: response.data.student.student_address || "",
-          student_status: response.data.student.student_status || "",
-          student_photo: response.data.student.student_photo || null, // Ensuring it's null if not provided
-          student_adhar_copy: response.data.student.student_adhar_copy || null, // Ensuring it's null if not provided
+            response.student.student_mother_adhar_no || "",
+          student_category: response.student.student_category || "",
+          student_caste: response.student.student_caste || "",
+          student_cc_no: response.student.student_cc_no || "",
+          student_address: response.student.student_address || "",
+          student_status: response.student.student_status || "",
+          student_photo: response.student.student_photo || null, // Ensuring it's null if not provided
+          student_adhar_copy: response.student.student_adhar_copy || null, // Ensuring it's null if not provided
         });
       }
     } catch (error) {
@@ -211,22 +213,23 @@ const EditStudent = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-update-student/${decryptedId}?_method=PUT`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      // const response = await axios.post(
+      //   `${BASE_URL}/api/panel-update-student/${decryptedId}?_method=PUT`,
+      //   formData,
+      //   {
+      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      //   }
+      // );
+      //   formData,
+      const response = await UpdateStudentByid(decryptedId, formData);
+      if (response.code === 200) {
+        toast.success(response.msg);
         navigate("/student-list");
       } else {
-        toast.error(response.data.msg);
+        toast.error(response.msg);
       }
     } catch (error) {
-      toast.error("Error creating teacher record");
+      toast.error("Error creating student record");
     } finally {
       setIsButtonDisabled(false);
     }

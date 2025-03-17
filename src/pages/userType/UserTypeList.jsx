@@ -5,6 +5,7 @@ import axios from "axios";
 import BASE_URL from "../../base/BaseUrl";
 import { Edit, ChevronDown, ChevronUp } from "lucide-react";
 import LoaderComponent from "../../components/common/LoaderComponent";
+import { fetchUserType } from "../../components/common/UseApi";
 
 const UserTypeList = () => {
   const [userTypeData, setUserTypeData] = useState([]);
@@ -16,12 +17,8 @@ const UserTypeList = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserTypeData(response.data?.userType || []);
+      const response = await fetchUserType();
+      setUserTypeData(response?.userType || []);
     } catch (error) {
       console.error("Error fetching userType data", error);
     } finally {
