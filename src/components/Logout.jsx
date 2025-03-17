@@ -8,13 +8,24 @@ import {
 import { IconX } from "@tabler/icons-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { BackButton, CreateButton } from "./common/ButttonConfig";
+import { LogoutApi } from "./common/UseApi";
 
 const Logout = ({ open, handleOpen }) => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const res = await LogoutApi();
+      if (res.code == "200") {
+        toast.success(res.msg);
+        localStorage.clear();
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Please try again.");
+    }
   };
 
   return (

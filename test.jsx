@@ -1,77 +1,73 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Home from "./pages/dashboard/Home";
+import { Toaster } from "sonner";
+import ForgetPassword from "./pages/auth/ForgetPassword";
 import SignIn from "./pages/auth/SignIn";
 import SIgnUp from "./pages/auth/SIgnUp";
-import Maintenance from "./pages/maintenance/Maintenance";
-import ForgetPassword from "./pages/auth/ForgetPassword";
-import Profile from "./pages/profile/Profile";
-import ChangePassword from "./pages/profile/ChangePassword";
-import { toast, Toaster } from "sonner";
-import HolidayList from "./pages/holiday/HolidayList";
+import Home from "./pages/dashboard/Home";
 import CreateHoliday from "./pages/holiday/CreateHoliday";
 import EditHoliday from "./pages/holiday/EditHoliday";
+import HolidayList from "./pages/holiday/HolidayList";
+import Maintenance from "./pages/maintenance/Maintenance";
+import ChangePassword from "./pages/profile/ChangePassword";
+import Profile from "./pages/profile/Profile";
 import SubjectList from "./pages/subject/SubjectList";
 
+import DisableRightClick from "./components/common/DisableRightClick";
+import SessionTimeoutTracker from "./components/common/SessionTimeoutTracker";
+import { LogoutApi } from "./components/common/UseApi";
 import FeesStructureList from "./pages/feesStructure/FeesStructureList";
-import StudentView from "./pages/student/studentView/StudentView";
-import EnquiryList from "./pages/webiste/Enquiry/EnquiryList";
-import ContactList from "./pages/webiste/Contact/ContactList";
-import AttendanceList from "./pages/student/attendanceList/AttendanceList";
-import CreateAttendance from "./pages/student/attendanceList/CreateAttendance";
-import EditAttendance from "./pages/student/attendanceList/EditAttendance";
-import AttendanceView from "./pages/student/attendanceView/AttendanceView";
-import StudentList from "./pages/student/studentList/StudentList";
-import CreateStudent from "./pages/student/studentList/CreateStudent";
-import EditStudent from "./pages/student/studentList/EditStudent";
-import TeacherList from "./pages/teacher/teacherList/TeacherList";
-import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
-import EditTeacher from "./pages/teacher/teacherList/EditTecher";
-import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
-import CreateTeacherAttendance from "./pages/teacher/teacherattendanceList/CreateAttendance";
-import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
-import TeacherView from "./pages/teacher/teacherList/TeacherView";
-import PendingFees from "./pages/student/pendingFees/PendingFees";
-import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
-import Timetable from "./pages/timetable/Timetable";
-import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
-import StudentReport from "./pages/report/StudentReport";
-import TeacherReport from "./pages/report/TeacherReport";
 import PendingFeesReport from "./pages/report/pendingFees.jsx/PendingFeesReport";
 import PendingFeesReportView from "./pages/report/pendingFees.jsx/PendingFeesReportView";
-import DisableRightClick from "./components/common/DisableRightClick";
-import UserPage from "./pages/userManagement/UserPage";
+import StudentReport from "./pages/report/StudentReport";
+import TeacherReport from "./pages/report/TeacherReport";
+import AttendanceList from "./pages/student/attendanceList/AttendanceList";
+import CreateAttendance from "./pages/student/attendanceList/CreateAttendance";
+import AttendanceView from "./pages/student/attendanceView/AttendanceView";
+import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
+import FeeSummary from "./pages/student/feesSummary/FeeSummary";
+import PendingFees from "./pages/student/pendingFees/PendingFees";
+import CreateStudent from "./pages/student/studentList/CreateStudent";
+import EditStudent from "./pages/student/studentList/EditStudent";
+import StudentList from "./pages/student/studentList/StudentList";
+import StudentPrint from "./pages/student/studentList/StudentPrint";
+import StudentView from "./pages/student/studentView/StudentView";
+import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
+import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
+import EditTeacher from "./pages/teacher/teacherList/EditTecher";
+import TeacherList from "./pages/teacher/teacherList/TeacherList";
+import TeacherPrint from "./pages/teacher/teacherList/TeacherPrint";
+import TeacherView from "./pages/teacher/teacherList/TeacherView";
+import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
+import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
+import Timetable from "./pages/timetable/Timetable";
+import CreateButton from "./pages/userManagement/CreateButton";
 import CreatePage from "./pages/userManagement/CreatePage";
 import ManagementDashboard from "./pages/userManagement/ManagementDashboard";
-import CreateButton from "./pages/userManagement/CreateButton";
-import FeeSummary from "./pages/student/feesSummary/FeeSummary";
-import UserTypeList from "./pages/userType/UserTypeList";
+import UserPage from "./pages/userManagement/UserPage";
 import EditUserType from "./pages/userType/EditUserType";
-import TeacherPrint from "./pages/teacher/teacherList/TeacherPrint";
-import StudentPrint from "./pages/student/studentList/StudentPrint";
-import { LogoutApi } from "./components/common/UseApi";
-import SessionTimeoutTracker from "./components/common/SessionTimeoutTracker";
+import UserTypeList from "./pages/userType/UserTypeList";
+import ContactList from "./pages/webiste/Contact/ContactList";
+import EnquiryList from "./pages/webiste/Enquiry/EnquiryList";
 const queryClient = new QueryClient();
 const App = () => {
-  const navigate = useNavigate();
   const time = localStorage.getItem("token-expire-time");
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
+    localStorage.clear();
+    navigate("/");
     try {
-      const res = await LogoutApi();
-      if (res.code == "200") {
-        toast.success(res.msg);
-        localStorage.clear();
-        navigate("/");
-      }
+      await LogoutApi();
     } catch (error) {
       console.error("Logout failed:", error);
-      toast.error("Logout failed. Please try again.");
     }
   };
+
   return (
     <>
-      <SessionTimeoutTracker expiryTime={time} onLogout={handleLogout} />
+      {/* <SessionTimeoutTracker expiryTime={time} onLogout={handleLogout} /> */}
 
       <DisableRightClick />
       <QueryClientProvider client={queryClient}>
