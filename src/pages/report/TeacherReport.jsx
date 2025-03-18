@@ -1,20 +1,18 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { FormLabel } from "@mui/material";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { ReportTeacherDownload } from "../../components/buttonIndex/ButtonComponents";
 import {
   CreateButton,
   HeaderColor,
 } from "../../components/common/ButttonConfig";
-import { ReportTeacherDownload } from "../../components/buttonIndex/ButtonComponents";
 import {
   DownloadTeacherDetails,
-  fetchTeacherUserTypes,
+  TEACHER_USER_TYPES,
   YearList,
 } from "../../components/common/UseApi";
+import Layout from "../../layout/Layout";
+import useApiToken from "../../components/common/useApiToken";
 const status = [
   {
     value: "Active",
@@ -28,7 +26,7 @@ const status = [
 const TeacherReport = () => {
   const [yearData, setYearData] = useState([]);
   const [teacherdesignation, setTeacherDesignation] = useState([]);
-
+  const token = useApiToken();
   const [report, setReport] = useState({
     teacher_year: "",
     teacher_status: "",
@@ -45,8 +43,7 @@ const TeacherReport = () => {
   useEffect(() => {
     const fetchYearData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await YearList();
+        const response = await YearList(token);
         setYearData(response?.year);
       } catch (error) {
         console.error("Error fetching holiday List data", error);
@@ -54,8 +51,7 @@ const TeacherReport = () => {
     };
     const fetchTeacherData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetchTeacherUserTypes();
+        const response = await TEACHER_USER_TYPES(token);
         setTeacherDesignation(response.userType);
       } catch (error) {
         console.error("Error fetching teacher data", error);

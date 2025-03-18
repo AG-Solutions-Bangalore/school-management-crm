@@ -1,17 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
-import { IconUser, IconSchool } from "@tabler/icons-react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import Layout from "../../../layout/Layout";
-import BASE_URL from "../../../base/BaseUrl";
 import { Card, CardBody } from "@material-tailwind/react";
-import { ContextPanel } from "../../../context/ContextPanel";
-import TeacherDetailsView from "./TeacherDetailsView";
+import { IconArrowBack, IconSchool, IconUser } from "@tabler/icons-react";
 import { Phone } from "lucide-react";
-import { IconArrowBack } from "@tabler/icons-react";
-import TeacherSubList from "./TeacherSubList";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { TeaacherListView } from "../../../components/common/UseApi";
+import { TEACHER_VIEW_BY_ID } from "../../../components/common/UseApi";
+import { ContextPanel } from "../../../context/ContextPanel";
+import Layout from "../../../layout/Layout";
+import TeacherDetailsView from "./TeacherDetailsView";
+import TeacherSubList from "./TeacherSubList";
+import useApiToken from "../../../components/common/useApiToken";
 
 const TeacherView = () => {
   const { id } = useParams();
@@ -21,10 +19,10 @@ const TeacherView = () => {
   const [loading, setLoading] = useState(false);
   const { selectedYear } = useContext(ContextPanel);
   const navigate = useNavigate();
-
+  const token = useApiToken();
   const fetchStudentData = async () => {
     setLoading(true);
-    const response = await TeaacherListView(selectedYear, decryptedId);
+    const response = await TEACHER_VIEW_BY_ID(selectedYear, decryptedId, token);
 
     setTeacherData(response);
 

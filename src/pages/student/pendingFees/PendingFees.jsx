@@ -1,20 +1,17 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../../context/ContextPanel";
-import BASE_URL from "../../../base/BaseUrl";
-import axios from "axios";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { PendingFeesDialog } from "./PendingFeesDialog";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { AddFees } from "./AddFees";
-import { CreateButton } from "../../../components/common/ButttonConfig";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   StudentFeesCreate,
   StudentFeesEdit,
 } from "../../../components/buttonIndex/ButtonComponents";
-import { StudentPendingClassFees } from "../../../components/common/UseApi";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import { STUDENT_PENDING_CLASS_FEES } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import { ContextPanel } from "../../../context/ContextPanel";
+import Layout from "../../../layout/Layout";
+import { AddFees } from "./AddFees";
+import { PendingFeesDialog } from "./PendingFeesDialog";
 
 const PendingFees = () => {
   const [pendingFeesData, setPendingFeesData] = useState(null);
@@ -22,14 +19,12 @@ const PendingFees = () => {
   const { selectedYear } = useContext(ContextPanel);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-
   const [isFeesDialogOpen, setIsFeesDialogOpen] = useState(false);
-
+  const token = useApiToken();
   const fetchPendingFeesData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await StudentPendingClassFees(selectedYear);
+      const response = await STUDENT_PENDING_CLASS_FEES(selectedYear, token);
       setPendingFeesData(response?.student);
     } catch (error) {
       console.error("Error fetching pending fees List data", error);

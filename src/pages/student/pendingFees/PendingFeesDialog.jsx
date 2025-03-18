@@ -1,25 +1,23 @@
-import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
-  Slide,
+  DialogContent,
+  DialogTitle,
+  Slide
 } from "@mui/material";
-import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ContextPanel } from "../../../context/ContextPanel";
-import BASE_URL from "../../../base/BaseUrl";
-import { getTodayDate } from "../../../utils/currentDate";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
 import {
-  CreateStudentPendingClassFees,
-  PaymentType,
+  CREATE_STUDENT_PENDING_CLASS_FEES,
+  PAYMENT_TYPE
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import { ContextPanel } from "../../../context/ContextPanel";
+import { getTodayDate } from "../../../utils/currentDate";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -43,6 +41,7 @@ export const PendingFeesDialog = ({
   const [loadingSumbit, setLoadingSumbit] = useState(false);
   const [paymentTypes, setPaymentTypes] = useState([]);
   const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
   const [formData, setFormData] = useState({
     studentFees_year: selectedYear || "",
     studentFees_admission_no: studentData?.student_admission_no || "",
@@ -72,8 +71,7 @@ export const PendingFeesDialog = ({
   const fetchData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const paymentTypeResponse = await PaymentType();
+      const paymentTypeResponse = await PAYMENT_TYPE(token);
 
       setPaymentTypes(paymentTypeResponse?.paymentType || []);
     } catch (error) {
@@ -106,7 +104,10 @@ export const PendingFeesDialog = ({
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
 
-      const response = await CreateStudentPendingClassFees(formattedData);
+      const response = await CREATE_STUDENT_PENDING_CLASS_FEES(
+        formattedData,
+        token
+      );
 
       if (response.code === 200) {
         toast.success(response.msg);

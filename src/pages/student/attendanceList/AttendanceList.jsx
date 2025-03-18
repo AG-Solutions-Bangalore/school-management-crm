@@ -1,39 +1,29 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
+import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
+import { IconPlus, IconX } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  FormLabel,
-  IconButton,
-  Slide,
-} from "@mui/material";
-import { IconX } from "@tabler/icons-react";
+import Layout from "../../../layout/Layout";
 
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment";
 import { toast } from "sonner";
-import { ContextPanel } from "../../../context/ContextPanel";
-import { Trash } from "lucide-react";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import {
-  BackButton,
-  CreateButton,
-} from "../../../components/common/ButttonConfig";
 import {
   StudentAttendanceListCreate,
   StudentAttendanceListDelete,
 } from "../../../components/buttonIndex/ButtonComponents";
 import {
-  DeleteStudentAttendanceLisyById,
-  StudentAttendanceLisyById,
-  StudentAttendanceLisyByYear,
-  UpdateStudentAttendanceLisyById,
+  BackButton,
+  CreateButton,
+} from "../../../components/common/ButttonConfig";
+import LoaderComponent from "../../../components/common/LoaderComponent";
+import {
+  DELETE_STUDENTT_ATTENDANCE_BY_ID,
+  STUDENT_ATTENDANCE_LIST_BY_YEAR,
+  STUDENTATTENDANCE_BY_ID,
+  UPDATE_STUDENT_ATTENDANCE_BY_ID,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import { ContextPanel } from "../../../context/ContextPanel";
 
 const AttendanceList = () => {
   const [studentAttendanceData, setAttendanceData] = useState(null);
@@ -47,12 +37,14 @@ const AttendanceList = () => {
   });
 
   const navigate = useNavigate();
-
+  const token = useApiToken();
   const fetchStudentData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await StudentAttendanceLisyByYear(selectedYear);
+      const response = await STUDENT_ATTENDANCE_LIST_BY_YEAR(
+        selectedYear,
+        token
+      );
       setAttendanceData(response?.studentClassAttendance);
     } catch (error) {
       console.error("Error fetching student List data", error);
@@ -69,8 +61,7 @@ const AttendanceList = () => {
       if (!attendanceid) return;
 
       try {
-        const token = localStorage.getItem("token");
-        const response = await StudentAttendanceLisyById(attendanceid);
+        const response = await STUDENTATTENDANCE_BY_ID(attendanceid, token);
 
         setAttendance({
           studentAttendance_date:
@@ -107,9 +98,10 @@ const AttendanceList = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await UpdateStudentAttendanceLisyById(
+      const response = await UPDATE_STUDENT_ATTENDANCE_BY_ID(
         attendanceid,
-        data
+        data,
+        token
       );
       console.log(response);
       if (response?.code === 200) {
@@ -135,7 +127,10 @@ const AttendanceList = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await DeleteStudentAttendanceLisyById(attendanceid);
+      const response = await DELETE_STUDENTT_ATTENDANCE_BY_ID(
+        attendanceid,
+        token
+      );
       if (response?.code == 200) {
         toast.success(response?.msg);
         setOpenDeleteDialog(false);

@@ -1,24 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import BASE_URL from "../../../base/BaseUrl";
-import { ContextPanel } from "../../../context/ContextPanel";
-import { getTodayDate } from "../../../utils/currentDate";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
 import {
-  CreateClassandFees,
-  fetchClassList,
+  CREATE_CLASS_FEES,
+  CREATE_STUDENT_PENDING_CLASS_FEES,
+  FETCH_CLASS_LIST,
+  PAYMENT_TYPE,
+  YearList,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import { getTodayDate } from "../../../utils/currentDate";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -40,6 +40,7 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
     studentClass_class: "",
     studentClass_van: "No",
   });
+  const token = useApiToken();
   useEffect(() => {
     if (studentData?.student?.student_admission_no) {
       setFormData((prev) => ({
@@ -51,8 +52,7 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
   const fetchClasses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetchClassList();
+      const response = await FETCH_CLASS_LIST();
       setClasses(response?.classes || []);
     } catch (error) {
       console.error("Error fetching classes data", error);
@@ -79,8 +79,7 @@ export const AddClassDialog = ({ open, handleOpen, studentData }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await CreateClassandFees(formData);
+      const response = await CREATE_CLASS_FEES(formData, token);
 
       if (response.code === 200) {
         toast.success(response.msg);
@@ -184,7 +183,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
   const [loading, setLoading] = useState(false);
   const [years, setYears] = useState([]);
   const [paymentTypes, setPaymentTypes] = useState([]);
-  const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
   const [formData, setFormData] = useState({
     studentFees_year: "",
     studentFees_admission_no: "",
@@ -217,19 +216,14 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const [yearResponse, paymentTypeResponse] = await Promise.all([
-        axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        YearList(token),
+        PAYMENT_TYPE(token),
       ]);
 
-      setYears(yearResponse.data?.year || []);
+      setYears(yearResponse?.year || []);
 
-      setPaymentTypes(paymentTypeResponse.data?.paymentType || []);
+      setPaymentTypes(paymentTypeResponse?.paymentType || []);
     } catch (error) {
       console.error("Error fetching data", error);
       toast.error("Failed to fetch required data");
@@ -255,23 +249,17 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
-      const response = await axios.post(
-        `${BASE_URL}/api/panel-create-student-class-fees`,
+      const response = await CREATE_STUDENT_PENDING_CLASS_FEES(
         formattedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        token
       );
 
-      if (response.data.code === 200) {
-        toast.success(response.data.msg);
+      if (response?.code === 200) {
+        toast.success(response?.msg);
 
         handleOpen();
         setFormData({
@@ -284,7 +272,7 @@ export const AddFeesDialog = ({ open, handleOpen, studentData }) => {
           studentFees_paid_date: "",
         });
       } else {
-        toast.error(response.data.msg);
+        toast.error(response?.msg);
       }
     } catch (error) {
       console.error("Error creating student fees", error);

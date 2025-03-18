@@ -1,22 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
-import { Loader2, School, Calculator, Book } from "lucide-react";
-import BASE_URL from "../../base/BaseUrl";
-import Layout from "../../layout/Layout";
-import { ContextPanel } from "../../context/ContextPanel";
-import LoaderComponent from "../../components/common/LoaderComponent";
+import { Book, Calculator } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { CreateButton } from "../../components/common/ButttonConfig";
-import { fetchFeesStructure } from "../../components/common/UseApi";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import { FEES_STUCTURE } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import Layout from "../../layout/Layout";
 
 const FeesStructureList = () => {
   const [feesStructureData, setFeesStructureData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("basic");
-  const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
 
   const fetchFeesStructureData = async () => {
     setLoading(true);
-    const fees = await fetchFeesStructure();
+    const fees = await FEES_STUCTURE(token);
     setFeesStructureData(fees.feeStructure || []);
     setLoading(false);
   };

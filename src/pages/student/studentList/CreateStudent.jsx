@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
 import {
-  CreateStudentList,
-  fetchClassList,
-  fetchSubjectList,
-  StudentAdmissionDate,
+  CREATE_STUDENT_LIST,
+  FETCH_CLASS_LIST,
+  FETCH_SUBJECT_LIST,
+  STUDENT_ADMISSION_NO,
   YearList,
 } from "../../../components/common/UseApi";
+import Layout from "../../../layout/Layout";
+import useApiToken from "../../../components/common/useApiToken";
 const Gender = [
   {
     value: "Male",
@@ -69,11 +68,12 @@ const CreateStudent = () => {
     student_photo: null,
     student_adhar_copy: null,
   });
+  const token = useApiToken();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const fetchYearData = async () => {
     try {
-      const response = await YearList();
+      const response = await YearList(token);
       setYear(response.year);
     } catch (error) {
       console.error("Error fetching teacher data", error);
@@ -81,9 +81,8 @@ const CreateStudent = () => {
   };
   const fetchAdmissionData = async () => {
     try {
-      const token = localStorage.getItem("token");
       const data = student.student_year;
-      const response = await StudentAdmissionDate(data);
+      const response = await STUDENT_ADMISSION_NO(data, token);
       setAdmission(response.admissionNo);
     } catch (error) {
       console.error("Error fetching teacher data", error);
@@ -92,7 +91,7 @@ const CreateStudent = () => {
 
   const fetchClassData = async () => {
     try {
-      const response = await fetchClassList();
+      const response = await FETCH_CLASS_LIST(token);
       setClassList(response.classes);
     } catch (error) {
       console.error("Error fetching teacher data", error);
@@ -100,7 +99,7 @@ const CreateStudent = () => {
   };
   const fetchSubjectData = async () => {
     try {
-      const response = await fetchSubjectList();
+      const response = await FETCH_SUBJECT_LIST();
       setSubject(response.subject);
     } catch (error) {
       console.error("Error fetching teacher data", error);
@@ -235,14 +234,7 @@ const CreateStudent = () => {
 
     setIsButtonDisabled(true);
     try {
-      // const response = await axios.post(
-      //   `${BASE_URL}/api/panel-create-student`,
-      //   formData,
-      //   {
-      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      //   }
-      // );
-      const response = await CreateStudentList(formData);
+      const response = await CREATE_STUDENT_LIST(formData, token);
 
       if (response.code === 200) {
         toast.success(response.msg);

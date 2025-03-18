@@ -1,20 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import React, { useEffect, useMemo, useState } from "react";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import { fetchWebisteContract } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
+import { FETCH_WEBSITE_CONTRACT } from "../../../components/common/UseApi";
 
 const ContactList = () => {
   const [contactData, setContactData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const token = useApiToken();
 
   const fetchContactData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetchWebisteContract();
+      const response = await FETCH_WEBSITE_CONTRACT(token);
       setContactData(response?.contact);
     } catch (error) {
       console.error("Error fetching contact List data", error);

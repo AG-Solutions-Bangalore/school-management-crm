@@ -1,33 +1,33 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
-import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
-import moment from "moment/moment";
-import { toast } from "sonner";
 import { Eye, Printer } from "lucide-react";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { CreateButton } from "../../../components/common/ButttonConfig";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import moment from "moment/moment";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import {
   TeacherTeacherListCreate,
   TeacherTeacherListEdit,
   TeacherTeacherListView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
-  fetchTeacherList,
-  updateTeacherStatus,
+  TEACHER_LIST,
+  UPDATE_TEACHER_STATUS,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
+import { IconEdit } from "@tabler/icons-react";
 const TeacherList = () => {
   const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const token = useApiToken();
 
   const fetchTeacherData = async () => {
     setLoading(true);
-    const teachers = await fetchTeacherList();
+    const teachers = await TEACHER_LIST(token);
 
     setTeacherData(teachers?.teacher);
 
@@ -39,13 +39,13 @@ const TeacherList = () => {
   }, []);
   const toggleStatus = async (id) => {
     try {
-      const response = await updateTeacherStatus(id);
+      const response = await UPDATE_TEACHER_STATUS(id, token);
       console.log(response);
       if (response?.code === 200) {
         toast.success(response.msg);
 
         // Fetch updated teacher list
-        const teachers = await fetchTeacherList();
+        const teachers = await TEACHER_LIST(token);
         setTeacherData(teachers?.teacher);
       } else {
         toast.error(response?.msg || "Failed to update status");
@@ -155,19 +155,15 @@ const TeacherList = () => {
                   );
                 }}
                 className="flex items-center space-x-2"
-             />
+              />
               <div
                 onClick={() => {
-
-                  navigate(
-                    `/teacher-print/${id
-                    }`
-                  );
+                  navigate(`/teacher-print/${id}`);
                 }}
                 className="flex items-center space-x-2"
                 title="View"
               >
-               <Printer className="h-4 w-4 text-indigo-600 cursor-pointer" />
+                <Printer className="h-4 w-4 text-indigo-600 cursor-pointer" />
               </div>
               <TeacherTeacherListView
                 onClick={() => {
@@ -181,6 +177,22 @@ const TeacherList = () => {
                 }}
                 className="flex items-center space-x-2"
               />
+
+              {/* <div
+                onClick={() => {
+                  const encryptedId = encryptId(id);
+
+                  navigate(
+                    `/teacher-list/viewTeacher/${encodeURIComponent(
+                      encryptedId
+                    )}`
+                  );
+                }}
+                className="flex items-center space-x-2"
+                title="Edit"
+              >
+                <Eye className="h-5 w-5 text-blue-500 cursor-pointer" />
+              </div> */}
             </div>
           );
         },

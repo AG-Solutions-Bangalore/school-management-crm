@@ -7,6 +7,12 @@ import { Save, ArrowLeft } from "lucide-react";
 import BASE_URL from "../../base/BaseUrl";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { CreateButton } from "../../components/common/ButttonConfig";
+import {
+  FetchUserTypeDataById,
+  UpdateUserTypeData,
+} from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import { useSelector } from "react-redux";
 
 const EditUserType = () => {
   const { id } = useParams();
@@ -16,11 +22,14 @@ const EditUserType = () => {
   const [userData, setUserData] = useState(null);
   const [selectedButtons, setSelectedButtons] = useState([]);
   const [selectedPages, setSelectedPages] = useState([]);
+  const token = useApiToken();
 
-  const buttonControl = JSON.parse(
-    localStorage.getItem("buttonControl") || "[]"
+  const buttonControl = useSelector((state) =>
+    JSON.parse(state.permissions.buttonPermissions)
   );
-  const pageControl = JSON.parse(localStorage.getItem("pageControl") || "[]");
+  const pageControl = useSelector((state) =>
+    JSON.parse(state.permissions.pagePermissions)
+  );
 
   const buttonOptions = buttonControl.map((btn) => ({
     value: btn.button,
@@ -54,18 +63,12 @@ const EditUserType = () => {
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-usertype-by-id/${id}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const response = await FetchUserTypeDataById(id, token);
 
-        setUserData(response.data.userType);
-        if (response.data.userType.default_button_role) {
+        setUserData(response?.userType);
+        if (response?.userType.default_button_role) {
           const selectedButtonValues =
-            response.data.userType.default_button_role.split(",");
+            response?.userType.default_button_role.split(",");
           setSelectedButtons(
             buttonOptions.filter((opt) =>
               selectedButtonValues.includes(opt.value)
@@ -73,9 +76,9 @@ const EditUserType = () => {
           );
         }
 
-        if (response.data.userType.default_page_role) {
+        if (response?.userType.default_page_role) {
           const selectedPageValues =
-            response.data.userType.default_page_role.split(",");
+            response?.userType.default_page_role.split(",");
           setSelectedPages(
             pageOptions.filter((opt) => selectedPageValues.includes(opt.value))
           );
@@ -94,19 +97,12 @@ const EditUserType = () => {
     e.preventDefault();
     try {
       setSaving(true);
-      const token = localStorage.getItem("token");
       const payload = {
         default_button_role: selectedButtons.map((btn) => btn.value).join(","),
         default_page_role: selectedPages.map((page) => page.value).join(","),
       };
 
-      await axios.put(`${BASE_URL}/api/panel-update-usertype/${id}`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
+      const res = await UpdateUserTypeData(id, payload, token);
       navigate("/user-type");
     } catch (error) {
       console.error("Error updating user type:", error);
@@ -190,7 +186,11 @@ const EditUserType = () => {
 
             {/* Submit Button */}
             <div className="flex justify-end">
-              <button type="submit" disabled={saving} className={`${CreateButton} w-40`}>
+              <button
+                type="submit"
+                disabled={saving}
+                className={`${CreateButton} w-40`}
+              >
                 {saving ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                 ) : (

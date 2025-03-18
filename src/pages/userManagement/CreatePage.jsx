@@ -13,6 +13,8 @@ import {
   HeaderColor,
 } from "../../components/common/ButttonConfig";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import useApiToken from "../../components/common/useApiToken";
 
 const CreatePage = () => {
   const [selectedPage, setSelectedPage] = useState("");
@@ -22,6 +24,8 @@ const CreatePage = () => {
   const [status, setStatus] = useState("Active");
   const [availablePages, setAvailablePages] = useState([]);
   const navigate = useNavigate();
+  const token = useApiToken();
+  const Pagecontrol = useSelector((state) => state.permissions.pagePermissions);
   const { fetchPagePermission } = useContext(ContextPanel);
   const flattenMenuItems = (items) => {
     let flattened = [];
@@ -40,9 +44,7 @@ const CreatePage = () => {
   };
 
   useEffect(() => {
-    const existingControls = JSON.parse(
-      localStorage.getItem("pageControl") || "[]"
-    );
+    const existingControls = JSON.parse(Pagecontrol || "[]");
     const allFlattenedPages = flattenMenuItems(menuItems);
 
     const filteredPages = allFlattenedPages.filter((menuItem) => {
@@ -65,9 +67,7 @@ const CreatePage = () => {
     setSelectedPage(page);
 
     if (page === "All") {
-      const existingControls = JSON.parse(
-        localStorage.getItem("pageControl") || "[]"
-      );
+      const existingControls = JSON.parse(Pagecontrol || "[]");
       const allFlattenedPages = flattenMenuItems(menuItems);
 
       const filteredPages = allFlattenedPages.filter((menuItem) => {
@@ -91,7 +91,6 @@ const CreatePage = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
-      const token = localStorage.getItem("token");
       console.log("data sent: ", data);
 
       const response = await fetch(

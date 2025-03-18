@@ -1,195 +1,276 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+// import React, { useContext, useEffect, useRef, useState } from "react";
+// import { useReactToPrint } from "react-to-print";
+// import { TeacherTimeTablePrint } from "../../components/buttonIndex/ButtonComponents";
+// import { CreateButton } from "../../components/common/ButttonConfig";
+// import LoaderComponent from "../../components/common/LoaderComponent";
+// import { FETCH_TEACHER_TIME_TABLE } from "../../components/common/UseApi";
+// import useApiToken from "../../components/common/useApiToken";
+// import { ContextPanel } from "../../context/ContextPanel";
+// import Layout from "../../layout/Layout";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
-import ForgetPassword from "./pages/auth/ForgetPassword";
-import SignIn from "./pages/auth/SignIn";
-import SIgnUp from "./pages/auth/SIgnUp";
-import Home from "./pages/dashboard/Home";
-import CreateHoliday from "./pages/holiday/CreateHoliday";
-import EditHoliday from "./pages/holiday/EditHoliday";
-import HolidayList from "./pages/holiday/HolidayList";
-import Maintenance from "./pages/maintenance/Maintenance";
-import ChangePassword from "./pages/profile/ChangePassword";
-import Profile from "./pages/profile/Profile";
-import SubjectList from "./pages/subject/SubjectList";
+// const Timetable = () => {
+//   const containerRef = useRef();
+//   const [timetableData, setTimetableData] = useState({
+//     teacher: [],
+//     teacherAssign: [],
+//     periods: [],
+//   });
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [activeTeacher, setActiveTeacher] = useState(null);
+//   const { selectedYear } = useContext(ContextPanel);
+//   const token = useApiToken();
+//   const days = [
+//     "Monday",
+//     "Tuesday",
+//     "Wednesday",
+//     "Thursday",
+//     "Friday",
+//     "Saturday",
+//   ];
 
-import DisableRightClick from "./components/common/DisableRightClick";
-import SessionTimeoutTracker from "./components/common/SessionTimeoutTracker";
-import { LogoutApi } from "./components/common/UseApi";
-import FeesStructureList from "./pages/feesStructure/FeesStructureList";
-import PendingFeesReport from "./pages/report/pendingFees.jsx/PendingFeesReport";
-import PendingFeesReportView from "./pages/report/pendingFees.jsx/PendingFeesReportView";
-import StudentReport from "./pages/report/StudentReport";
-import TeacherReport from "./pages/report/TeacherReport";
-import AttendanceList from "./pages/student/attendanceList/AttendanceList";
-import CreateAttendance from "./pages/student/attendanceList/CreateAttendance";
-import AttendanceView from "./pages/student/attendanceView/AttendanceView";
-import CurrentStudentList from "./pages/student/currentStudent/CurrentStudentList";
-import FeeSummary from "./pages/student/feesSummary/FeeSummary";
-import PendingFees from "./pages/student/pendingFees/PendingFees";
-import CreateStudent from "./pages/student/studentList/CreateStudent";
-import EditStudent from "./pages/student/studentList/EditStudent";
-import StudentList from "./pages/student/studentList/StudentList";
-import StudentPrint from "./pages/student/studentList/StudentPrint";
-import StudentView from "./pages/student/studentView/StudentView";
-import TeacherAttendanceList from "./pages/teacher/teacherattendanceList/TeacherAttendanceList";
-import CreateTeacher from "./pages/teacher/teacherList/CreateTeacher";
-import EditTeacher from "./pages/teacher/teacherList/EditTecher";
-import TeacherList from "./pages/teacher/teacherList/TeacherList";
-import TeacherPrint from "./pages/teacher/teacherList/TeacherPrint";
-import TeacherView from "./pages/teacher/teacherList/TeacherView";
-import TeacherViewAttendance from "./pages/teacher/teacherViewAttendance/TeacherViewAttendance";
-import TeacherTimeline from "./pages/teacherTimeline/TeacherTimeline";
-import Timetable from "./pages/timetable/Timetable";
-import CreateButton from "./pages/userManagement/CreateButton";
-import CreatePage from "./pages/userManagement/CreatePage";
-import ManagementDashboard from "./pages/userManagement/ManagementDashboard";
-import UserPage from "./pages/userManagement/UserPage";
-import EditUserType from "./pages/userType/EditUserType";
-import UserTypeList from "./pages/userType/UserTypeList";
-import ContactList from "./pages/webiste/Contact/ContactList";
-import EnquiryList from "./pages/webiste/Enquiry/EnquiryList";
-const queryClient = new QueryClient();
-const App = () => {
-  const time = localStorage.getItem("token-expire-time");
-  const navigate = useNavigate();
+//   const cellWidth = "80px";
+//   const cellHeight = "40px";
+//   const dayColumnWidth = "100px";
 
-  const handleLogout = async () => {
-    localStorage.clear();
-    navigate("/");
-    try {
-      await LogoutApi();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+//   const handlePrintPdf = useReactToPrint({
+//     content: () => containerRef.current,
+//     removeAfterPrint: true,
+//     documentTitle: "teacher_timetable",
+//     pageStyle: `
+//                 @page {
+//                 size: A4 landscape;
+//                 margin: 5mm;
 
-  return (
-    <>
-      {/* <SessionTimeoutTracker expiryTime={time} onLogout={handleLogout} /> */}
+//               }
+//               @media print {
+//                 body {
+//                   border: 0px solid #000;
+//                       font-size: 10px;
+//                   margin: 0mm;
+//                   padding: 0mm;
+//                 }
+//                    table {
+//                    font-size: 11px;
+//                  }
+//                 .print-hide {
+//                   display: none;
+//                 }
 
-      <DisableRightClick />
-      <QueryClientProvider client={queryClient}>
-        <Toaster richColors position="top-right" />
-        <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="/register" element={<SIgnUp />} />
-          <Route path="/forget-password" element={<ForgetPassword />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/maintenance" element={<Maintenance />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          {/* Holiday  */}
-          <Route path="/holiday-list" element={<HolidayList />} />
-          <Route
-            path="/holiday-list/createHoliday"
-            element={<CreateHoliday />}
-          />
-          <Route
-            path="/holiday-list/editHoliday/:id"
-            element={<EditHoliday />}
-          />
-          {/* Subject  */}
-          <Route path="/subject-list" element={<SubjectList />} />
-          {/* Teacher  */}
-          <Route path="/teacher-list" element={<TeacherList />} />
-          <Route path="/teacher-print/:id" element={<TeacherPrint />} />
-          <Route path="/student-print/:id" element={<StudentPrint />} />
-          <Route
-            path="/teacher-list/viewTeacher/:id"
-            element={<TeacherView />}
-          />
-          <Route
-            path="/teacher-list/createTeacher"
-            element={<CreateTeacher />}
-          />
-          <Route
-            path="/teacher-list/editTeacher/:id"
-            element={<EditTeacher />}
-          />
-          {/* //Teacher Attendance */}
-          <Route
-            path="/teacher-attendance-list"
-            element={<TeacherAttendanceList />}
-          />
-          {/* //Teacher Attendance Viwq */}
-          <Route
-            path="/teacher-viewAttendance"
-            element={<TeacherViewAttendance />}
-          />
+//               }
+//               `,
+//   });
 
-          {/* Student  */}
-          <Route path="/student-list" element={<StudentList />} />
-          <Route
-            path="/current-student-list"
-            element={<CurrentStudentList />}
-          />
-          <Route path="/pending-fees" element={<PendingFees />} />
-          <Route path="/fees-summary" element={<FeeSummary />} />
-          <Route
-            path="/student-list/createStudent"
-            element={<CreateStudent />}
-          />
-          <Route
-            path="/student-list/editStudent/:id"
-            element={<EditStudent />}
-          />
-          <Route
-            path="/student-list/viewStudent/:id"
-            element={<StudentView />}
-          />
-          {/* //Attendance */}
-          <Route path="/attendance-list" element={<AttendanceList />} />
-          <Route
-            path="/attendance-list/createAttendance"
-            element={<CreateAttendance />}
-          />
+//   useEffect(() => {
+//     const fetchTimetable = async () => {
+//       try {
+//         setLoading(true);
+//         const response = await FETCH_TEACHER_TIME_TABLE(selectedYear, token);
 
-          {/* //attendanceview */}
-          <Route
-            path="/attendance-list/viewAttendance"
-            element={<AttendanceView />}
-          />
-          {/* Fees Structure  */}
-          <Route path="/feesStructure-list" element={<FeesStructureList />} />
+//         const periods = response.shool_period.map(
+//           (period) => period.school_period
+//         );
+//         const teachers = response.teacher;
 
-          {/* //Website */}
-          {/* //enqiry list */}
-          <Route path="/website-list/enquiry" element={<EnquiryList />} />
-          {/* //contactlist */}
-          <Route path="/website-list/contact" element={<ContactList />} />
+//         setTimetableData({
+//           teacher: teachers,
+//           teacherAssign: response.teacherAssign,
+//           periods,
+//         });
 
-          {/* //report */}
-          <Route path="/report-student/download" element={<StudentReport />} />
-          <Route path="/report-teacher/download" element={<TeacherReport />} />
-          <Route
-            path="/report-pending/download"
-            element={<PendingFeesReport />}
-          />
-          <Route
-            path="/report-pending/download-view"
-            element={<PendingFeesReportView />}
-          />
-          {/* time table  */}
-          <Route path="/timetable" element={<Timetable />} />
-          <Route path="/teacher-timetable" element={<TeacherTimeline />} />
+//         if (teachers.length > 0 && !activeTeacher) {
+//           setActiveTeacher(teachers[0].teacher_ref);
+//         }
+//       } catch (error) {
+//         setError("Failed to fetch timetable data");
+//         console.error("Error fetching timetable data", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
 
-          {/* user management  */}
-          <Route path="/userManagement" element={<UserPage />} />
-          <Route
-            path="/management-dashboard/:id"
-            element={<ManagementDashboard />}
-          />
-          <Route path="/page-management" element={<CreatePage />} />
-          <Route path="/button-management" element={<CreateButton />} />
+//     fetchTimetable();
+//   }, [selectedYear]);
 
-          <Route path="/user-type" element={<UserTypeList />} />
-          <Route path="/edit-user-type/:id" element={<EditUserType />} />
-        </Routes>
-      </QueryClientProvider>
-    </>
-  );
-};
+//   const getClassSubjectForTeacherDayPeriod = (teacherRef, day, period) => {
+//     const assignment = timetableData.teacherAssign.find(
+//       (item) =>
+//         item.teacher_ref === teacherRef &&
+//         item.teachersub_on === day &&
+//         item.teachersub_period === period
+//     );
 
-export default App;
+//     return assignment
+//       ? `${assignment.teachersub_class} - ${assignment.teachersub_subject}`
+//       : "";
+//   };
+
+//   const handleTeacherChange = (event) => {
+//     setActiveTeacher(event.target.value);
+//   };
+
+//   if (loading)
+//     return (
+//       <Layout>
+//         <LoaderComponent />
+//       </Layout>
+//     );
+
+//   if (error)
+//     return (
+//       <Layout>
+//         <div className="flex justify-center items-center h-64">
+//           <div className="text-xl text-red-600">{error}</div>
+//         </div>
+//       </Layout>
+//     );
+
+//   const activeTeacherName = timetableData.teacher.find(
+//     (t) => t.teacher_ref === activeTeacher
+//   )
+//     ? `${
+//         timetableData.teacher.find((t) => t.teacher_ref === activeTeacher)
+//           .teacher_title
+//       } ${
+//         timetableData.teacher.find((t) => t.teacher_ref === activeTeacher)
+//           .teacher_name
+//       }`
+//     : "";
+
+//   const totalWidth =
+//     parseInt(dayColumnWidth) +
+//     timetableData.periods.length * parseInt(cellWidth);
+
+//   const inputClassSelect =
+//     "w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 border-blue-500";
+
+//   return (
+//     <Layout>
+//       <div className="p-4 w-full bg-white rounded-lg">
+//         <div className="flex flex-col lg:flex-row items-center justify-between gap-2">
+//           <h1 className="text-xl font-bold text-left text-black">
+//             Teacher Timetable {selectedYear}
+//           </h1>
+//           <div className="flex flex-wrap gap-2">
+//             <select
+//               value={activeTeacher || ""}
+//               onChange={handleTeacherChange}
+//               className={inputClassSelect}
+//             >
+//               <option value="">Select Teacher</option>
+//               {timetableData.teacher.map((teacherObj) => (
+//                 <option
+//                   key={teacherObj.teacher_ref}
+//                   value={teacherObj.teacher_ref}
+//                 >
+//                   {teacherObj.teacher_title} {teacherObj.teacher_name}
+//                 </option>
+//               ))}
+//             </select>
+//           </div>
+//         </div>
+//         <div className="mt-4">
+//           {/* <button onClick={handlePrintPdf} className={CreateButton}>
+//             Print
+//           </button> */}
+//           <TeacherTimeTablePrint
+//             onClick={handlePrintPdf}
+//             className={CreateButton}
+//           ></TeacherTimeTablePrint>
+
+//         </div>
+//         <div ref={containerRef}>
+//           <div className="mb-6 mt-6">
+//             <h2 className="text-lg text-center font-semibold mb-2">
+//               {" "}
+//               Teacher: {activeTeacherName}
+//             </h2>
+//           </div>
+
+//           <div className="overflow-x-auto">
+//             <div style={{ minWidth: `${totalWidth}px` }}>
+//               <table
+//                 style={{
+//                   width: "100%",
+//                   borderCollapse: "collapse",
+//                   tableLayout: "fixed",
+//                   border: "1px solid black",
+//                 }}
+//               >
+//                 <thead>
+//                   <tr>
+//                     <th
+//                       rowSpan="2"
+//                       className="text-center font-semibold p-2 text-black bg-white"
+//                       style={{
+//                         width: dayColumnWidth,
+//                         border: "1px solid black",
+//                         height: cellHeight,
+//                       }}
+//                     >
+//                       Day
+//                     </th>
+//                     {timetableData.periods.map((period) => (
+//                       <th
+//                         key={period}
+//                         colSpan="1"
+//                         className="text-center font-semibold p-2 text-black bg-white"
+//                         style={{
+//                           border: "1px solid black",
+//                           height: cellHeight,
+//                           width: cellWidth,
+//                         }}
+//                       >
+//                         {period}
+//                       </th>
+//                     ))}
+//                   </tr>
+//                 </thead>
+//                 <tbody>
+//                   {days.map((day) => (
+//                     <tr key={day}>
+//                       <td
+//                         className="text-center font-medium p-2 text-black bg-white"
+//                         style={{
+//                           width: dayColumnWidth,
+//                           border: "1px solid black",
+//                           height: cellHeight,
+//                         }}
+//                       >
+//                         {day}
+//                       </td>
+//                       {timetableData.periods.map((period) => {
+//                         const classSubject = activeTeacher
+//                           ? getClassSubjectForTeacherDayPeriod(
+//                               activeTeacher,
+//                               day,
+//                               period
+//                             )
+//                           : "";
+//                         return (
+//                           <td
+//                             key={`${activeTeacher}-${day}-${period}`}
+//                             className="text-center p-1 text-sm text-black bg-white"
+//                             style={{
+//                               width: cellWidth,
+//                               border: "1px solid black",
+//                               height: cellHeight,
+//                             }}
+//                           >
+//                             {classSubject}
+//                           </td>
+//                         );
+//                       })}
+//                     </tr>
+//                   ))}
+//                 </tbody>
+//               </table>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </Layout>
+//   );
+// };
+
+// export default Timetable;

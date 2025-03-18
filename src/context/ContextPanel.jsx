@@ -1,97 +1,85 @@
 import { createContext, useEffect, useState } from "react";
-import BASE_URL from "../base/BaseUrl";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import {
   fetchPagePermissionData,
   fetchUserControlData,
   fetchUserTypeList,
   YearList,
 } from "../components/common/UseApi";
+import {
+  fetchButtonPermissionSuccess,
+  fetchFailure,
+  fetchPagePermissionSuccess,
+  fetchStart,
+  fetchUserTypeSuccess,
+  fetchYearsSuccess,
+} from "../redux/store/permissionSlice";
+import useApiToken from "../components/common/useApiToken";
 
 export const ContextPanel = createContext();
 
 const AppProvider = ({ children }) => {
-  const userTypeId = localStorage.getItem("user_type_id");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const token = localStorage.getItem("token");
-  const selectedYear = localStorage.getItem("default_year");
+  const dispatch = useDispatch();
+  const token = useApiToken();
+  const userTypeId = useSelector((state) => state.auth.user_type_id);
+  const selectedYear = useSelector((state) => state.auth.default_year);
+  const allUsers = useSelector((store) => store.auth.allUsers);
 
   const fetchPagePermission = async () => {
-    setIsLoading(true);
-    setIsError(false);
+    dispatch(fetchStart());
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetchPagePermissionData();
-      // array in local storage
-      localStorage.setItem(
-        "pageControl",
-        JSON.stringify(response?.pagePermissions)
+      const response = await fetchPagePermissionData(token);
+      dispatch(
+        fetchPagePermissionSuccess(JSON.stringify(response?.pagePermissions))
       );
     } catch (error) {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+      dispatch(fetchFailure());
     }
   };
-
+  fetchUserControlData;
   const fetchPermissions = async () => {
-    setIsLoading(true);
-    setIsError(false);
+    dispatch(fetchStart());
     try {
-      const token = localStorage.getItem("token");
-      const response = await fetchUserControlData();
+      const response = await fetchUserControlData(token);
 
-      // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem(
-        "buttonControl",
-        JSON.stringify(response?.buttonPermissions)
+      dispatch(
+        fetchButtonPermissionSuccess(JSON.stringify(response.buttonPermissions)) // Store as string
       );
     } catch (error) {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+      dispatch(fetchFailure());
     }
   };
-  const fetchUserType = async () => {
-    setIsLoading(true);
-    setIsError(false);
-    try {
-      // const token = localStorage.getItem("token");
-      // const response = await axios.get(`${BASE_URL}/api/panel-fetch-usertype`, {
-      //   headers: { Authorization: `Bearer ${token}` },
-      // });
-      const response = await fetchUserTypeList();
 
-      // Store the entire `usercontrol` array in localStorage
-      localStorage.setItem("userTypeRole", JSON.stringify(response?.userType));
+  const fetchUserType = async () => {
+    dispatch(fetchStart());
+    try {
+      const response = await fetchUserTypeList(token);
+      dispatch(fetchUserTypeSuccess(response?.userType));
     } catch (error) {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+      dispatch(fetchFailure());
     }
   };
+
   const getStaticUsers = () => {
+    dispatch(fetchStart());
     try {
-      const users = localStorage.getItem("allUsers");
+      const users = allUsers;
       return users ? JSON.parse(users) : [];
     } catch (error) {
-      console.error("Error parsing allUsers from localStorage", error);
+      dispatch(fetchFailure());
       return [];
     }
   };
 
   const fetchYears = async () => {
-    setIsLoading(true);
-    setIsError(false);
+    dispatch(fetchStart());
     try {
-      const token = localStorage.getItem("token");
-      const response = await YearList();
-      localStorage.setItem("years", JSON.stringify(response?.year));
-    } catch (err) {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+      const response = await YearList(token);
+      dispatch(
+        fetchYearsSuccess(response.year ? JSON.stringify(response.year) : "[]")
+      );
+    } catch (error) {
+      dispatch(fetchFailure());
     }
   };
 
@@ -101,8 +89,10 @@ const AppProvider = ({ children }) => {
       getStaticUsers();
       fetchPagePermission();
       fetchPermissions();
+      fetchUserType();
     }
-  }, []);
+  }, [token, dispatch]);
+
   return (
     <ContextPanel.Provider
       value={{

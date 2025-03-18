@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../base/BaseUrl";
+import useApiToken from "../../components/common/useApiToken";
 
 const CreateSubject = () => {
   const navigate = useNavigate();
@@ -15,11 +16,10 @@ const CreateSubject = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [classes, setClasses] = useState([]);
-
+  const token = useApiToken();
   const fetchClasses = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const CreateSubject = () => {
       method: "POST",
       data,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     }).then((res) => {
       if (res.data.code == 200) {

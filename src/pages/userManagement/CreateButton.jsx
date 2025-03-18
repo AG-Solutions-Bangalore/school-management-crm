@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Plus } from "lucide-react";
 
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useQuery, useMutation } from "@tanstack/react-query";
 
-import { useNavigate } from "react-router-dom";
-import { ContextPanel } from "../../context/ContextPanel";
-import BASE_URL from "../../base/BaseUrl";
-import Layout from "../../layout/Layout";
-import ButtonComponents from "../../components/buttonIndex/ButtonComponents";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../base/BaseUrl";
+import ButtonComponents from "../../components/buttonIndex/ButtonComponents";
 import { HeaderColor } from "../../components/common/ButttonConfig";
+import useApiToken from "../../components/common/useApiToken";
+import { ContextPanel } from "../../context/ContextPanel";
+import Layout from "../../layout/Layout";
 const CreateButton = () => {
   const [selectedPage, setSelectedPage] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
@@ -21,11 +23,13 @@ const CreateButton = () => {
   const [availablePages, setAvailablePages] = useState([]);
   const { fetchPermissions } = useContext(ContextPanel);
   const navigate = useNavigate();
-  useEffect(() => {
-    const existingControls = JSON.parse(
-      localStorage.getItem("buttonControl") || "[]"
-    );
 
+  const existingControl = useSelector((state) =>
+    JSON.parse(state.permissions.buttonPermissions || "[]")
+  );
+  const token = useApiToken();
+  useEffect(() => {
+    const existingControls = existingControl;
     const existingPageButtonMap = new Map(
       existingControls.map((control) => [
         `${control.pages}-${control.button}`,
@@ -57,9 +61,7 @@ const CreateButton = () => {
     setSelectedItems([]);
 
     if (page === "All") {
-      const existingControls = JSON.parse(
-        localStorage.getItem("buttonControl") || "[]"
-      );
+      const existingControls = existingControl;
 
       const existingPageButtonMap = new Map(
         existingControls.map((control) => [
@@ -86,9 +88,7 @@ const CreateButton = () => {
   const getAvailableButtons = () => {
     if (!selectedPage || selectedPage === "All") return [];
 
-    const existingControls = JSON.parse(
-      localStorage.getItem("buttonControl") || "[]"
-    );
+    const existingControls = existingControl;
 
     const existingPageButtonMap = new Map(
       existingControls.map((control) => [
@@ -133,7 +133,6 @@ const CreateButton = () => {
 
   const createMutation = useMutation({
     mutationFn: async (data) => {
-      const token = localStorage.getItem("token");
       const response = await fetch(`${BASE_URL}/api/panel-create-usercontrol`, {
         method: "POST",
         headers: {

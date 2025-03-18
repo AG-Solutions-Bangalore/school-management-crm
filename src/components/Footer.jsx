@@ -2,30 +2,49 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Popover, Button, useTheme } from "@mui/material";
 import { toast } from "sonner";
-
+import { useDispatch, useSelector } from "react-redux";
+import { updateDefaultYear } from "../redux/store/authSlice";
 const Footer = () => {
+  const dispatch = useDispatch();
+
   const [years, setYears] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const theme = useTheme();
-  useEffect(() => {
-    const storedYears = localStorage.getItem("years");
-    if (storedYears) {
-      setYears(JSON.parse(storedYears));
-    }
+  const storedYears = useSelector((state) => state.permissions.years);
+  const defaultYear = useSelector((state) => state.auth.default_year);
 
-    const defaultYear = localStorage.getItem("default_year");
-    if (defaultYear) {
-      setSelectedYear(defaultYear);
+  useEffect(() => {
+    try {
+      if (
+        storedYears &&
+        typeof storedYears === "string" &&
+        storedYears.trim() !== "" &&
+        storedYears !== "undefined" &&
+        storedYears !== "null"
+      ) {
+        const parsedYears = JSON.parse(storedYears);
+        setYears(Array.isArray(parsedYears) ? parsedYears : []);
+      } else {
+        setYears([]);
+      }
+
+      if (defaultYear) {
+        setSelectedYear(defaultYear);
+      }
+    } catch (error) {
+      console.error("Error parsing storedYears:", error, { storedYears });
+      setYears([]);
     }
-  }, []);
+  }, [storedYears, defaultYear]);
 
   const handleYearChange = (event) => {
     setSelectedYear(event.target.value);
   };
 
   const handleSubmit = () => {
-    localStorage.setItem("default_year", selectedYear);
+    dispatch(updateDefaultYear(selectedYear));
+
     toast.success("Year has been changed Successfully");
 
     // Create Overlay (Glassmorphism Effect)
@@ -142,10 +161,7 @@ const Footer = () => {
   return (
     <footer className="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between text-gray-700 text-sm">
       <p className="text-gray-500">
-        Current Year:{" "}
-        <span className="font-medium">
-          {localStorage.getItem("default_year")}
-        </span>
+        Current Year: <span className="font-medium">{defaultYear}</span>
       </p>
       <button
         onClick={handleOpen}

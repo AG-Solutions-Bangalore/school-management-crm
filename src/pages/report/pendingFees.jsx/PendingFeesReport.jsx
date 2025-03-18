@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
 import { IconInfoCircle } from "@tabler/icons-react";
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
-import { toast } from "sonner";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  BackButton,
-  CreateButton,
-  HeaderColor,
-} from "../../../components/common/ButttonConfig";
+import { toast } from "sonner";
 import {
   ReportPendingFeesDownload,
   ReportPendingFeesView,
 } from "../../../components/buttonIndex/ButtonComponents";
 import {
-  DownloadStudentPending,
-  fetchClassList,
+  CreateButton,
+  HeaderColor,
+} from "../../../components/common/ButttonConfig";
+import {
+  DOWNLOAD_STUDNET_PENDING,
+  FETCH_CLASS_LIST,
   YearList,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 const status = [
   {
     value: "Active",
@@ -37,6 +35,7 @@ const PendingFeesReport = () => {
     student_year: "",
     student_class: "",
   });
+  const token = useApiToken();
   const onInputChange = (e) => {
     setPendingReport({
       ...pendingreport,
@@ -47,8 +46,7 @@ const PendingFeesReport = () => {
   useEffect(() => {
     const fetchYearData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await YearList();
+        const response = await YearList(token);
 
         setYearData(response?.year);
       } catch (error) {
@@ -57,8 +55,7 @@ const PendingFeesReport = () => {
     };
     const fetchClassData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetchClassList();
+        const response = await FETCH_CLASS_LIST(token);
         setClassList(response.classes);
       } catch (error) {
         console.error("Error fetching teacher data", error);
@@ -69,7 +66,7 @@ const PendingFeesReport = () => {
   }, []);
 
   const handlePendingFees = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     if (!pendingreport.student_year) {
       toast.warning("Year is Required");
@@ -82,7 +79,7 @@ const PendingFeesReport = () => {
     };
 
     try {
-      const response = await DownloadStudentPending(data); // ✅ Ensure API receives data if required
+      const response = await DOWNLOAD_STUDNET_PENDING(data, token); // ✅ Ensure API receives data if required
 
       const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
       const link = document.createElement("a");
@@ -92,12 +89,6 @@ const PendingFeesReport = () => {
       link.click();
 
       toast.success("Pending Details Downloaded Successfully");
-
-      setPendingReport({
-        // ✅ Reset correct fields related to pending fees
-        student_year: "",
-        student_class: "",
-      });
     } catch (error) {
       toast.error("Pending Details is Not Downloaded");
       console.error("Download error:", error);

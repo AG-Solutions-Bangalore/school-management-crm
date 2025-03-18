@@ -5,11 +5,8 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../../../layout/Layout";
 
-import axios from "axios";
-import { Edit } from "lucide-react";
 import moment from "moment";
 import { toast } from "sonner";
-import BASE_URL from "../../../base/BaseUrl";
 import {
   TeacherAttendanceListCreate,
   TeacherAttendanceListDelete,
@@ -17,11 +14,12 @@ import {
 import { CreateButton } from "../../../components/common/ButttonConfig";
 import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
-  DeleteTeacherAttendanceList,
-  TeaacherAttendanceList,
-  TeacherAttendanceyId,
-  UpdateTeacherAttendanceList,
+  DELETE_TEACHERATTENDANCE_LIST,
+  TEACHER_ATTENDANCE_LIST,
+  TEACHER_ATTENDANCELIST_BY_ID,
+  UPDATE_TEACHERATTENDANCE_LIST
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 import { ContextPanel } from "../../../context/ContextPanel";
 import CreateTeacherAttendance from "./CreateAttendance";
 
@@ -37,11 +35,11 @@ const TeacherAttendanceList = () => {
   const [attendace, setAttendance] = useState({
     teacherAttendance_date: "",
   });
-
+  const token = useApiToken();
   const fetchTeacherData = async () => {
     setLoading(true);
 
-    const response = await TeaacherAttendanceList(selectedYear);
+    const response = await TEACHER_ATTENDANCE_LIST(selectedYear, token);
 
     setTeacherAttendanceData(response?.teacherAttendance);
 
@@ -57,7 +55,10 @@ const TeacherAttendanceList = () => {
       if (!attendanceid) return;
 
       try {
-        const response = await TeacherAttendanceyId(attendanceid);
+        const response = await TEACHER_ATTENDANCELIST_BY_ID(
+          attendanceid,
+          token
+        );
 
         setAttendance({
           teacherAttendance_date:
@@ -94,7 +95,11 @@ const TeacherAttendanceList = () => {
 
     setIsButtonDisabled(true);
 
-    const response = await UpdateTeacherAttendanceList(attendanceid, data);
+    const response = await UPDATE_TEACHERATTENDANCE_LIST(
+      attendanceid,
+      data,
+      token
+    );
 
     if (response.code === 200) {
       toast.success(response.msg);
@@ -113,7 +118,7 @@ const TeacherAttendanceList = () => {
 
     setIsButtonDisabled(true);
 
-    const response = await DeleteTeacherAttendanceList(attendanceid);
+    const response = await DELETE_TEACHERATTENDANCE_LIST(attendanceid, token);
 
     if (response.code === 200) {
       toast.success(response.msg);

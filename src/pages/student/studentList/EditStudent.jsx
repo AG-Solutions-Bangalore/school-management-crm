@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 import {
-  StudentById,
-  UpdateStudentByid,
+  STUDENT_BY_ID,
+  UPDATE_STUDENT_BY_ID,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 const status = [
   {
     value: "Active",
@@ -28,7 +27,7 @@ const status = [
 const EditStudent = () => {
   const { id } = useParams();
   const decryptedId = decryptId(id);
-
+  const token = useApiToken();
   const navigate = useNavigate();
   const location = useLocation();
   const sourceRoute = location.state?.from || "/student-list";
@@ -58,17 +57,7 @@ const EditStudent = () => {
 
   const fetchTeacherDataByid = async () => {
     try {
-      // const token = localStorage.getItem("token");
-      // const response = await axios.get(
-      //   `${BASE_URL}/api/panel-fetch-student-by-id/${decryptedId}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
-
-      const response = await StudentById(decryptedId);
+      const response = await STUDENT_BY_ID(decryptedId, token);
       if (response && response.student) {
         setStudent({
           student_stats_no: response.student.student_stats_no || "",
@@ -213,15 +202,7 @@ const EditStudent = () => {
 
     setIsButtonDisabled(true);
     try {
-      // const response = await axios.post(
-      //   `${BASE_URL}/api/panel-update-student/${decryptedId}?_method=PUT`,
-      //   formData,
-      //   {
-      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      //   }
-      // );
-      //   formData,
-      const response = await UpdateStudentByid(decryptedId, formData);
+      const response = await UPDATE_STUDENT_BY_ID(decryptedId, formData, token);
       if (response.code === 200) {
         toast.success(response.msg);
         navigate("/student-list");

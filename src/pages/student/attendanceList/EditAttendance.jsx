@@ -12,6 +12,7 @@ const EditAttendance = () => {
   const [attendace, setAttendance] = useState({
     studentAttendance_date: "",
   });
+  const token = useApiToken();
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -24,7 +25,6 @@ const EditAttendance = () => {
 
   const fetchAttendanceDataId = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${id}`,
         {
@@ -63,7 +63,6 @@ const EditAttendance = () => {
 
       data,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     }).then((res) => {
       if (res.data.code == 200) {

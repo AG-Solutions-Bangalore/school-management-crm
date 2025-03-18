@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
-import BASE_URL from "../../../base/BaseUrl";
-import axios from "axios";
-import { toast } from "sonner";
-import Layout from "../../../layout/Layout";
-import { IconInfoCircle, IconArrowBack } from "@tabler/icons-react";
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  CircularProgress,
 } from "@mui/material";
+import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Center, Loader, Text } from "@mantine/core";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import { toast } from "sonner";
 import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
-  DownloadStudentPending,
-  ViewPendingFeesReport,
+  DOWNLOAD_STUDNET_PENDING,
+  VIEW_PENDING_FEES_REPORT,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 
 const PendingFeesReportView = () => {
   const location = useLocation();
@@ -32,15 +29,13 @@ const PendingFeesReportView = () => {
   const navigate = useNavigate();
   const [studentfess, setStudentFess] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const token = useApiToken();
   useEffect(() => {
     const fetchStudentFees = async () => {
       try {
-        const response = await ViewPendingFeesReport();
+        const response = await VIEW_PENDING_FEES_REPORT(data, token);
 
-        if (response.status === 200) {
-          setStudentFess(response.student);
-        }
+        setStudentFess(response?.student);
       } catch (error) {
         toast.error("Error fetching pending fees data");
       } finally {
@@ -54,7 +49,7 @@ const PendingFeesReportView = () => {
     e.preventDefault();
 
     try {
-      const response = await DownloadStudentPending(data); // ✅ Ensure API receives data if required
+      const response = await DOWNLOAD_STUDNET_PENDING(data, token); // ✅ Ensure API receives data if required
 
       const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
       const link = document.createElement("a");
@@ -64,12 +59,6 @@ const PendingFeesReportView = () => {
       link.click();
 
       toast.success("Pending Details Downloaded Successfully");
-
-      setPendingReport({
-        // ✅ Reset correct fields related to pending fees
-        student_year: "",
-        student_class: "",
-      });
     } catch (error) {
       toast.error("Pending Details is Not Downloaded");
       console.error("Download error:", error);

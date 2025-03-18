@@ -12,11 +12,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { ContextPanel } from "../../context/ContextPanel";
 import Layout from "../../layout/Layout";
+import { useSelector } from "react-redux";
 
 const UserPage = () => {
-  const { getStaticUsers } = useContext(ContextPanel);
-  const userTypeRoles = JSON.parse(localStorage.getItem("userTypeRole")) || [];
-
+  const userTypeRoles = useSelector((state) => state.permissions.userTypeRole);
+  const allUsers = useSelector((state) => state.auth.allUsers);
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -28,13 +28,14 @@ const UserPage = () => {
 
   const loadUsers = useCallback(async () => {
     try {
-      const loadedUsers = getStaticUsers();
+      const loadedUsers = allUsers;
+
       setUsers(loadedUsers);
       setFilteredUsers(loadedUsers);
     } catch (error) {
       console.error("Error loading users:", error);
     }
-  }, [getStaticUsers]);
+  }, [allUsers]);
 
   const applyFilters = useCallback(() => {
     let result = [...users];
@@ -115,7 +116,11 @@ const UserPage = () => {
                 </MenuItem>
               </MenuList>
             </Menu>
-            {/* <Button variant="outlined" onClick={()=>navigate('/page-management')} className="flex items-center gap-2">
+            <Button
+              variant="outlined"
+              onClick={() => navigate("/page-management")}
+              className="flex items-center gap-2"
+            >
               + Page
             </Button>
             <Button
@@ -124,7 +129,7 @@ const UserPage = () => {
               className="flex items-center gap-2"
             >
               + Button
-            </Button> */}
+            </Button>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full">
@@ -136,7 +141,7 @@ const UserPage = () => {
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                     Role
                   </th>
-              
+
                   <th className="text-left py-3 px-4 font-semibold text-sm text-gray-700">
                     Position
                   </th>
@@ -167,10 +172,12 @@ const UserPage = () => {
                             : "bg-gray-100 text-gray-800"
                         } capitalize`}
                       >
-                        {userTypeRoles.find((role) => role.user_type === user.user_type)?.user_role || "N/A"}
+                        {userTypeRoles?.find(
+                          (role) => role.user_type === user.user_type
+                        )?.user_role || "N/A"}
                       </span>
                     </td>
-              
+
                     <td className="py-3 px-4">
                       <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                         {user.user_position}

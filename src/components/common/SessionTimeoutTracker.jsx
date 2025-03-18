@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { AlertTriangle, Clock, Timer } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
+import useApiToken from "./useApiToken";
 
 const SessionTimeoutTracker = ({ expiryTime, onLogout }) => {
   const [showBanner, setShowBanner] = useState(false);
@@ -8,9 +9,9 @@ const SessionTimeoutTracker = ({ expiryTime, onLogout }) => {
   const [isExpiring, setIsExpiring] = useState(false);
   const hasLoggedOut = useRef(false);
   const theme = useTheme();
-
+  const token = useApiToken();
   const isTokenPresent = () => {
-    return !!localStorage.getItem("token");
+    return !!token;
   };
 
   const checkExpiry = () => {

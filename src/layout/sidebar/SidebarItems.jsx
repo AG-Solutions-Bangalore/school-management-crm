@@ -1,23 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import getMenuItems from "./MenuItems";
 import { Box, List } from "@mui/material";
-
 import { useLocation } from "react-router-dom";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentOpenItem } from "../../redux/store/uiSlice";
 
 const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
   const location = useLocation();
   const pathDirect = location.pathname;
-  const userTypeId = localStorage.getItem("user_type_id");
+  const userTypeId = useSelector((state) => state.auth?.user?.user_type) || "";
   const MenuData = getMenuItems(userTypeId);
-  const [currentOpenItem, setCurrentOpenItem] = useState(
-    localStorage.getItem("currentOpenItem") || ""
-  );
+
+  const dispatch = useDispatch();
+  const currentOpenItem = useSelector((state) => state.ui.currentOpenItem);
 
   useEffect(() => {
-    localStorage.setItem("currentOpenItem", currentOpenItem);
-  }, [currentOpenItem]);
+    if (!currentOpenItem) {
+      dispatch(setCurrentOpenItem(pathDirect));
+    }
+  }, [dispatch, pathDirect, currentOpenItem]);
+
+  const handleItemClick = (item) => {
+    dispatch(setCurrentOpenItem(item));
+  };
 
   return (
     <Box sx={{ px: "20px" }}>
@@ -31,8 +38,6 @@ const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
                 isCollapsed={isCollapsed}
               />
             );
-
-           
           } else {
             return (
               <NavItem
@@ -42,7 +47,7 @@ const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
                 onClick={toggleMobileSidebar}
                 isCollapsed={isCollapsed}
                 currentOpenItem={currentOpenItem}
-                setCurrentOpenItem={setCurrentOpenItem}
+                handleItemClick={handleItemClick}
               />
             );
           }
@@ -51,4 +56,5 @@ const SidebarItems = ({ toggleMobileSidebar, isCollapsed }) => {
     </Box>
   );
 };
+
 export default SidebarItems;

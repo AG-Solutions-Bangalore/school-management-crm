@@ -1,13 +1,13 @@
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
 } from "../../components/common/ButttonConfig";
-import { createHoliday, fetchHolidays } from "../../components/common/UseApi";
+import { CREATE_HOLIDAY, HOLIDAY_LIST } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
 import { ContextPanel } from "../../context/ContextPanel";
 
 const CreateHoliday = ({
@@ -15,11 +15,12 @@ const CreateHoliday = ({
   createDialogOpen,
   setHolidayData,
 }) => {
-  const navigate = useNavigate();
   const [holiday, setHoliday] = useState({
     holiday_for: "",
     holiday_date: "",
   });
+  const token = useApiToken();
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const { selectedYear } = useContext(ContextPanel);
 
@@ -30,46 +31,6 @@ const CreateHoliday = ({
     });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const form = document.getElementById("addIndiv");
-  //   if (!form.checkValidity()) {
-  //     toast.error("Fill all required");
-  //     setIsButtonDisabled(false);
-
-  //     return;
-  //   }
-  //   const data = {
-  //     holiday_date: holiday.holiday_date,
-  //     holiday_for: holiday.holiday_for,
-  //   };
-
-  //   setIsButtonDisabled(true);
-  //   axios({
-  //     url: BASE_URL + "/api/panel-create-holiday-list",
-  //     method: "POST",
-  //     data,
-  //     headers: {
-  //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //     },
-  //   }).then((res) => {
-  //     if (res.data.code == 200) {
-  //       toast.success(res.data.msg);
-  //       setCreateDialogOpen(false);
-  //       fetchHolidayData();
-  //       setHoliday({
-  //         holiday_date: "",
-  //         holiday_for: "",
-  //       });
-  //     } else if (res.data.code == 400) {
-  //       toast.error(res.data.msg);
-  //     }
-  //     setHoliday({
-  //       holiday_date: "",
-  //       holiday_for: "",
-  //     });
-  //   });
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -88,12 +49,12 @@ const CreateHoliday = ({
     setIsButtonDisabled(true);
 
     try {
-      const response = await createHoliday(data);
+      const response = await CREATE_HOLIDAY(data, token);
 
       if (response.code === 200) {
         toast.success(response.msg);
         setCreateDialogOpen(false);
-        const updatedHolidays = await fetchHolidays(selectedYear);
+        const updatedHolidays = await HOLIDAY_LIST(selectedYear);
         setHolidayData(updatedHolidays.holidayList);
       } else {
         toast.error(response.msg);

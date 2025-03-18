@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
-import { decryptId } from "../../../components/common/EncryptionDecryption";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import { decryptId } from "../../../components/common/EncryptionDecryption";
 import {
-  fetchTeacherById,
-  fetchTeacherUserTypes,
-  updateTeacher,
+  FETCH_TEACHER_BY_ID,
+  TEACHER_USER_TYPES,
+  UPDATE_TEACHER,
 } from "../../../components/common/UseApi";
+import Layout from "../../../layout/Layout";
+import useApiToken from "../../../components/common/useApiToken";
 const status = [
   {
     value: "Active",
@@ -29,7 +28,7 @@ const status = [
 const EditTeacher = () => {
   const { id } = useParams();
   const decryptedId = decryptId(id);
-
+  const token = useApiToken();
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
 
@@ -59,7 +58,7 @@ const EditTeacher = () => {
 
   const fetchTeacherDataByid = async () => {
     try {
-      const response = await fetchTeacherById(decryptedId);
+      const response = await FETCH_TEACHER_BY_ID(decryptedId, token);
       console.log(response);
 
       if (response && response.teacher) {
@@ -90,7 +89,7 @@ const EditTeacher = () => {
     }
   };
   const fetchTeacherData = async () => {
-    const response = await fetchTeacherUserTypes();
+    const response = await TEACHER_USER_TYPES(token);
     setTeacherDesignation(response.userType);
   };
 
@@ -161,7 +160,7 @@ const EditTeacher = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await updateTeacher(decryptedId, data);
+      const response = await UPDATE_TEACHER(decryptedId, data, token);
 
       if (response.code === 200) {
         toast.success(response.msg);

@@ -12,21 +12,21 @@ import {
   CreateButton,
 } from "../../components/common/ButttonConfig";
 import {
-  fetchHolidayById,
-  fetchHolidays,
-  updateHoliday,
+  FETCH_HOLIDAY_ID,
+  HOLIDAY_LIST,
+  UPDATE_HOLIDAY,
 } from "../../components/common/UseApi";
 import { ContextPanel } from "../../context/ContextPanel";
+import useApiToken from "../../components/common/useApiToken";
 const EditHoliday = ({
   openEditDialog,
   setOpenEditDialog,
   editId,
-  fetchHolidayData,
   setHolidayData,
 }) => {
   const id = editId;
 
-  const navigate = useNavigate();
+  const token = useApiToken();
   const { selectedYear } = useContext(ContextPanel);
 
   const [holiday, setHoliday] = useState({
@@ -39,7 +39,7 @@ const EditHoliday = ({
   const fetchEditHolidayData = async () => {
     try {
       setLoading(true);
-      const data = await fetchHolidayById(id);
+      const data = await FETCH_HOLIDAY_ID(id, token);
       if (data) {
         setHoliday(data.holidayList);
       }
@@ -83,12 +83,12 @@ const EditHoliday = ({
     };
 
     setIsButtonDisabled(true);
-    const response = await updateHoliday(id, data);
+    const response = await UPDATE_HOLIDAY(id, data);
 
     if (response.code === 200) {
       toast.success(response.msg);
       handleClose();
-      await fetchHolidays(selectedYear).then((holidays) => {
+      await HOLIDAY_LIST(selectedYear).then((holidays) => {
         setHolidayData(holidays.holidayList);
       });
       setIsButtonDisabled(false);

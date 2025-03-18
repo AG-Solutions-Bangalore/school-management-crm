@@ -1,20 +1,20 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import axios from "axios";
-import BASE_URL from "../../../base/BaseUrl";
+import React, { useEffect, useMemo, useState } from "react";
 import LoaderComponent from "../../../components/common/LoaderComponent";
-import { fetchWebisteEnquiry } from "../../../components/common/UseApi";
+import {
+  FETCH_WEBSITE_ENQUIRY
+} from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 
 const EnquiryList = () => {
   const [enquiryData, setEnquiryData] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const token = useApiToken();
   const fetchEnquiryData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetchWebisteEnquiry();
+      const response = await FETCH_WEBSITE_ENQUIRY(token);
 
       setEnquiryData(response?.enquiry);
     } catch (error) {

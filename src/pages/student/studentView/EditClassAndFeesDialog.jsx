@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import BASE_URL from "../../../base/BaseUrl";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
 import {
-  EditClassAndFees,
-  StudentAttendanceById,
-  StudentClassAndFessById,
-  UpdateStudentAttendanceById,
-  UpdateStudentVanFees,
+  FETCH_STUDENT_CLASS_FEES_BY_ID,
+  PAYMENT_TYPE,
+  STUDENT_CLASS_AND_FEES_BY_ID,
+  STUDENTATTENDANCE_BY_ID,
+  UPDATE_STUDENT_ATTENDANCE_BY_ID,
+  UPDATE_STUDENT_CLASS_FEES,
+  UPDATESTUDENT_FEES,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -34,6 +34,7 @@ const inputClass =
 
 export const EditClassDialog = ({ open, handleOpen, classId }) => {
   const [loading, setLoading] = useState(false);
+  const token = useApiToken();
   const [formData, setFormData] = useState({
     studentClass_van_amount: "",
     studentClass_van: "",
@@ -48,9 +49,8 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
   const fetchClassData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
-      const response = await StudentClassAndFessById(classId);
+      const response = await STUDENT_CLASS_AND_FEES_BY_ID(classId, token);
       if (response) {
         setFormData({
           studentClass_van: response?.studentClass.studentClass_van || "",
@@ -78,7 +78,6 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
       const updatedFormData = {
         ...formData,
@@ -88,7 +87,11 @@ export const EditClassDialog = ({ open, handleOpen, classId }) => {
             : formData.studentClass_van_amount,
       };
 
-      const response = await UpdateStudentVanFees(classId, updatedFormData);
+      const response = await UPDATESTUDENT_FEES(
+        classId,
+        updatedFormData,
+        token
+      );
 
       if (response.code === 200) {
         toast.success(response.msg || "Class updated successfully");
@@ -181,30 +184,20 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
     studentFees_transactiondetails: "",
     studentFees_paid_date: "",
   });
-
+  const token = useApiToken();
   const fetchFeesData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-student-class-fees-by-id/${feesId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data) {
+      const response = await FETCH_STUDENT_CLASS_FEES_BY_ID(feesId, token);
+      if (response) {
         setFormData({
-          studentFees_paid:
-            response?.data.studentClassFees.studentFees_paid || "",
+          studentFees_paid: response?.studentClassFees.studentFees_paid || "",
           studentFees_pay_mode:
-            response?.data.studentClassFees.studentFees_pay_mode || "",
+            response?.studentClassFees.studentFees_pay_mode || "",
           studentFees_transactiondetails:
-            response?.data.studentClassFees.studentFees_transactiondetails ||
-            "",
+            response?.studentClassFees.studentFees_transactiondetails || "",
           studentFees_paid_date:
-            response?.data.studentClassFees.studentFees_paid_date || "",
+            response?.studentClassFees.studentFees_paid_date || "",
         });
       }
     } catch (error) {
@@ -216,21 +209,17 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
   };
   useEffect(() => {
     if (open && feesId) {
-      Promise.all([fetchFeesData(), fetchPaymentTypes()]).catch((error) => {
-        console.error("Error initializing edit fees dialog", error);
-      });
+      Promise.all([fetchFeesData(token), fetchPaymentTypes(token)]).catch(
+        (error) => {
+          console.error("Error initializing edit fees dialog", error);
+        }
+      );
     }
   }, [open, feesId]);
   const fetchPaymentTypes = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `${BASE_URL}/api/panel-fetch-paymentType`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setPaymentTypes(response.data?.paymentType || []);
+      const response = await PAYMENT_TYPE(token);
+      setPaymentTypes(response?.paymentType || []);
     } catch (error) {
       console.error("Error fetching payment types", error);
       toast.error("Failed to fetch payment types");
@@ -249,13 +238,16 @@ export const EditFeesDialog = ({ open, handleOpen, feesId }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
 
-      const response = await EditClassAndFees(feesId, formattedData);
+      const response = await UPDATE_STUDENT_CLASS_FEES(
+        feesId,
+        formattedData,
+        token
+      );
       if (response.code === 200) {
         toast.success(response.msg || "Fees updated successfully");
         handleOpen();
@@ -375,20 +367,12 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
 
     studentAttendance_date: "",
   });
-
+  const token = useApiToken();
   const fetchAttendenceData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      // const response = await axios.get(
-      //   `${BASE_URL}/api/panel-fetch-student-attendance-by-id/${attendenceId}`,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   }
-      // );
-      const response = await StudentAttendanceById(attendenceId);
+
+      const response = await STUDENTATTENDANCE_BY_ID(attendenceId, token);
       if (response) {
         setFormData({
           studentAttendance_class:
@@ -424,11 +408,11 @@ export const EditAttendenceDialog = ({ open, handleOpen, attendenceId }) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
-      const response = await UpdateStudentAttendanceById(
+      const response = await UPDATE_STUDENT_ATTENDANCE_BY_ID(
         attendenceId,
-        formData
+        formData,
+        token
       );
 
       if (response.data.code === 200) {

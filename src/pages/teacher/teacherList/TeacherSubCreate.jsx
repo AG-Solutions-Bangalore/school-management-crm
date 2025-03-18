@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
-import { CircleMinus, SquarePlus } from "lucide-react";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
-import Weekday from "../../../components/common/data.json";
+import { CircleMinus, SquarePlus } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
-import { createTeacherSubAssign } from "../../../components/common/UseApi";
+import Weekday from "../../../components/common/data.json";
+import {
+  CREATE_TEACHER_SUBJECT_ASSIGN,
+  FETCH_CLASS_LIST,
+  FETCH_SUBJECT_BY_CLASS,
+  TEACHER_SCHOOL_PERIOD,
+} from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 const TeacherSubCreate = ({
   openDialog,
   setOpenDialog,
@@ -29,7 +32,7 @@ const TeacherSubCreate = ({
     teachersub_on: "",
     teachersub_period: "",
   };
-
+  const token = useApiToken();
   const [users, setUsers] = useState([{ ...useTemplate }]);
 
   const [teachersub, setTeacherSub] = useState({
@@ -60,16 +63,8 @@ const TeacherSubCreate = ({
   useEffect(() => {
     const fetchClassData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-classes`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setClassList(response.data.classes);
+        const response = await FETCH_CLASS_LIST(token);
+        setClassList(response?.classes);
       } catch (error) {
         console.error("Error fetching teacher data", error);
       }
@@ -77,16 +72,8 @@ const TeacherSubCreate = ({
 
     const fetchPeriodData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-school-period`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPeriodList(response.data.schoolPeriod);
+        const response = await TEACHER_SCHOOL_PERIOD(token);
+        setPeriodList(response?.schoolPeriod);
       } catch (error) {
         console.error("Error fetching period data", error);
       }
@@ -100,16 +87,8 @@ const TeacherSubCreate = ({
   useEffect(() => {
     const fetchSubjectData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-subject-by-class/${className}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setSubject(response.data.subject);
+        const response = await FETCH_SUBJECT_BY_CLASS(className, token);
+        setSubject(response?.subject);
       } catch (error) {
         console.error("Error fetching teacher data", error);
       }
@@ -153,7 +132,7 @@ const TeacherSubCreate = ({
 
     setIsButtonDisabled(true);
     try {
-      const response = await createTeacherSubAssign(data);
+      const response = await CREATE_TEACHER_SUBJECT_ASSIGN(data, token);
 
       if (response.code === 200) {
         toast.success(response.msg);
@@ -270,7 +249,7 @@ const TeacherSubCreate = ({
                           className={inputClassSelect}
                         >
                           <option value="">Select Class</option>
-                          {classList.map((option, idx) => (
+                          {classList?.map((option, idx) => (
                             <option key={idx} value={option.classes}>
                               {option.classes}
                             </option>

@@ -10,6 +10,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { HeaderColor } from "../../components/common/ButttonConfig";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 
 const StatsCard = ({ title, value, bgColor }) => (
   <div className={`${bgColor} rounded-lg p-2 shadow-sm`}>
@@ -88,13 +89,14 @@ const ManagementDashboard = () => {
   const { id } = useParams();
   const userId = Number(id);
   const queryClient = useQueryClient();
-  const { getStaticUsers, fetchPagePermission, fetchPermissions } =
-    useContext(ContextPanel);
-  const staticUsers = getStaticUsers();
+  const token = useSelector((state) => state.auth.token);
+
+  const { fetchPagePermission, fetchPermissions } = useContext(ContextPanel);
+  const staticUsers = useSelector((store) => store.auth.allUsers);
   const [buttonPermissions, setButtonPermissions] = useState([]);
   const [pagePermissions, setPagePermissions] = useState([]);
+
   const navigate = useNavigate();
-  // Fetch button permissions
   const {
     data: buttonControlData,
     isLoading: isLoadingButtons,
@@ -102,7 +104,6 @@ const ManagementDashboard = () => {
   } = useQuery({
     queryKey: ["usercontrol"],
     queryFn: async () => {
-      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-usercontrol`,
         {
@@ -116,7 +117,6 @@ const ManagementDashboard = () => {
   // Mutation for updating button permissions
   const updateButtonPermissionMutation = useMutation({
     mutationFn: async ({ permissionId, updatedData }) => {
-      const token = localStorage.getItem("token");
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-usercontrol/${permissionId}`,
         updatedData,
@@ -139,7 +139,6 @@ const ManagementDashboard = () => {
   // Mutation for updating page permissions
   const updatePagePermissionMutation = useMutation({
     mutationFn: async ({ permissionId, updatedData }) => {
-      const token = localStorage.getItem("token");
       const response = await axios.put(
         `${BASE_URL}/api/panel-update-usercontrol-new/${permissionId}`,
         updatedData,
@@ -167,7 +166,6 @@ const ManagementDashboard = () => {
   } = useQuery({
     queryKey: ["usercontrol-pages"],
     queryFn: async () => {
-      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-usercontrol-new`,
         {
@@ -195,7 +193,6 @@ const ManagementDashboard = () => {
     () => [...new Set(pagePermissions.map((p) => p.page))],
     [pagePermissions]
   );
-
   // Calculate stats
   const stats = useMemo(
     () => ({
@@ -210,7 +207,6 @@ const ManagementDashboard = () => {
     }),
     [pages, buttonPermissions, pagePermissions, userId]
   );
-
   const handleButtonPermissionChange = async (
     button,
     isChecked,

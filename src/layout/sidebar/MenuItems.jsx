@@ -18,38 +18,40 @@ import {
   IconUserQuestion,
 } from "@tabler/icons-react";
 import menuItems from "../../json/menuItems.json";
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
 const iconComponents = {
   Dashboard: IconLayoutDashboard,
   Master: IconUserCog,
   "User Management": IconLayoutDashboard,
-  Subject:IconBook,
-  Holiday:IconCalendarWeek,
-  "Fees Structure":IconFileReport,
-  Teacher:IconUsers,
-  "Teacher List":IconUsers,
-  "T Attendance List":IconListDetails,
-  "T Attendance":IconEye,
-  Student:IconUsersGroup,
-  "All Student":IconUsersGroup,
-  "Current Student":IconUsersGroup,
-  "Attendance List":IconListDetails,
-  Attendance:IconEye,
-  Fees:IconClipboardData,
-  "Fees Summary":IconClipboardData,
-  "Time Table":IconTablePlus,
-  Class:IconTablePlus,
-  Website:IconWorld,
-  Enquiry:IconUserQuestion,
-  Contact:IconCalendarCheck,
-  Report:IconReport,
-  "Student R":IconDownload,
-  "Teacher R":IconDownload,
-  "Pending Fees":IconClipboardData,
+  Subject: IconBook,
+  Holiday: IconCalendarWeek,
+  "Fees Structure": IconFileReport,
+  Teacher: IconUsers,
+  "Teacher List": IconUsers,
+  "T Attendance List": IconListDetails,
+  "T Attendance": IconEye,
+  Student: IconUsersGroup,
+  "All Student": IconUsersGroup,
+  "Current Student": IconUsersGroup,
+  "Attendance List": IconListDetails,
+  Attendance: IconEye,
+  Fees: IconClipboardData,
+  "Fees Summary": IconClipboardData,
+  "Time Table": IconTablePlus,
+  Class: IconTablePlus,
+  Website: IconWorld,
+  Enquiry: IconUserQuestion,
+  Contact: IconCalendarCheck,
+  Report: IconReport,
+  "Student R": IconDownload,
+  "Teacher R": IconDownload,
+  "Pending Fees": IconClipboardData,
 };
 
 const isItemAllowed = (item, pageControl, userId) => {
-  const itemHref = item.href?.replace(/^\//, ""); 
+  const itemHref = item.href?.replace(/^\//, "");
 
   return pageControl.some((control) => {
     return (
@@ -95,10 +97,24 @@ const mapItems = (items) => {
 };
 
 const MenuItems = () => {
-  const pageControl = JSON.parse(localStorage.getItem("pageControl") || "[]");
-  const userId = localStorage.getItem("id");
+  const rawPagePermissions = useSelector(
+    (state) => state.permissions?.pagePermissions
+  );
+  const userId = useSelector((state) => state.auth?.user?.id?.toString() || "");
 
-  const filteredItems = filterMenuItems(menuItems, pageControl, userId);
+  const pageControl = useMemo(() => {
+    try {
+      return rawPagePermissions ? JSON.parse(rawPagePermissions) : [];
+    } catch (error) {
+      console.error("Invalid JSON in pagePermissions:", error);
+      return [];
+    }
+  }, [rawPagePermissions]);
+
+  const filteredItems = useMemo(
+    () => filterMenuItems(menuItems, pageControl, userId),
+    [pageControl, userId]
+  );
 
   return mapItems(filteredItems);
 };

@@ -1,29 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "sonner";
+import { TeacherAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
-import { TeacherAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 import {
-  CreateTeacherAttendanceView,
-  DeleteAttendanceView,
-  ViewTeacherAttendance,
+  CREATE_TEACHER_ATTENDANCE,
+  DELETE_TEACHERATTENDANCE_LIST,
+  TEACHER_VIEW_LIST,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 
 const TeacherViewAttendance = () => {
   const navigate = useNavigate();
   const Fromdate = moment().startOf("month").format("YYYY-MM-DD");
   const Todate = moment().format("YYYY-MM-DD");
   const componentRef = useRef();
-
+  const token = useApiToken();
   const [attendance, setAttendance] = useState({
     from_date: Fromdate,
     to_date: Todate,
@@ -40,45 +39,6 @@ const TeacherViewAttendance = () => {
     });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const form = document.getElementById("addIndiv");
-  //   if (!form || !form.checkValidity()) {
-  //     toast.error("Fill all required fields");
-  //     return;
-  //   }
-
-  //   const data = {
-  //     from_date: attendance?.from_date,
-  //     to_date: attendance?.to_date,
-  //   };
-  //   setLoading1(true);
-  //   try {
-  //     const res = await axios.post(
-  //       `${BASE_URL}/api/panel-fetch-teacher-attendance`,
-  //       data,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-
-  //     console.log("API Response:", res.data);
-
-  //     if (res.data.weekdays && res.data.teacher) {
-  //       setAttendanceData(res.data);
-  //     } else {
-  //       toast.error("Invalid response from server");
-  //     }
-  //   } catch (error) {
-  //     console.error("API Error:", error);
-  //     toast.error("Something went wrong. Please try again.");
-  //   } finally {
-  //     setLoading1(false);
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = document.getElementById("addIndiv");
@@ -93,7 +53,7 @@ const TeacherViewAttendance = () => {
     };
     setLoading1(true);
     try {
-      const res = await ViewTeacherAttendance(data);
+      const res = await TEACHER_VIEW_LIST(data, token);
       console.log("API Response:", res);
 
       if (res.weekdays && res.teacher) {
@@ -124,14 +84,7 @@ const TeacherViewAttendance = () => {
         const attendanceIndex = teacher.attendance_dates.indexOf(date.date);
         const attendanceId = teacher.id[attendanceIndex];
 
-        // await axios({
-        //   url: `${BASE_URL}/api/panel-delete-teacher-attendance/${attendanceId}`,
-        //   method: "DELETE",
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
-        const res = await DeleteAttendanceView(attendanceId);
+        const res = await DELETE_TEACHERATTENDANCE_LIST(attendanceId, token);
         toast.success(
           `${teacher.teacher_name} marked present for ${moment(
             date.date
@@ -143,16 +96,8 @@ const TeacherViewAttendance = () => {
           teacher_ref: teacher.teacher_ref,
         };
         console.log(data);
-        // else if the date is P
-        // await axios({
-        //   url: `${BASE_URL}/api/panel-create-teacher-attendance`,
-        //   method: "POST",
-        //   data,
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
-        const res = await CreateTeacherAttendanceView(data);
+
+        const res = await CREATE_TEACHER_ATTENDANCE(data, token);
         toast.success(
           `${teacher.teacher_name} marked absent for ${moment(date.date).format(
             "DD MMM YYYY"

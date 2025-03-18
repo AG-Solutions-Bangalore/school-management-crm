@@ -1,27 +1,23 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import Layout from "../../../layout/Layout";
 
 import moment from "moment/moment";
 import { toast } from "sonner";
-import BASE_URL, {
-  StudentImageUrl,
-  StudentNoImageUrl,
-} from "../../../base/BaseUrl";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
-import LoaderComponent from "../../../components/common/LoaderComponent";
+import { StudentImageUrl, StudentNoImageUrl } from "../../../base/BaseUrl";
 import {
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
-  CurrentStudentListByYear,
-  UpdateStudentStatus,
+  CURRENT_STUDENT_LIST_BY_YEAR,
+  UPDATE_STUDENT_STATUS,
 } from "../../../components/common/UseApi";
 import { ContextPanel } from "../../../context/ContextPanel";
+import useApiToken from "../../../components/common/useApiToken";
 
 const CurrentStudentList = () => {
   const [studentData, setStudentData] = useState(null);
@@ -30,7 +26,7 @@ const CurrentStudentList = () => {
   const [activeClass, setActiveClass] = useState("ALL");
   const navigate = useNavigate();
   const { selectedYear } = useContext(ContextPanel);
-
+  const token = useApiToken();
   const classList = [
     "ALL",
     "NURSERY",
@@ -53,7 +49,7 @@ const CurrentStudentList = () => {
       setLoading(true);
       console.log("Fetching data for year:", selectedYear);
 
-      const response = await CurrentStudentListByYear(selectedYear);
+      const response = await CURRENT_STUDENT_LIST_BY_YEAR(selectedYear, token);
 
       if (response?.student) {
         setStudentData(response.student);
@@ -85,9 +81,7 @@ const CurrentStudentList = () => {
 
   const toggleStatus = async (id) => {
     try {
-      const token = localStorage.getItem("token");
-
-      const response = await UpdateStudentStatus(id);
+      const response = await UPDATE_STUDENT_STATUS(id, token);
       if (response.code === 200) {
         toast.success(response.msg);
         fetchStudentData();
@@ -132,9 +126,11 @@ const CurrentStudentList = () => {
               {row.original.student_admission_no}
             </span>
             <span className="text-black text-xs">
-             {row.original.student_admission_date ? (moment(row.original.student_admission_date).format(
-                            "DD-MM-YYYY"
-                          )):""}
+              {row.original.student_admission_date
+                ? moment(row.original.student_admission_date).format(
+                    "DD-MM-YYYY"
+                  )
+                : ""}
             </span>
           </div>
         ),

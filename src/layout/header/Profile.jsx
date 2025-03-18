@@ -1,23 +1,24 @@
-import React, { useState } from "react";
 import {
   Avatar,
   Box,
-  Menu,
   Button,
   IconButton,
-  MenuItem,
   ListItemIcon,
   ListItemText,
-  Dialog,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import profile from "../../../public/user-1.jpg";
-import { IconMail, IconUser } from "@tabler/icons-react";
-import Logout from "../../components/Logout";
+import { IconMail } from "@tabler/icons-react";
 import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import ChangePasswordDialog from "./ChangePasswordDialog";
+import profile from "../../../public/user-1.jpg";
+import BASE_URL from "../../base/BaseUrl";
 import { ChangePassword } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import Logout from "../../components/Logout";
+import ChangePasswordDialog from "./ChangePasswordDialog";
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = React.useState(null);
@@ -26,7 +27,9 @@ const Profile = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialog1, setOpenDialog1] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = useApiToken();
+  const name = useSelector((state) => state.auth.user.name);
+
   const [profileData, setProfileData] = useState({
     full_name: "",
     dl_no: "",
@@ -99,13 +102,11 @@ const Profile = () => {
     let data = {
       old_password: forgotpassword.old_password,
       password: forgotpassword.password,
-      username: localStorage.getItem("name"),
+      username: name,
     };
     try {
-      // await axios.post(`${BASE_URL}/api/panel-change-password`, data, {
-      //   headers: { Authorization: `Bearer ${token}` },
-      // });
-      const respose = await ChangePassword(data);
+
+      const respose = await ChangePassword(data, token);
       toast.success("Password Updated Successfully!");
 
       handleClose1();
@@ -177,7 +178,6 @@ const Profile = () => {
       </Menu>
       <Logout open={openModal} handleOpen={handleOpenLogout} />
       {/* Profile Dialog */}
-
       <ChangePasswordDialog
         setForgotPassword={setForgotPassword}
         open={openDialog1}

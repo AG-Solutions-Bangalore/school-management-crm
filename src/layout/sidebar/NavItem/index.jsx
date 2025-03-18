@@ -17,7 +17,7 @@ const NavItem = memo(
     hideMenu,
     isCollapsed,
     currentOpenItem,
-    setCurrentOpenItem,
+    handleItemClick,
   }) => {
     const Icon = item.icon;
     const theme = useTheme();
@@ -27,21 +27,16 @@ const NavItem = memo(
 
     const handleToggle = () => {
       if (!isExpanded && item.id === "dashboard") {
-        setCurrentOpenItem(!isExpanded ? item?.id : "");
-        localStorage.setItem("currentOpenItem", item.id);
+        handleItemClick(!isExpanded ? item?.id : "");
         navigate(item.href);
-      } 
-     else if (!isExpanded && item.id === "usertype") {
-        setCurrentOpenItem(!isExpanded ? item?.id : "");
-        localStorage.setItem("currentOpenItem", item.id);
+      } else if (!isExpanded && item.id === "usertype") {
+        handleItemClick(!isExpanded ? item?.id : "");
         navigate(item.href);
-      } 
-      else if (!isExpanded && item.id === "usermanagement") {
-        setCurrentOpenItem(!isExpanded ? item?.id : "");
-        localStorage.setItem("currentOpenItem", item.id);
+      } else if (!isExpanded && item.id === "usermanagement") {
+        handleItemClick(!isExpanded ? item?.id : "");
         navigate(item.href);
-      }else {
-        setCurrentOpenItem(!isExpanded ? item?.id : "");
+      } else {
+        handleItemClick(!isExpanded ? item?.id : "");
       }
     };
 
