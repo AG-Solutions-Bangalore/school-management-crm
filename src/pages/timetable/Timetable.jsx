@@ -9,7 +9,7 @@ import { ContextPanel } from "../../context/ContextPanel";
 import Layout from "../../layout/Layout";
 
 const Timetable = () => {
-  const containerRef = useRef();
+  const containerRef = useRef(null);
   const [timetableData, setTimetableData] = useState({
     classes: [],
     teacherAssign: [],
@@ -40,12 +40,12 @@ const Timetable = () => {
                 @page {
                 size: A4 landscape;
                 margin: 5mm;
-                
+
               }
               @media print {
                 body {
                   border: 0px solid #000;
-                      font-size: 10px; 
+                      font-size: 10px;
                   margin: 0mm;
                   padding: 0mm;
                 }
@@ -55,10 +55,12 @@ const Timetable = () => {
                 .print-hide {
                   display: none;
                 }
-               
+
               }
               `,
   });
+
+
   useEffect(() => {
     const fetchTimetable = async () => {
       try {

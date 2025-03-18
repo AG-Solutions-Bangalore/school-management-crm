@@ -7,15 +7,18 @@ import { baselightTheme } from "./utils/theme/DefaultColors.jsx";
 import AppProvider from "./context/ContextPanel.jsx";
 import { Provider } from "react-redux";
 import store from "./redux/store/store.js";
+import { StrictMode } from "react";
 
 createRoot(document.getElementById("root")).render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <AppProvider>
-        <ThemeProvider theme={baselightTheme}>
-          <App />
-        </ThemeProvider>
-      </AppProvider>
-    </BrowserRouter>
-  </Provider>
+  <StrictMode>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppProvider>
+          <ThemeProvider theme={baselightTheme}>
+            <App />
+          </ThemeProvider>
+        </AppProvider>
+      </BrowserRouter>
+    </Provider>
+  </StrictMode>
 );
