@@ -11,9 +11,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { loginSuccess } from "../../redux/store/authSlice";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("9876543213");
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
