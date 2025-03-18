@@ -6,17 +6,18 @@ import BASE_URL from "../../base/BaseUrl";
 import { Edit, ChevronDown, ChevronUp } from "lucide-react";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { fetchUserTypeList } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
 
 const UserTypeList = () => {
   const [userTypeData, setUserTypeData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedRows, setExpandedRows] = useState({});
   const navigate = useNavigate();
-
+  const token = useApiToken();
   const fetchUserTypeData = async () => {
     try {
       setLoading(true);
-      const response = await fetchUserTypeList();
+      const response = await fetchUserTypeList(token);
       setUserTypeData(response?.userType || []);
     } catch (error) {
       console.error("Error fetching userType data", error);

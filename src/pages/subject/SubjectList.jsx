@@ -1,14 +1,10 @@
-import {
-  Dialog,
-  DialogContent,
-  IconButton
-} from "@mui/material";
+import { Dialog, DialogContent, IconButton } from "@mui/material";
 import {
   IconBook,
   IconFilter,
   IconPlus,
   IconSearch,
-  IconX
+  IconX,
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -19,12 +15,13 @@ import {
 } from "../../components/common/ButttonConfig";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import {
-  createSubject,
-  fetchClassList,
-  fetchStudentList,
-  fetchSubjectList,
-  updateSubject
+  CREATE_SUBJECT,
+  FETCH_CLASS_LIST,
+  FETCH_SUBJECT_LIST,
+  STUDENT_LIST,
+  UPDATE_SUBJECT
 } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
 import Layout from "../../layout/Layout";
 
 const SubjectList = () => {
@@ -38,7 +35,7 @@ const SubjectList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterActive, setFilterActive] = useState(null);
   const [selectedClass, setSelectedClass] = useState("all");
-  const [showStats, setShowStats] = useState(true);
+  const token = useApiToken();
 
   const [subject, setSubject] = useState({
     class_subject: "",
@@ -47,7 +44,7 @@ const SubjectList = () => {
   useEffect(() => {
     const fetchSubjectData = async () => {
       setLoading(true);
-      const subjectlist = await fetchSubjectList();
+      const subjectlist = await FETCH_SUBJECT_LIST(token);
       setSubjectData(subjectlist.subject);
       setLoading(false);
     };
@@ -57,7 +54,7 @@ const SubjectList = () => {
 
   const fetchClassData = async () => {
     setLoadingClass(true);
-    const classslist = await fetchClassList();
+    const classslist = await FETCH_CLASS_LIST(token);
     setClasses(classslist.classes);
     setLoadingClass(false);
   };
@@ -81,7 +78,7 @@ const SubjectList = () => {
     try {
       const status = currentStatus === "Active" ? "Inactive" : "Active";
 
-      const res = await updateSubject(id, status);
+      const res = await UPDATE_SUBJECT(id, status, token);
       console.log(res);
       if (res.code === 200) {
         toast.success(res.msg);
@@ -120,12 +117,12 @@ const SubjectList = () => {
     setIsButtonDisabled(true);
 
     try {
-      const response = await createSubject(data);
+      const response = await CREATE_SUBJECT(data, token);
 
       if (response && response.code === 200) {
         toast.success(response.msg);
         setOpenDialog(false);
-        const subjectlist = await fetchStudentList();
+        const subjectlist = await STUDENT_LIST(token);
         setSubjectData(subjectlist.subject);
         setSubject({
           class_subject: "",

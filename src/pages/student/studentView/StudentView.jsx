@@ -25,7 +25,10 @@ import {
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
 import { decryptId } from "../../../components/common/EncryptionDecryption";
-import { ViewStudentById } from "../../../components/common/UseApi";
+import {
+  VIEW_STUDENT_BY_ID
+} from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 import { ContextPanel } from "../../../context/ContextPanel";
 import Layout from "../../../layout/Layout";
 import { AddClassDialog, AddFeesDialog } from "./ClassAndFeesDialog";
@@ -56,13 +59,16 @@ const StudentView = () => {
   const [isPhotoDialogOpen, setIsPhotoDialogOpen] = useState(false);
   const [isAadharDialogOpen, setIsAadharDialogOpen] = useState(false);
   const { selectedYear } = useContext(ContextPanel);
-
+  const token = useApiToken();
   const fetchStudentData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
-      const response = await ViewStudentById(selectedYear, decryptedId);
+      const response = await VIEW_STUDENT_BY_ID(
+        selectedYear,
+        decryptedId,
+        token
+      );
       setStudentData(response);
     } catch (error) {
       console.error("Error fetching student data", error);

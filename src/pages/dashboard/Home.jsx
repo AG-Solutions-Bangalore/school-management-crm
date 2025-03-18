@@ -1,11 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
-import { FileText, Users, Briefcase, Download } from "lucide-react";
-import Layout from "../../layout/Layout";
-import BASE_URL from "../../base/BaseUrl";
-import { ContextPanel } from "../../context/ContextPanel";
+import { Briefcase, FileText, Users } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import { useSelector } from "react-redux";
 import LoaderComponent from "../../components/common/LoaderComponent";
 import { fetchDashboard } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import Layout from "../../layout/Layout";
 
 const StatCard = ({ title, value, icon: Icon, color = "yellow" }) => (
   <div className="bg-white rounded-lg shadow-md p-4 transition-all duration-300 hover:shadow-lg">
@@ -33,17 +33,21 @@ const Home = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
+  const selectedYear = useSelector((state) => state.auth.default_year);
+  // const store = useSelector((state) => state);
 
+  // useEffect(() => {
+  //   console.log("Redux Store:", store);
+  // }, [store]);
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem("token");
         if (!token) {
           throw new Error("Authentication token not found");
         }
 
-        const response = await fetchDashboard(selectedYear);
+        const response = await fetchDashboard(selectedYear, token);
 
         setDashboardData(response);
       } catch (err) {

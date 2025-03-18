@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../layout/Layout";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { FormLabel } from "@mui/material";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-  CreateButton,
-  HeaderColor,
-} from "../../components/common/ButttonConfig";
 import {
   ReportStudentAll,
   ReportStudentCurrent,
 } from "../../components/buttonIndex/ButtonComponents";
 import {
-  DownloadStudentCurrentDetails,
-  DownloadStudentDetails,
-  fetchClassList,
+  CreateButton,
+  HeaderColor,
+} from "../../components/common/ButttonConfig";
+import {
+  DOWNLOAD_STUDENT_CURRENT_DETAILS,
+  DOWNLOAD_STUDENT_DETAILS,
+  FETCH_CLASS_LIST,
   YearList,
 } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import Layout from "../../layout/Layout";
 const status = [
   {
     value: "Active",
@@ -32,7 +30,7 @@ const status = [
 const StudentReport = () => {
   const [yearData, setYearData] = useState([]);
   const [classList, setClassList] = useState([]);
-
+  const token = useApiToken();
   const [report, setReport] = useState({
     student_year: "",
     status: "",
@@ -49,7 +47,7 @@ const StudentReport = () => {
   useEffect(() => {
     const fetchYearData = async () => {
       try {
-        const response = await YearList();
+        const response = await YearList(token);
         setYearData(response?.year);
       } catch (error) {
         console.error("Error fetching holiday List data", error);
@@ -57,8 +55,7 @@ const StudentReport = () => {
     };
     const fetchClassData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetchClassList();
+        const response = await FETCH_CLASS_LIST(token);
         setClassList(response?.classes);
       } catch (error) {
         console.error("Error fetching teacher data", error);
@@ -78,7 +75,7 @@ const StudentReport = () => {
     };
 
     try {
-      const response = await DownloadStudentDetails(data);
+      const response = await DOWNLOAD_STUDENT_DETAILS(data, token);
 
       const url = window.URL.createObjectURL(new Blob([response]));
       const link = document.createElement("a");
@@ -109,7 +106,7 @@ const StudentReport = () => {
     };
 
     try {
-      const response = await DownloadStudentCurrentDetails(data); // ✅ Pass data correctly
+      const response = await DOWNLOAD_STUDENT_CURRENT_DETAILS(data, token); // ✅ Pass data correctly
 
       const url = window.URL.createObjectURL(new Blob([response])); // ✅ Use response properly
       const link = document.createElement("a");

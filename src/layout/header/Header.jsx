@@ -11,8 +11,17 @@ import {
 import PropTypes from "prop-types";
 import Profile from "./Profile";
 import { IconMenu, IconMenuDeep } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 
 const Header = ({ toggleMobileSidebar, toggleSidebar }) => {
+  // const user_position = useSelector((state) => state.auth.user_position);
+  // const name = useSelector((state) => state.auth.user.name);
+  const user_position = useSelector(
+    (state) => state.auth.user_position || null
+  );
+
+  const name = useSelector((state) => state.auth?.user?.name) || "Guest";
+
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: "none",
     background: theme.palette.background.paper,
@@ -65,12 +74,10 @@ const Header = ({ toggleMobileSidebar, toggleSidebar }) => {
             <div
               className={`flex flex-col text-[10px] md:text-xs text-[${theme.palette.text.secondary}]`}
             >
-              <div className="font-semibold ">
-                {localStorage.getItem("name")}
-              </div>
+              <div className="font-semibold ">{name || ""}</div>
               <div className="font-semibold  text-[10px] flex justify-center">
                 {" "}
-                {localStorage.getItem("user_position")}
+                {user_position || ""}
               </div>
             </div>
 

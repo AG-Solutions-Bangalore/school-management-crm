@@ -1,37 +1,33 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Layout from "../../../layout/Layout";
-import { IconEdit, IconEye, IconPlus } from "@tabler/icons-react";
+import { Printer } from "lucide-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BASE_URL, {
-  StudentImageUrl,
-  StudentNoImageUrl,
-} from "../../../base/BaseUrl";
 import moment from "moment/moment";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { encryptId } from "../../../components/common/EncryptionDecryption";
-import LoaderComponent from "../../../components/common/LoaderComponent";
-import { CreateButton } from "../../../components/common/ButttonConfig";
+import { StudentImageUrl, StudentNoImageUrl } from "../../../base/BaseUrl";
 import {
   StudentAllStudentCreate,
   StudentAllStudentEdit,
   StudentAllStudentView,
 } from "../../../components/buttonIndex/ButtonComponents";
+import { CreateButton } from "../../../components/common/ButttonConfig";
+import { encryptId } from "../../../components/common/EncryptionDecryption";
+import LoaderComponent from "../../../components/common/LoaderComponent";
 import {
-  fetchStudentList,
-  UpdateStudentStatus,
+  STUDENT_LIST,
+  UPDATE_STUDENT_STATUS
 } from "../../../components/common/UseApi";
-import { Printer } from "lucide-react";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 
 const StudentList = () => {
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const token = useApiToken();
   const fetchStudentData = async () => {
     setLoading(true);
-    const response = await fetchStudentList();
+    const response = await STUDENT_LIST(token);
     setStudentData(response?.student);
     setLoading(false);
   };
@@ -42,7 +38,7 @@ const StudentList = () => {
 
   const toggleStatus = async (id) => {
     try {
-      const response = await UpdateStudentStatus(id);
+      const response = await UPDATE_STUDENT_STATUS(id, token);
       if (response.code === 200) {
         toast.success(response.msg);
         fetchStudentData();
@@ -56,25 +52,24 @@ const StudentList = () => {
 
   const columns = useMemo(
     () => [
-    
-          {
-              accessorKey: "student_photo",
-              header: "Photo",
-              size: 100,
-              Cell: ({ row }) => {
-                const imageUrl = row.original.student_photo
-                  ? `${StudentImageUrl}/${row.original.student_photo}`
-                  : StudentNoImageUrl;
-      
-                return (
-                  <img
-                    src={imageUrl}
-                    alt="Student"
-                    className="w-12 h-12 rounded-full object-cover border"
-                  />
-                );
-              },
-            },
+      {
+        accessorKey: "student_photo",
+        header: "Photo",
+        size: 100,
+        Cell: ({ row }) => {
+          const imageUrl = row.original.student_photo
+            ? `${StudentImageUrl}/${row.original.student_photo}`
+            : StudentNoImageUrl;
+
+          return (
+            <img
+              src={imageUrl}
+              alt="Student"
+              className="w-12 h-12 rounded-full object-cover border"
+            />
+          );
+        },
+      },
 
       {
         accessorKey: "admission_details",
@@ -88,9 +83,11 @@ const StudentList = () => {
               {row.original.student_admission_no}
             </span>
             <span className="text-black text-xs">
-              {row.original.student_admission_date ? (moment(row.original.student_admission_date).format(
-                "DD-MM-YYYY"
-              )):""}
+              {row.original.student_admission_date
+                ? moment(row.original.student_admission_date).format(
+                    "DD-MM-YYYY"
+                  )
+                : ""}
             </span>
           </div>
         ),
@@ -153,13 +150,9 @@ const StudentList = () => {
 
           return (
             <div className="flex gap-2">
-                 <div
+              <div
                 onClick={() => {
-
-                  navigate(
-                    `/student-print/${id
-                    }`
-                  );
+                  navigate(`/student-print/${id}`);
                 }}
                 className="flex items-center space-x-2"
                 title="View"

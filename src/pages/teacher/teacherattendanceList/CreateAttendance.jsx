@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
-import { CreateTeacherAttendanceList } from "../../../components/common/UseApi";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import BASE_URL from "../../../base/BaseUrl";
+import { CREATE_TEACHER_ATTENDANCE } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 const CreateTeacherAttendance = ({
   openCreateDialog,
   setOpenCreateDialog,
@@ -14,7 +15,7 @@ const CreateTeacherAttendance = ({
   const navigate = useNavigate();
   const [teacherRefData, setTeacherRefData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const token = useApiToken();
   const [createattendace, setCreateAttendance] = useState({
     teacher_ref: "",
     teacherAttendance_date: "",
@@ -32,7 +33,6 @@ const CreateTeacherAttendance = ({
   const fetchTeacherRefData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/panel-fetch-teacher`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ const CreateTeacherAttendance = ({
     setIsButtonDisabled(true);
 
     try {
-      const res = await CreateTeacherAttendanceList(data);
+      const res = await CREATE_TEACHER_ATTENDANCE(data, token);
 
       if (res.code === 200) {
         toast.success(res.msg);

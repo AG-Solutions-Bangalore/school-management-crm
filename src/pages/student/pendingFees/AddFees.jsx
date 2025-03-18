@@ -1,30 +1,28 @@
-import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
-  Button,
+  DialogContent,
+  DialogTitle,
   Slide,
 } from "@mui/material";
-import axios from "axios";
-import { toast } from "sonner";
-import BASE_URL from "../../../base/BaseUrl";
-import { ContextPanel } from "../../../context/ContextPanel";
+import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
-import { getTodayDate } from "../../../utils/currentDate";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
 import {
-  CreateStudentPendingClassFees,
-  fetchClassList,
-  fetchStudentsByYear,
-  PaymentType,
-  StudentPendingClassFeesCreate,
+  CREATE_STUDENT_PENDING_CLASS_FEES,
+  FETCH_CLASS_LIST,
+  FETCH_STUDENT_BY_YEAR,
+  PAYMENT_TYPE,
+  STUDENT_PENDING_CLASS_FEES_CREATE,
   YearList,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import { ContextPanel } from "../../../context/ContextPanel";
+import { getTodayDate } from "../../../utils/currentDate";
 
 const FormLabel = ({ children, required }) => (
   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -70,6 +68,7 @@ export const AddFees = ({ open, handleOpen }) => {
   const [students, setStudents] = useState([]);
   const [pendingFeesData, setPendingFeesData] = useState(null);
   const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
   const [formData, setFormData] = useState({
     studentFees_year: selectedYear,
     studentFees_admission_no: "",
@@ -85,18 +84,9 @@ export const AddFees = ({ open, handleOpen }) => {
       setLoading(true);
       const [yearResponse, classesResponse, paymentTypeResponse] =
         await Promise.all([
-          YearList(),
-          fetchClassList(),
-          PaymentType(),
-          // axios.get(`${BASE_URL}/api/panel-fetch-year-list`, {
-          //   headers: { Authorization: `Bearer ${token}` },
-          // }),
-          // axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
-          //   headers: { Authorization: `Bearer ${token}` },
-          // }),
-          // axios.get(`${BASE_URL}/api/panel-fetch-paymentType`, {
-          //   headers: { Authorization: `Bearer ${token}` },
-          // }),
+          YearList(token),
+          FETCH_CLASS_LIST(token),
+          PAYMENT_TYPE(token),
         ]);
 
       setYears(yearResponse?.year || []);
@@ -113,8 +103,11 @@ export const AddFees = ({ open, handleOpen }) => {
   const fetchStudents = async (selectedClass) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await fetchStudentsByYear(selectedYear, selectedClass);
+      const response = await FETCH_STUDENT_BY_YEAR(
+        selectedYear,
+        selectedClass,
+        token
+      );
       setStudents(response?.student || []);
     } catch (error) {
       console.error("Error fetching students", error);
@@ -127,7 +120,6 @@ export const AddFees = ({ open, handleOpen }) => {
   const fetchPendingFees = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("token");
 
       // Only fetch if we have all required data
       if (
@@ -143,7 +135,7 @@ export const AddFees = ({ open, handleOpen }) => {
         studentFees_class: formData.studentFees_class,
         studentFees_admission_no: formData.studentFees_admission_no,
       };
-      const response = await StudentPendingClassFeesCreate(data);
+      const response = await STUDENT_PENDING_CLASS_FEES_CREATE(data, token);
 
       if (response && response.student && response.student.length > 0) {
         setPendingFeesData(response.student[0]);
@@ -187,13 +179,14 @@ export const AddFees = ({ open, handleOpen }) => {
     e.preventDefault();
     try {
       setLoadingSumbit(true);
-      const token = localStorage.getItem("token");
       const formattedData = {
         ...formData,
         studentFees_paid: parseInt(formData.studentFees_paid, 10) || 0,
       };
-      console.log("data", formattedData);
-      const response = await CreateStudentPendingClassFees(formattedData);
+      const response = await CREATE_STUDENT_PENDING_CLASS_FEES(
+        formattedData,
+        token
+      );
 
       if (response.code === 200) {
         toast.success(response.msg);

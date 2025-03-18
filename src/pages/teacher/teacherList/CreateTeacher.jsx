@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
-import TeacherTitle from "../../../components/common/data.json";
+import { toast } from "sonner";
 import {
   BackButton,
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
+import TeacherTitle from "../../../components/common/data.json";
 import {
-  createTeacherList,
-  fetchTeacherUserTypes,
+  CREATE_TEACHER,
+  TEACHER_USER_TYPES
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 const CreateTeacher = () => {
   const navigate = useNavigate();
   const [teacherdesignation, setTeacherDesignation] = useState([]);
@@ -41,11 +40,11 @@ const CreateTeacher = () => {
   });
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const token = useApiToken();
   const fetchTeacherData = async () => {
-    const response = await fetchTeacherUserTypes();
+    const response = await TEACHER_USER_TYPES(token);
     setTeacherDesignation(response.userType);
   };
-
   useEffect(() => {
     fetchTeacherData();
   }, []);
@@ -112,7 +111,7 @@ const CreateTeacher = () => {
 
     setIsButtonDisabled(true);
     try {
-      const response = await createTeacherList(data);
+      const response = await CREATE_TEACHER(data, token);
 
       if (response.code === 200) {
         toast.success(response.msg);

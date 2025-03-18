@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
-import { CircleMinus, SquarePlus } from "lucide-react";
 import { Dialog, DialogContent, IconButton, Slide } from "@mui/material";
 import { IconX } from "@tabler/icons-react";
-import Weekday from "../../../components/common/data.json";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import BASE_URL from "../../../base/BaseUrl";
 import {
   BackButton,
   CreateButton,
 } from "../../../components/common/ButttonConfig";
-import { TeacherSubAssign } from "../../../components/common/UseApi";
+import Weekday from "../../../components/common/data.json";
+import {
+  FETCH_TEACHER_SUBJECT_BY_ID,
+  TEACHER_SCHOOL_PERIOD,
+  UPDATE_TEACHER_SUBJECT_ASSIGN,
+} from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
 const status = [
   {
     value: "Active",
@@ -36,6 +39,7 @@ const TeacherSubEdit = ({
     teachersub_period: "",
     teachersub_status: "",
   });
+  const token = useApiToken();
   const onInputChange = (e) => {
     setTeacherSub({
       ...teachersub,
@@ -55,38 +59,25 @@ const TeacherSubEdit = ({
   useEffect(() => {
     const fetchPeriodData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-school-period`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setPeriodList(response.data.schoolPeriod);
+        const response = await TEACHER_SCHOOL_PERIOD(token);
+        setPeriodList(response?.schoolPeriod);
       } catch (error) {
         console.error("Error fetching period data", error);
       }
     };
     const fetchTeacherSubIdData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `${BASE_URL}/api/panel-fetch-teacher-subject-assign-by-id/${selectedTeacherSubId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const response = await FETCH_TEACHER_SUBJECT_BY_ID(
+          selectedTeacherSubId,
+          token
         );
         setTeacherSub((prev) => ({
           ...prev,
-          teachersub_on: response.data.teacherSubject.teachersub_on,
-          teachersub_period: response.data.teacherSubject.teachersub_period,
-          teachersub_status: response.data.teacherSubject.teachersub_status,
-          teachersub_class: response.data.teacherSubject.teachersub_class,
-          teachersub_subject: response.data.teacherSubject.teachersub_subject,
+          teachersub_on: response?.teacherSubject.teachersub_on,
+          teachersub_period: response?.teacherSubject.teachersub_period,
+          teachersub_status: response?.teacherSubject.teachersub_status,
+          teachersub_class: response?.teacherSubject.teachersub_class,
+          teachersub_subject: response?.teacherSubject.teachersub_subject,
         }));
       } catch (error) {
         console.error("Error fetching period data", error);
@@ -112,7 +103,11 @@ const TeacherSubEdit = ({
 
     setIsButtonDisabled(true);
     try {
-      const response = await TeacherSubAssign(selectedTeacherSubId, data);
+      const response = await UPDATE_TEACHER_SUBJECT_ASSIGN(
+        selectedTeacherSubId,
+        data,
+        token
+      );
       if (response.code === 200) {
         toast.success(response.msg);
         handleClose();

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../base/BaseUrl";
+import useApiToken from "../../../components/common/useApiToken";
 
 const CreateAttendance = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const CreateAttendance = () => {
   });
   const [classList, setClassList] = useState([]);
   const [attendanceAdmission, setAttendanceAdmission] = useState([]);
-
+  const token = useApiToken();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const onInputChange = (e) => {
@@ -26,7 +27,6 @@ const CreateAttendance = () => {
   };
   const fetchClassData = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get(`${BASE_URL}/api/panel-fetch-classes`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -39,7 +39,6 @@ const CreateAttendance = () => {
   };
   const fetchAttendanceData = async () => {
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.get(
         `${BASE_URL}/api/panel-fetch-student-attendance-admission-no/${attendace.studentAttendance_class}`,
         {
@@ -81,7 +80,7 @@ const CreateAttendance = () => {
 
       data,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${token}`,
       },
     }).then((res) => {
       if (res.data.code == 200) {

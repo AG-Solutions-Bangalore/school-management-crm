@@ -5,7 +5,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "@material-tailwind/react";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconEdit } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import moment from "moment/moment";
 import React, { useContext, useEffect, useMemo, useState } from "react";
@@ -17,7 +17,8 @@ import {
 } from "../../components/buttonIndex/ButtonComponents";
 import { CreateButton } from "../../components/common/ButttonConfig";
 import LoaderComponent from "../../components/common/LoaderComponent";
-import { deleteHoliday, fetchHolidays } from "../../components/common/UseApi";
+import { DELETE_HOLIDAY, HOLIDAY_LIST } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
 import { ContextPanel } from "../../context/ContextPanel";
 import Layout from "../../layout/Layout";
 import CreateHoliday from "./CreateHoliday";
@@ -33,13 +34,13 @@ const HolidayList = () => {
   const [deleteId, setDeleteId] = useState(null);
   const navigate = useNavigate();
   const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const holidays = await fetchHolidays(selectedYear);
+      const holidays = await HOLIDAY_LIST(selectedYear, token);
       setHolidayData(holidays.holidayList);
-      console.log(holidays.holidayList);
       setLoading(false);
     };
 
@@ -49,7 +50,7 @@ const HolidayList = () => {
   const handleDelete = async () => {
     if (!deleteId) return;
     try {
-      const isDeleted = await deleteHoliday(deleteId);
+      const isDeleted = await DELETE_HOLIDAY(deleteId, token);
       if (isDeleted) {
         setHolidayData((prev) => prev.filter((item) => item.id !== deleteId));
       }
@@ -205,7 +206,6 @@ const HolidayList = () => {
       <EditHoliday
         openEditDialog={openEditDialog}
         setOpenEditDialog={setOpenEditDialog}
-        fetchHolidayData={() => fetchHolidays(selectedYear)}
         editId={editId}
         setHolidayData={setHolidayData}
       />

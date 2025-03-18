@@ -52,17 +52,26 @@ import TeacherPrint from "./pages/teacher/teacherList/TeacherPrint";
 import StudentPrint from "./pages/student/studentList/StudentPrint";
 import { LogoutApi } from "./components/common/UseApi";
 import SessionTimeoutTracker from "./components/common/SessionTimeoutTracker";
+import { useDispatch, useSelector } from "react-redux";
+import useApiToken from "./components/common/useApiToken";
+import { logout } from "./redux/store/authSlice";
+import { persistor } from "./redux/store/store";
 const queryClient = new QueryClient();
 const App = () => {
   const navigate = useNavigate();
-  const time = localStorage.getItem("token-expire-time");
+  const time = useSelector((state) => state.auth.token_expire_time);
+  const dispatch = useDispatch();
+  const token = useApiToken();
   const handleLogout = async () => {
     try {
-      const res = await LogoutApi();
+      const res = await LogoutApi(token);
       if (res.code == "200") {
         toast.success(res.msg);
+        await persistor.flush();
         localStorage.clear();
+        dispatch(logout());
         navigate("/");
+        setTimeout(() => persistor.purge(), 1000);
       }
     } catch (error) {
       console.error("Logout failed:", error);
@@ -73,7 +82,7 @@ const App = () => {
     <>
       <SessionTimeoutTracker expiryTime={time} onLogout={handleLogout} />
 
-      <DisableRightClick />
+      {/* <DisableRightClick /> */}
       <QueryClientProvider client={queryClient}>
         <Toaster richColors position="top-right" />
         <Routes>

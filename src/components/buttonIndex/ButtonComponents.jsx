@@ -3,13 +3,16 @@ import React from "react";
 import { checkPermission } from "./checkPermission";
 import { useTheme } from "@mui/material/styles";
 import { IconEdit, IconPrinter, IconTrash } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
 const getStaticPermissions = () => {
-  const buttonPermissions = localStorage.getItem("buttonControl");
+  const buttonPermissions = useSelector(
+    (state) => state.permissions.buttonPermissions
+  );
   try {
     return buttonPermissions ? JSON.parse(buttonPermissions) : [];
   } catch (error) {
     console.error(
-      "Error parsing StaticPermission data from localStorage",
+      "Error parsing StaticPermission data ",
       error
     );
     return [];
@@ -19,7 +22,7 @@ const getStaticPermissions = () => {
 // ---------------------Master-----------------------
 // ----------Subject
 export const MasterSubjectCreate = ({ onClick, className, ref }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "MasterSubjectCreate", staticPermissions)) {
     return null;
@@ -36,7 +39,7 @@ MasterSubjectCreate.page = "Subject";
 // ----------Holiday
 
 export const MasterHolidayCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "MasterHolidayCreate", staticPermissions)) {
     return null;
@@ -52,8 +55,7 @@ export const MasterHolidayCreate = ({ onClick, className }) => {
 MasterHolidayCreate.page = "Holiday";
 export const MasterHolidayEdit = ({ onClick, className }) => {
   const theme = useTheme();
-
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "MasterHolidayEdit", staticPermissions)) {
     return null;
@@ -69,7 +71,7 @@ MasterHolidayEdit.page = "Holiday";
 export const MasterHolidayDelete = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "MasterHolidayDelete", staticPermissions)) {
     return null;
@@ -86,7 +88,7 @@ MasterHolidayDelete.page = "Holiday";
 // ----------Teacher
 
 export const TeacherTeacherListCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "TeacherTeacherListCreate", staticPermissions)) {
     return null;
@@ -103,7 +105,7 @@ TeacherTeacherListCreate.page = "Teacher List";
 export const TeacherTeacherListEdit = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "TeacherTeacherListEdit", staticPermissions)) {
     return null;
@@ -119,7 +121,7 @@ TeacherTeacherListEdit.page = "Teacher List";
 export const TeacherTeacherListView = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "TeacherTeacherListView", staticPermissions)) {
     return null;
@@ -136,7 +138,7 @@ TeacherTeacherListView.page = "Teacher List";
 //-----------T Attendance List
 
 export const TeacherAttendanceListCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (
     !checkPermission(userId, "TeacherAttendanceListCreate", staticPermissions)
@@ -155,7 +157,7 @@ TeacherAttendanceListCreate.page = "T Attendance List";
 export const TeacherAttendanceListDelete = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (
     !checkPermission(userId, "TeacherAttendanceListDelete", staticPermissions)
@@ -177,7 +179,7 @@ TeacherAttendanceListDelete.page = "T Attendance List";
 // ---------------T Attendance
 
 export const TeacherAttendanceView = ({ onClick, className, loading }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "TeacherAttendanceView", staticPermissions)) {
     return null;
@@ -194,7 +196,7 @@ TeacherAttendanceView.page = "T Attendance";
 // ----All Student
 
 export const StudentAllStudentCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentAllStudentCreate", staticPermissions)) {
     return null;
@@ -211,7 +213,7 @@ StudentAllStudentCreate.page = "All Student";
 export const StudentAllStudentEdit = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentAllStudentEdit", staticPermissions)) {
     return null;
@@ -227,7 +229,7 @@ StudentAllStudentEdit.page = "All Student";
 export const StudentAllStudentView = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentAllStudentView", staticPermissions)) {
     return null;
@@ -243,7 +245,7 @@ StudentAllStudentView.page = "All Student";
 /////----------- Attendance List
 
 export const StudentAttendanceListCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (
     !checkPermission(userId, "StudentAttendanceListCreate", staticPermissions)
@@ -262,7 +264,7 @@ StudentAttendanceListCreate.page = "Attendance List";
 export const StudentAttendanceListDelete = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (
     !checkPermission(userId, "StudentAttendanceListDelete", staticPermissions)
@@ -284,7 +286,7 @@ StudentAttendanceListDelete.page = "Attendance List";
 
 /////----------- Attendance List View
 export const StudentAttendanceView = ({ onClick, className, loading }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentAttendanceView", staticPermissions)) {
     return null;
@@ -299,7 +301,7 @@ export const StudentAttendanceView = ({ onClick, className, loading }) => {
 StudentAttendanceView.page = "Attendance";
 // --Fesss
 export const StudentFeesCreate = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentFeesCreate", staticPermissions)) {
     return null;
@@ -317,7 +319,7 @@ StudentFeesCreate.page = "Fees";
 export const StudentFeesEdit = ({ onClick, className }) => {
   const theme = useTheme();
 
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "StudentFeesEdit", staticPermissions)) {
     return null;
@@ -334,7 +336,7 @@ StudentFeesEdit.page = "Fees";
 // -----------------------Time Tabel
 // ------------Class
 export const ClassTimeTablePrint = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "ClassTimeTablePrint", staticPermissions)) {
     return null;
@@ -350,7 +352,7 @@ export const ClassTimeTablePrint = ({ onClick, className }) => {
 ClassTimeTablePrint.page = "Class";
 // ---------------Teacher
 export const TeacherTimeTablePrint = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "TeacherTimeTablePrint", staticPermissions)) {
     return null;
@@ -367,7 +369,7 @@ TeacherTimeTablePrint.page = "Teacher";
 // -----------------------------Report------------------------
 // ---------------------->Student R
 export const ReportStudentAll = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "ReportStudentAll", staticPermissions)) {
     return null;
@@ -381,7 +383,7 @@ export const ReportStudentAll = ({ onClick, className }) => {
 };
 ReportStudentAll.page = "Student R";
 export const ReportStudentCurrent = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "ReportStudentCurrent", staticPermissions)) {
     return null;
@@ -396,7 +398,7 @@ export const ReportStudentCurrent = ({ onClick, className }) => {
 ReportStudentCurrent.page = "Student R";
 // ---------------------------->Teacher R
 export const ReportTeacherDownload = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "ReportTeacherDownload", staticPermissions)) {
     return null;
@@ -411,7 +413,7 @@ export const ReportTeacherDownload = ({ onClick, className }) => {
 ReportTeacherDownload.page = "Teacher R";
 // ---------------------------->Pending Fees
 export const ReportPendingFeesDownload = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (
     !checkPermission(userId, "ReportPendingFeesDownload", staticPermissions)
@@ -427,7 +429,7 @@ export const ReportPendingFeesDownload = ({ onClick, className }) => {
 };
 ReportPendingFeesDownload.page = "Pending Fees";
 export const ReportPendingFeesView = ({ onClick, className }) => {
-  const userId = localStorage.getItem("id") || "";
+  const userId = useSelector((state) => state.auth.user.id);
   const staticPermissions = getStaticPermissions();
   if (!checkPermission(userId, "ReportPendingFeesView", staticPermissions)) {
     return null;

@@ -1,30 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
-import Layout from "../../../layout/Layout";
-import axios from "axios";
-import { toast } from "sonner";
 import { IconArrowBack, IconInfoCircle } from "@tabler/icons-react";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../base/BaseUrl";
 import moment from "moment/moment";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useReactToPrint } from "react-to-print";
+import { toast } from "sonner";
+import { StudentAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 import {
   CreateButton,
   HeaderColor,
 } from "../../../components/common/ButttonConfig";
-import { StudentAttendanceView } from "../../../components/buttonIndex/ButtonComponents";
 import {
-  CreateStudentAttendance,
-  DeleteStudentAttendanceLisyById,
-  fetchClassList,
-  FetchStudentAttendance,
+  CREATE_STUDENT_ATTENDANCE,
+  DELETE_STUDENTT_ATTENDANCE_BY_ID,
+  FETCH_CLASS_LIST,
+  FETCH_STUDENT_ATTENDANCE,
 } from "../../../components/common/UseApi";
+import useApiToken from "../../../components/common/useApiToken";
+import Layout from "../../../layout/Layout";
 
 const AttendanceView = () => {
   const navigate = useNavigate();
   const Fromdate = moment().startOf("month").format("YYYY-MM-DD");
   const Todate = moment().format("YYYY-MM-DD");
   const componentRef = useRef();
-
+  const token = useApiToken();
   const [attendance, setAttendance] = useState({
     from_date: Fromdate,
     to_date: Todate,
@@ -44,7 +43,7 @@ const AttendanceView = () => {
 
   const fetchClassData = async () => {
     try {
-      const response = await fetchClassList();
+      const response = await FETCH_CLASS_LIST(token);
       setClassList(response.classes);
     } catch (error) {
       console.error("Error fetching classes data", error);
@@ -71,7 +70,7 @@ const AttendanceView = () => {
     };
 
     try {
-      const res = await FetchStudentAttendance(data);
+      const res = await FETCH_STUDENT_ATTENDANCE(data, token);
 
       if (res.weekdays && res.student) {
         setAttendanceData(res);
@@ -106,14 +105,10 @@ const AttendanceView = () => {
         const attendanceIndex = student.attendance_dates.indexOf(date.date);
         const attendanceId = student.id[attendanceIndex];
 
-        // await axios({
-        //   url: `${BASE_URL}/api/panel-delete-student-attendance/${attendanceId}`,
-        //   method: "DELETE",
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
-        const respose = await DeleteStudentAttendanceLisyById(attendanceId);
+        const respose = await DELETE_STUDENTT_ATTENDANCE_BY_ID(
+          attendanceId,
+          token
+        );
         toast.success(
           `${student.student_name} marked present for ${moment(
             date.date
@@ -125,16 +120,8 @@ const AttendanceView = () => {
           studentAttendance_class: attendance.from_class,
           studentAttendance_admission_no: student.student_admission_no,
         };
-        // else if the date is P
-        // await axios({
-        //   url: `${BASE_URL}/api/panel-create-student-attendance`,
-        //   method: "POST",
-        //   data,
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //   },
-        // });
-        const res = await CreateStudentAttendance(data);
+
+        const res = await CREATE_STUDENT_ATTENDANCE(data, token);
 
         toast.success(
           `${student.student_name} marked absent for ${moment(date.date).format(

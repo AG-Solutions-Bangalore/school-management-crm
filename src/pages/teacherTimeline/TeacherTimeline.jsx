@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import Layout from "../../layout/Layout";
-import axios from "axios";
-import BASE_URL from "../../base/BaseUrl";
-import { ContextPanel } from "../../context/ContextPanel";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
-import LoaderComponent from "../../components/common/LoaderComponent";
-import { CreateButton } from "../../components/common/ButttonConfig";
 import { TeacherTimeTablePrint } from "../../components/buttonIndex/ButtonComponents";
-import { fetchTeacherTimetable } from "../../components/common/UseApi";
+import { CreateButton } from "../../components/common/ButttonConfig";
+import LoaderComponent from "../../components/common/LoaderComponent";
+import { FETCH_TEACHER_TIME_TABLE } from "../../components/common/UseApi";
+import useApiToken from "../../components/common/useApiToken";
+import { ContextPanel } from "../../context/ContextPanel";
+import Layout from "../../layout/Layout";
 
 const Timetable = () => {
   const containerRef = useRef();
@@ -20,6 +19,7 @@ const Timetable = () => {
   const [error, setError] = useState(null);
   const [activeTeacher, setActiveTeacher] = useState(null);
   const { selectedYear } = useContext(ContextPanel);
+  const token = useApiToken();
   const days = [
     "Monday",
     "Tuesday",
@@ -35,17 +35,18 @@ const Timetable = () => {
 
   const handlePrintPdf = useReactToPrint({
     content: () => containerRef.current,
+    removeAfterPrint: true,
     documentTitle: "teacher_timetable",
     pageStyle: `
                 @page {
                 size: A4 landscape;
                 margin: 5mm;
-                
+
               }
               @media print {
                 body {
                   border: 0px solid #000;
-                      font-size: 10px; 
+                      font-size: 10px;
                   margin: 0mm;
                   padding: 0mm;
                 }
@@ -55,7 +56,7 @@ const Timetable = () => {
                 .print-hide {
                   display: none;
                 }
-               
+
               }
               `,
   });
@@ -64,8 +65,7 @@ const Timetable = () => {
     const fetchTimetable = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem("token");
-        const response = await fetchTeacherTimetable(selectedYear);
+        const response = await FETCH_TEACHER_TIME_TABLE(selectedYear, token);
 
         const periods = response.shool_period.map(
           (period) => period.school_period
